@@ -1,0 +1,5 @@
+globalVariables('.')
+globalVariables('density')
+globalVariables('area')
+globalVariables('area_grid')
+globalVariables('geometry')
