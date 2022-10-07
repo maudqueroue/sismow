@@ -5,10 +5,6 @@ editor_options:
   chunk_output_type: console
 ---
 
-All commands that you use to use when developing packages...
-
-# First time just after creating the project
-
 - Fill the following chunk to create the DESCRIPTION of your package
 
 ```{r description, eval=FALSE}
@@ -16,24 +12,22 @@ All commands that you use to use when developing packages...
 fusen::fill_description(
   pkg = here::here(),
   fields = list(
-    Title = "Build A Package From Rmarkdown File",
-    Description = "Use Rmarkdown First method to build your package. Start your package with documentation. Everything can be set from a Rmarkdown file in your project.",
+    Title = "Simulated Survey Of Megafauna At Offshore Windfarms",
+    Description = "Ce package contient de nombreuses fonctions permettant de simuler des données de suivis aérien. Ce package permet de simuler différentes abondance de population, différents échnatillonnages ainsi que de simuler différents méthodes de survols aériens.",
     `Authors@R` = c(
-      person("Sebastien", "Rochette", email = "sebastien@thinkr.fr", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-1565-9313")),
-      person(given = "ThinkR", role = "cph")
+      person("Maud", "Quéroué", email = "maud.queroue@gmail.com", role = c("aut", "cre"))
     )
-  )
+  ),
+  overwrite = TRUE
 )
 # Define License with use_*_license()
-usethis::use_mit_license("Sébastien Rochette")
+usethis::use_mit_license("Maud Queroue")
 ```
 
 # Start using git
 
 ```{r, eval=FALSE}
 usethis::use_git()
-# Deal with classical files to ignore
-usethis::git_vaccinate()
 ```
 
 # Set extra sources of documentation
@@ -42,9 +36,9 @@ usethis::git_vaccinate()
 # README
 usethis::use_readme_rmd()
 # Code of Conduct
-usethis::use_code_of_conduct("contact@fake.com")
+usethis::use_code_of_conduct("maud.queroue@gmail.com")
 # NEWS
-usethis::use_news_md()
+#usethis::use_news_md()
 ```
 
 **From now, you will need to "inflate" your package at least once to be able to use the following commands. Let's go to your flat template, and come back here later if/when needed.**
