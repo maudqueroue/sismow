@@ -7,12 +7,13 @@
 create_density_map(
   shape_obj,
   N,
-  grid_size,
+  grid_size = 1000,
   density_type,
   gradient_direction,
   wavelength,
   amplitude,
-  nb_hotspots
+  nb_hotspots,
+  crs = 2154
 )
 }
 \arguments{
@@ -20,7 +21,7 @@ create_density_map(
 
 \item{N}{Numeric. The number of individuals desired in the area.}
 
-\item{grid_size}{Numeric. Grid size in m.}
+\item{grid_size}{Numeric. Grid size in m. By default = 1000}
 
 \item{density_type}{Character. 'uniform", 'gradient', 'random', 'covariate'.}
 
@@ -31,10 +32,51 @@ create_density_map(
 \item{amplitude}{Numeric. Only for "gradient" and "random" \code{density_type}. Amplitude of the hotspots of density created. Maximum amplitude for "random" \code{density_type}.}
 
 \item{nb_hotspots}{Numeric. Only for "random" \code{density_type}. Number of random hotspots to be created.}
+
+\item{crs}{Numeric. Only for "random" \code{density_type}. Number of random hotspots to be created. By default = 2154}
 }
 \value{
 sf object. The map with the densities type choosen and corresponding to the number of individuals desired in the study area.
 }
 \description{
 Create a map with the desired density of individuals
+}
+\examples{
+
+library(ggplot2)
+data("shape_courseulles")
+
+# Create a map with a gradient density from the North with 500 individuals in the area
+
+map_obj <- create_density_map(shape_obj = shape_courseulles,
+                              N = 500,
+                              density_type = "gradient",
+                              gradient_direction = "N",
+                              wavelength = 40000,
+                              amplitude = 15
+                              
+)
+
+
+ggplot() +
+  geom_sf(data = map_obj, aes(fill = density))
+
+
+# Create a map with a random density from the North with 500 individuals in the area
+
+map_obj <- create_density_map(shape_obj = shape_courseulles,
+                              N = 500,
+                              density_type = "random",
+                              wavelength = 10000,
+                              amplitude = 15,
+                              nb_hotspots = 10
+                              
+)
+
+
+# Plot results
+ggplot() +
+  geom_sf(data = map_obj, aes(fill = density))
+
+
 }

@@ -15,12 +15,16 @@ Imports:
     dplyr,
     dsims,
     dssd,
+    glue,
     magrittr,
+    maptools,
     sf,
     sp,
+    spatstat.core,
     stats,
     units
 Suggests: 
+    ggplot2,
     knitr,
     rmarkdown,
     testthat

@@ -25,9 +25,97 @@ library(sismow)
 -->
 
 
-# My function
+## Create density map
+
+This function allows to create different densities in the studied area. 
+- A `homogenous` density with the same density througout the studied aera.
+- A `gradient` density with a density decreasing from a hotspot that could be placed on different direction `gradient_direction` (`N` for North, `NE` for North-East, `E` for East, `SE` for South-East, `S` for South, `SW` for South-West, `W` for West, `NW` for North-West and `C` for center). The `amplitude` and the `wavelength` of the hotspot created can be modified.
+- A `random` density, created by adding a certain number of hotspots `nb_hotspots` on the study area. The hotspot created have a maximum `amplitude` and a maximum `wavelength` that can be modified. Each hotspot created have an amplitude and a wavelength randomly choosen between 1 and a maximum `amplitude` and a maximum `wavelength` that can be modified. 
+Then, the correct density ratios are calcultating according to the desired number of individuals in the area `N`.  
+
+
+### Examples
+
+For this example, we used a `shape_obj` that is included in this package `shape_courseulles`. We create a map contaning 500 individuals with (1) a graidnet density and (2) a random density. 
+
 
 ```{r examples-create_density_map}
 
+library(ggplot2)
+data("shape_courseulles")
+
+# Create a map with a gradient density from the North with 500 individuals in the area
+
+map_obj <- create_density_map(shape_obj = shape_courseulles,
+                              N = 500,
+                              density_type = "gradient",
+                              gradient_direction = "N",
+                              wavelength = 40000,
+                              amplitude = 15
+                              
+)
+
+
+ggplot() +
+  geom_sf(data = map_obj, aes(fill = density))
+
+
+# Create a map with a random density from the North with 500 individuals in the area
+
+map_obj <- create_density_map(shape_obj = shape_courseulles,
+                              N = 500,
+                              density_type = "random",
+                              wavelength = 10000,
+                              amplitude = 15,
+                              nb_hotspots = 10
+                              
+)
+
+
+# Plot results
+ggplot() +
+  geom_sf(data = map_obj, aes(fill = density))
+
+
+```
+
+## Simulate individuals with a inhomogenous Poisson point process.
+
+From an sf class density map `map_obj` (data.frame), an inohomogene Poisson point process is used to simulate the presence of individuals in the study area. The probability of presence of an individual is dependent on the density given by the map. 
+
+
+### Example
+
+An example of this function use a dataset `dataset_map` consisting in a dataframe of class `sf` containing density information. 
+
+From this map, the aim of the function `simulate_ind` is to simulate the presence of individuals in the study area. The function return a dataframe, here `ind`, containing the differents individuals simulated and their geographic coordinates. 
+
+
+```{r examples-simulate_ind, warning = FALSE}
+
+library(ggplot2)
+data("shape_courseulles")
+
+# First, create a map with a gradient density from the North with 500 individuals in the area
+map_obj <- create_density_map(shape_obj = shape_courseulles,
+                              N = 200,
+                              grid_size = 1000,
+                              density_type = "gradient",
+                              gradient_direction = "N",
+                              wavelength = 30000,
+                              amplitude = 70
+                              
+)
+
+
+# Then simulate the presence of individuals in the study area with a inhomogenous Poisson point process
+obs_obj <- simulate_ind(map_obj = map_obj)
+
+
+# Plot results
+ggplot() +
+    geom_sf(data = map_obj, aes(fill = density)) +
+    geom_point(data = obs_obj, aes(x = x, y = y))
+  
 ```
 
