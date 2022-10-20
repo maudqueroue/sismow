@@ -4,20 +4,19 @@ library(testthat)
 library(dplyr)
 
 
-test_that("create_obs works", {
-  expect_true(inherits(create_obs, "function")) 
+test_that("simulate_density works", {
+  expect_true(inherits(simulate_density, "function")) 
 })
 
 
-test_that("test conformite create_density_map", {
+test_that("test conformite simulate_density", {
   
   data("shape_courseulles")
   
   set.seed(2022)
   
   # First, create a density map
-  test_1 <- create_density_map(shape_obj = shape_courseulles,
-                            N = 1000,
+  test_1 <- simulate_density(shape_obj = shape_courseulles,
                             density_type = "gradient",
                             gradient_direction = "NW",
                             wavelength = 20000,
@@ -27,8 +26,7 @@ test_that("test conformite create_density_map", {
   
   
   
-  test_2 <- create_density_map(shape_obj = shape_courseulles,
-                              N = 500,
+  test_2 <- simulate_density(shape_obj = shape_courseulles,
                               density_type = "random",
                               wavelength = 10000,
                               amplitude = 15,
@@ -36,26 +34,24 @@ test_that("test conformite create_density_map", {
     slice(1:5)
   
   
-  test_3 <- create_density_map(shape_obj = shape_courseulles,
-                              N = 500,
-                              density_type = "uniform") %>%
+  test_3 <- simulate_density(shape_obj = shape_courseulles,
+                             density_type = "uniform") %>%
     slice(1:5)
   
   
   exp_1 <- structure(list(x = c(462699.599999965, 463699.599999965, 464699.599999965, 
 465699.599999965, 466699.599999965), y = c(6915658.74575047, 
 6915658.74575047, 6915658.74575047, 6915658.74575047, 6915658.74575047
-), density = c(5.23196832511851e-09, 5.17428490813041e-09, 5.12588469302738e-09, 
-5.08538209345446e-09, 5.0515787436836e-09), area = c(1e+06, 1e+06, 
-1e+06, 1e+06, 1e+06), geometry = structure(list(structure(list(
-    structure(c(462199.599999965, 462199.599999965, 463199.599999965, 
-    463199.599999965, 462199.599999965, 6915158.74575047, 6916158.74575047, 
-    6916158.74575047, 6915158.74575047, 6915158.74575047), .Dim = c(5L, 
-    2L))), class = c("XY", "POLYGON", "sfg")), structure(list(
-    structure(c(463199.599999965, 463199.599999965, 464199.599999965, 
-    464199.599999965, 463199.599999965, 6915158.74575047, 6916158.74575047, 
-    6916158.74575047, 6915158.74575047, 6915158.74575047), .Dim = c(5L, 
-    2L))), class = c("XY", "POLYGON", "sfg")), structure(list(
+), density = c(1.06893079882588, 1.05714563936609, 1.04725710843882, 
+1.03898212024591, 1.03207583958285), area = c(1e+06, 1e+06, 1e+06, 
+1e+06, 1e+06), geometry = structure(list(structure(list(structure(c(462199.599999965, 
+462199.599999965, 463199.599999965, 463199.599999965, 462199.599999965, 
+6915158.74575047, 6916158.74575047, 6916158.74575047, 6915158.74575047, 
+6915158.74575047), .Dim = c(5L, 2L))), class = c("XY", "POLYGON", 
+"sfg")), structure(list(structure(c(463199.599999965, 463199.599999965, 
+464199.599999965, 464199.599999965, 463199.599999965, 6915158.74575047, 
+6916158.74575047, 6916158.74575047, 6915158.74575047, 6915158.74575047
+), .Dim = c(5L, 2L))), class = c("XY", "POLYGON", "sfg")), structure(list(
     structure(c(464199.599999965, 464199.599999965, 465199.599999965, 
     465199.599999965, 464199.599999965, 6915158.74575047, 6916158.74575047, 
     6916158.74575047, 6915158.74575047, 6915158.74575047), .Dim = c(5L, 
@@ -79,17 +75,16 @@ y = NA_integer_, density = NA_integer_, area = NA_integer_), class = "factor", .
   exp_2 <- structure(list(x = c(462699.599999965, 463699.599999965, 464699.599999965, 
 465699.599999965, 466699.599999965), y = c(6915658.74575047, 
 6915658.74575047, 6915658.74575047, 6915658.74575047, 6915658.74575047
-), density = c(7.17061580681248e-08, 7.25842474952084e-08, 7.28241682688207e-08, 
-7.24159215197748e-08, 7.13794726784813e-08), area = c(1e+06, 
-1e+06, 1e+06, 1e+06, 1e+06), geometry = structure(list(structure(list(
-    structure(c(462199.599999965, 462199.599999965, 463199.599999965, 
-    463199.599999965, 462199.599999965, 6915158.74575047, 6916158.74575047, 
-    6916158.74575047, 6915158.74575047, 6915158.74575047), .Dim = c(5L, 
-    2L))), class = c("XY", "POLYGON", "sfg")), structure(list(
-    structure(c(463199.599999965, 463199.599999965, 464199.599999965, 
-    464199.599999965, 463199.599999965, 6915158.74575047, 6916158.74575047, 
-    6916158.74575047, 6915158.74575047, 6915158.74575047), .Dim = c(5L, 
-    2L))), class = c("XY", "POLYGON", "sfg")), structure(list(
+), density = c(2.35446082022629, 2.3832927533325, 2.39117051553099, 
+2.37776579546915, 2.34373415502516), area = c(1e+06, 1e+06, 1e+06, 
+1e+06, 1e+06), geometry = structure(list(structure(list(structure(c(462199.599999965, 
+462199.599999965, 463199.599999965, 463199.599999965, 462199.599999965, 
+6915158.74575047, 6916158.74575047, 6916158.74575047, 6915158.74575047, 
+6915158.74575047), .Dim = c(5L, 2L))), class = c("XY", "POLYGON", 
+"sfg")), structure(list(structure(c(463199.599999965, 463199.599999965, 
+464199.599999965, 464199.599999965, 463199.599999965, 6915158.74575047, 
+6916158.74575047, 6916158.74575047, 6915158.74575047, 6915158.74575047
+), .Dim = c(5L, 2L))), class = c("XY", "POLYGON", "sfg")), structure(list(
     structure(c(464199.599999965, 464199.599999965, 465199.599999965, 
     465199.599999965, 464199.599999965, 6915158.74575047, 6916158.74575047, 
     6916158.74575047, 6915158.74575047, 6915158.74575047), .Dim = c(5L, 
@@ -113,17 +108,15 @@ y = NA_integer_, density = NA_integer_, area = NA_integer_), class = "factor", .
   exp_3 <- structure(list(x = c(462699.599999965, 463699.599999965, 464699.599999965, 
 465699.599999965, 466699.599999965), y = c(6915658.74575047, 
 6915658.74575047, 6915658.74575047, 6915658.74575047, 6915658.74575047
-), density = c(1.72950536146662e-07, 1.72950536146662e-07, 1.72950536146662e-07, 
-1.72950536146662e-07, 1.72950536146662e-07), area = c(1e+06, 
-1e+06, 1e+06, 1e+06, 1e+06), geometry = structure(list(structure(list(
-    structure(c(462199.599999965, 462199.599999965, 463199.599999965, 
-    463199.599999965, 462199.599999965, 6915158.74575047, 6916158.74575047, 
-    6916158.74575047, 6915158.74575047, 6915158.74575047), .Dim = c(5L, 
-    2L))), class = c("XY", "POLYGON", "sfg")), structure(list(
-    structure(c(463199.599999965, 463199.599999965, 464199.599999965, 
-    464199.599999965, 463199.599999965, 6915158.74575047, 6916158.74575047, 
-    6916158.74575047, 6915158.74575047, 6915158.74575047), .Dim = c(5L, 
-    2L))), class = c("XY", "POLYGON", "sfg")), structure(list(
+), density = c(1, 1, 1, 1, 1), area = c(1e+06, 1e+06, 1e+06, 
+1e+06, 1e+06), geometry = structure(list(structure(list(structure(c(462199.599999965, 
+462199.599999965, 463199.599999965, 463199.599999965, 462199.599999965, 
+6915158.74575047, 6916158.74575047, 6916158.74575047, 6915158.74575047, 
+6915158.74575047), .Dim = c(5L, 2L))), class = c("XY", "POLYGON", 
+"sfg")), structure(list(structure(c(463199.599999965, 463199.599999965, 
+464199.599999965, 464199.599999965, 463199.599999965, 6915158.74575047, 
+6916158.74575047, 6916158.74575047, 6915158.74575047, 6915158.74575047
+), .Dim = c(5L, 2L))), class = c("XY", "POLYGON", "sfg")), structure(list(
     structure(c(464199.599999965, 464199.599999965, 465199.599999965, 
     465199.599999965, 464199.599999965, 6915158.74575047, 6916158.74575047, 
     6916158.74575047, 6915158.74575047, 6915158.74575047), .Dim = c(5L, 
@@ -159,51 +152,40 @@ expect_is(test_3, "data.frame")
 
 })
 
-test_that("test erreur create_density_map", {
+test_that("test erreur simulate_density", {
   
   data("shape_courseulles")
   
   
-  expect_error(object = create_density_map(shape_obj = c(1,1,1),
-                                           N = 500,
+  expect_error(object = simulate_density(shape_obj = c(1,1,1),
                                            density_type = "uniform"))
   
-  expect_error(object = create_density_map(shape_obj = shape_courseulles,
-                                           N = "haha",
-                                           density_type = "uniform"))
+  expect_error(object = simulate_density(shape_obj = shape_courseulles,
+                                          density_type = "aleatoire"))
   
-  expect_error(object = create_density_map(shape_obj = shape_courseulles,
-                                           N = 500,
-                                           density_type = "aleatoire"))
-  
-  expect_error(object = create_density_map(shape_obj = shape_courseulles,
-                                           N = 500,
+  expect_error(object = simulate_density(shape_obj = shape_courseulles,
                                            density_type = "gradient",
                                            gradient_direction = "SSE",
                                            wavelength = 40000,
                                            amplitude = 15))
   
-  expect_error(object = create_density_map(shape_obj = shape_courseulles,
-                                           N = 500,
+  expect_error(object = simulate_density(shape_obj = shape_courseulles,
                                            density_type = "gradient",
                                            gradient_direction = "SE",
                                            amplitude = 15))
   
-  expect_error(object = create_density_map(shape_obj = shape_courseulles,
-                                           N = 500,
+  expect_error(object = simulate_density(shape_obj = shape_courseulles,
                                            gradient_direction = "NE",
                                            density_type = "gradient",
                                            wavelength = "ohoh",
                                            amplitude = 15))
   
-  expect_error(object = create_density_map(shape_obj = shape_courseulles,
-                                           N = 500,
+  expect_error(object = simulate_density(shape_obj = shape_courseulles,
                                            density_type = "random",
                                            wavelength = 40000,
                                            amplitude = 15))
   
-  expect_error(object = create_density_map(shape_obj = shape_courseulles,
-                                           N = 500,
+  expect_error(object = simulate_density(shape_obj = shape_courseulles,
                                            density_type = "random",
                                            wavelength = 40000,
                                            amplitude = 15,

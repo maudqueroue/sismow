@@ -4,12 +4,13 @@
 #' Simulate individuals with a inhomogenous Poisson point process
 #'
 #' @param map_obj sf dataframe. Sf map with a colum containg density informations
+#' @param N Numeric. The number of individuals desired in the area.
 #' @param crs numeric. Projection system. By default = 2154. 
 #'
 #' @importFrom glue glue
 #' @importFrom assertthat assert_that
 #' @importFrom dplyr mutate select filter
-#' @importFrom sf st_centroid st_coordinates st_crs
+#' @importFrom sf st_centroid st_coordinates st_crs st_area
 #' @importFrom sp coordinates<- proj4string<- gridded<- CRS
 #' @importFrom maptools as.im.SpatialGridDataFrame
 #'
@@ -24,38 +25,40 @@
 #' data("shape_courseulles")
 #' 
 #' # First, create a map with a gradient density from the North with 500 individuals in the area
-#' map <- create_density_map(shape_obj = shape_courseulles,
-#'                               N = 200,
+#' map <- simulate_density(shape_obj = shape_courseulles,
 #'                               grid_size = 1000,
 #'                               density_type = "gradient",
 #'                               gradient_direction = "N",
 #'                               wavelength = 20000,
-#'                               amplitude = 500
-#'                               
-#' )
-#' 
+#'                               amplitude = 20)
 #' 
 #' # Then simulate the presence of individuals in the study area 
-#' ind <- simulate_ind(map_obj = map)
-#' 
+#' ind <- simulate_ind(map_obj = map, N = 500)
 #' 
 #' # Plot
 #' ggplot() +
 #'     geom_sf(data = map, aes(fill = density)) +
 #'     geom_point(data = ind, aes(x = x, y = y))
 #'   
-simulate_ind <- function(map_obj, crs = 2154) {
+simulate_ind <- function(map_obj, N, crs = 2154) {
   
   # Function checks
   assert_that(inherits(map_obj, "sf"))
   if (!all(c("density") %in% names(map_obj))) {stop("map_obj must contain `density` column. Verify your column names.")}
   assert_that(is.numeric(map_obj$density))
   assert_that(is.numeric(crs))
+  assert_that(is.numeric(N))
 
   
+  map_obj <- map_obj %>%
+    mutate(area = st_area(.))
   
   # Function 
-  # st_make_grid
+  total_area <- sum(map_obj$area)
+  average_density <- N / total_area
+  
+  map_obj <- map_obj %>%
+    mutate(density = average_density * density / mean(density, na.rm = TRUE))
   
   # Create grid
   grid <- map_obj %>%

@@ -4,10 +4,12 @@
 \alias{simulate_ind}
 \title{Simulate individuals with a inhomogenous Poisson point process}
 \usage{
-simulate_ind(map_obj, crs = 2154)
+simulate_ind(map_obj, N, crs = 2154)
 }
 \arguments{
 \item{map_obj}{sf dataframe. Sf map with a colum containg density informations}
+
+\item{N}{Numeric. The number of individuals desired in the area.}
 
 \item{crs}{numeric. Projection system. By default = 2154.}
 }
@@ -23,20 +25,15 @@ library(ggplot2)
 data("shape_courseulles")
 
 # First, create a map with a gradient density from the North with 500 individuals in the area
-map <- create_density_map(shape_obj = shape_courseulles,
-                              N = 200,
+map <- simulate_density(shape_obj = shape_courseulles,
                               grid_size = 1000,
                               density_type = "gradient",
                               gradient_direction = "N",
                               wavelength = 20000,
-                              amplitude = 500
-                              
-)
-
+                              amplitude = 20)
 
 # Then simulate the presence of individuals in the study area 
-ind <- simulate_ind(map_obj = map)
-
+ind <- simulate_ind(map_obj = map, N = 500)
 
 # Plot
 ggplot() +

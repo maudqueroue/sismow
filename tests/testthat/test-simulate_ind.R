@@ -16,19 +16,18 @@ test_that("test conformite simulate_ind", {
   set.seed(2022)
   
   # First, create a density map
-  map <- create_density_map(shape_obj = shape_courseulles,
-                            N = 1000,
+  map <- simulate_density(shape_obj = shape_courseulles,
                             density_type = "gradient",
                             gradient_direction = "N",
                             wavelength = 20000,
                             amplitude = 500)
   
-  test <- simulate_ind(map_obj = map) %>%
+  test <- simulate_ind(map_obj = map, N = 500) %>%
                  slice(1:5)
 
-exp <- structure(list(x = c(431775.072857303, 420574.950567477, 434997.642150412, 
-411643.817603619, 471141.824978667), y = c(6953113.82923826, 
-6944770.46572502, 6950439.73189654, 6943461.32505072, 6946109.31119641
+exp <- structure(list(x = c(432098.238355977, 420533.286240681, 434527.738948383, 
+411815.477216414, 470612.945042581), y = c(6952762.23628262, 
+6944532.6011364, 6950771.26691599, 6944138.62147687, 6945281.02163264
 ), size = c(1, 1, 1, 1, 1)), class = "data.frame", row.names = c(NA, 
 -5L))
 
@@ -43,27 +42,31 @@ test_that("test erreur simulate ind", {
   
   data(iris)
   
-  expect_error(object = simulate_ind(map_obj = iris))
+  expect_error(object = simulate_ind(map_obj = iris, N = 500))
   
   # First, create a density map
-  map <- create_density_map(shape_obj = shape_courseulles,
-                            N = 1000,
+  map <- simulate_density(shape_obj = shape_courseulles,
                             density_type = "gradient",
                             gradient_direction = "N",
                             wavelength = 20000,
                             amplitude = 500)
   
+  expect_error(object = simulate_ind(map_obj = map, N = "haha"))
+  expect_error(object = simulate_ind(map_obj = map))
+
+  
   map_test <- map %>%
     rename(nop = density)
   
-  expect_error(object = simulate_ind(map_obj = map_test))
+  expect_error(object = simulate_ind(map_obj = map_test,N = 500))
   
   map_test <- map
   map_test$density[5] <- "nop"
   
-  expect_error(object = simulate_ind(map_obj = map_test))
+  expect_error(object = simulate_ind(map_obj = map_test, N = 500))
   
   expect_error(object = simulate_ind(map_obj = map,
+                                     N = 500,
                                      crs = "nop"))
   
 })

@@ -16,7 +16,7 @@ library(testthat)
 # My function
 # proposer segmentize, and crop considering the grid. 
 
-```{r function-create_transects}
+```{r function-simulate_transects}
 
 #' Create transect
 #'
@@ -38,7 +38,7 @@ library(testthat)
 #' @return sf object. The created transects.
 #' @export
 
-create_transects <- function(shape_obj, design = "systematic", design.angle = 0, line.length, segmentize = FALSE, length_segs, crs = 2154, ...) {
+simulate_transects <- function(shape_obj, design = "systematic", design.angle = 0, line.length, segmentize = FALSE, length_segs, crs = 2154, ...) {
   
   # Function checks
   assert_that(inherits(shape_obj, "sf"))
@@ -141,7 +141,7 @@ For this example, we used a `shape_obj` that is included in this package `shape_
 - (1) systematic parallel transects with a approximative length of 400000m
 - (2) zigzag transects with a approximative length of 400000m that are segmentized with a length of 2000m per segment. 
 
-```{r examples-create_transects}
+```{r examples-simulate_transects}
 
 library(ggplot2)
 data("shape_courseulles")
@@ -149,7 +149,7 @@ data("shape_courseulles")
 # ------------------------------
 # Example 1 : systematic parallel transects with a approximative total length of 400000m
 
-transects <- create_transects(shape_obj = shape_courseulles,
+transects <- simulate_transects(shape_obj = shape_courseulles,
                              design = "systematic",
                              line.length = 400000)
 # Plot
@@ -161,7 +161,7 @@ ggplot() +
 # ------------------------------
 # Example 2 : zigzag transects with a approximative total length of 400000m 
 # that are segmentized with a length of 2000m per segment
-transects <- create_transects(shape_obj = shape_courseulles,
+transects <- simulate_transects(shape_obj = shape_courseulles,
                              design = "eszigzag",
                              line.length = 400000,
                              design.angle = 90,
@@ -184,8 +184,7 @@ ggplot() +
 # and crop according to the map_obj grid containing densities
 
 # Create map 
-map <- create_density_map(shape_obj = shape_courseulles,
-                              N = 200,
+map <- simulate_density(shape_obj = shape_courseulles,
                               grid_size = 1000,
                               density_type = "gradient",
                               gradient_direction = "N",
@@ -193,7 +192,7 @@ map <- create_density_map(shape_obj = shape_courseulles,
                               amplitude = 500)
 
 # Create transects
-transects <- create_transects(shape_obj = map,
+transects <- simulate_transects(shape_obj = map,
                              design = "systematic",
                              line.length = 400000,
                              design.angle = 2,
@@ -210,22 +209,21 @@ ggplot() +
 
 ```
 
-```{r tests-create_transects}
+```{r tests-simulate_transects}
 library(testthat)
 library(dplyr)
 
-test_that("create_transects works", {
-  expect_true(inherits(create_transects, "function"))
+test_that("simulate_transects works", {
+  expect_true(inherits(simulate_transects, "function"))
 })
 
-test_that("test conformite create_transects", {
+test_that("test conformite simulate_transects", {
 
   data("shape_courseulles")
   
   set.seed(2022)
   
-  map <- create_density_map(shape_obj = shape_courseulles,
-                              N = 200,
+  map <- simulate_density(shape_obj = shape_courseulles,
                               grid_size = 1000,
                               density_type = "gradient",
                               gradient_direction = "N",
@@ -233,13 +231,13 @@ test_that("test conformite create_transects", {
                               amplitude = 500)
   
 
-  test_1 <- create_transects(shape_obj = shape_courseulles,
+  test_1 <- simulate_transects(shape_obj = shape_courseulles,
                              design = "systematic",
                              line.length = 400000,
                              design.angle = 2) %>%
     slice(1:5)
   
-  test_2 <- create_transects(shape_obj = map,
+  test_2 <- simulate_transects(shape_obj = map,
                              design = "systematic",
                              line.length = 400000,
                              design.angle = 2,
@@ -302,31 +300,31 @@ expect_is(test_2, "data.frame")
 
 })
 
-test_that("test erreur create_transects", {
+test_that("test erreur simulate_transects", {
   
   data(iris)
   
-  expect_error(object = create_transects(shape_obj = map,
+  expect_error(object = simulate_transects(shape_obj = map,
                                          design = "hoho",
                                          line.length = 400000,
                                          design.angle = 2,
                                          segmentize = TRUE,
                                          length_segs = 2000))
     
-  expect_error(object = create_transects(shape_obj = iris,
+  expect_error(object = simulate_transects(shape_obj = iris,
                                          design = "systematic",
                                          line.length = 400000))
   
-  expect_error(object = create_transects(shape_obj = map,
+  expect_error(object = simulate_transects(shape_obj = map,
                                          design = "systematic",
                                          line.length = "nop"))
   
-  expect_error(object = create_transects(shape_obj = map,
+  expect_error(object = simulate_transects(shape_obj = map,
                                          design = "systematic",
                                          line.length = 400000,
                                          design.angle = "haha"))
   
-  expect_error(object = create_transects(shape_obj = map,
+  expect_error(object = simulate_transects(shape_obj = map,
                                          design = "systematic",
                                          line.length = 400000,
                                          design.angle = 0,

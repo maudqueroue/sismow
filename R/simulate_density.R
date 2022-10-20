@@ -5,7 +5,6 @@
 #' Create a map with the desired density of individuals
 #'
 #' @param shape_obj sf object. The shape of the study site.
-#' @param N Numeric. The number of individuals desired in the area.
 #' @param grid_size Numeric. Grid size in m. By default = 1000
 #' @param density_type Character. 'uniform", 'gradient', 'random', 'covariate'.
 #' @param gradient_direction Character. Only for "gradient" `density_type`. Where the highest density comes from. 'N','NE','E'...
@@ -34,8 +33,7 @@
 #' # ------------------------------
 #' # Example 1 : Create a map with a gradient density from the North with 500 individuals in the area
 #' 
-#' map <- create_density_map(shape_obj = shape_courseulles,
-#'                               N = 500,
+#' map <- simulate_density(shape_obj = shape_courseulles,
 #'                               density_type = "gradient",
 #'                               gradient_direction = "N",
 #'                               wavelength = 40000,
@@ -51,8 +49,7 @@
 #' # ------------------------------
 #' # Example 2 : Create a map with a random density from the North with 500 individuals in the area
 #' 
-#' map <- create_density_map(shape_obj = shape_courseulles,
-#'                               N = 500,
+#' map <- simulate_density(shape_obj = shape_courseulles,
 #'                               density_type = "random",
 #'                               wavelength = 10000,
 #'                               amplitude = 15,
@@ -64,12 +61,11 @@
 #' ggplot() +
 #'   geom_sf(data = map, aes(fill = density))
 #' 
-create_density_map <- function(shape_obj, N, grid_size = 1000, density_type, gradient_direction, wavelength, amplitude, nb_hotspots, crs = 2154) {
+simulate_density <- function(shape_obj, grid_size = 1000, density_type, gradient_direction, wavelength, amplitude, nb_hotspots, crs = 2154) {
   
   
   # function checks
   assert_that(inherits(shape_obj, "sf"))
-  assert_that(is.numeric(N))
   assert_that(is.numeric(grid_size))
   assert_that(is.numeric(crs))
   if(!(density_type %in% c("random","gradient","uniform"))){stop("Density_type argument must be 'random', 'gradient', or 'uniform'.")}
@@ -220,14 +216,8 @@ create_density_map <- function(shape_obj, N, grid_size = 1000, density_type, gra
     mutate(area = st_area(.)) %>%
     mutate(area_grid = grid_size^2) %>%
     drop_units() %>%
-    filter(area == area_grid)
-  
-  total_area <- sum(map_obj$area)
-  average_density <- N / total_area
-
-  map_obj <- map_obj %>%
-    mutate(density = average_density * density / mean(density, na.rm = TRUE)) %>%
+    filter(area == area_grid) %>%
     select(x,y,density,area,geometry)
-        
+  
 }
 

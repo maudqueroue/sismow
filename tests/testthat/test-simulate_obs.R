@@ -4,29 +4,28 @@ library(testthat)
 library(dplyr)
 
 
-test_that("create_obs works", {
-  expect_true(inherits(create_obs, "function")) 
+test_that("simulate_obs works", {
+  expect_true(inherits(simulate_obs, "function")) 
 })
 
 
-test_that("test conformite create_obs", {
+test_that("test conformite simulate_obs", {
   
   data("shape_courseulles")
   
   set.seed(2022)
   
   # First, create a density map
-  map <- create_density_map(shape_obj = shape_courseulles,
-                            N = 1000,
+  map <- simulate_density(shape_obj = shape_courseulles,
                             density_type = "gradient",
                             gradient_direction = "N",
                             wavelength = 20000,
                             amplitude = 500)
   # Simulate ind
-  ind <- simulate_ind(map_obj = map)
+  ind <- simulate_ind(map_obj = map, N = 500)
   
   # Then create transects
-  transects <- create_transects(shape_obj = map,
+  transects <- simulate_transects(shape_obj = map,
                                design = "systematic",
                                line.length = 400000,
                                design.angle = 2,
@@ -35,7 +34,7 @@ test_that("test conformite create_obs", {
   
   
   
-  test_1 <- create_obs(ind_obj = ind,
+  test_1 <- simulate_obs(ind_obj = ind,
                       transect_obj = transects,
                       key = "hn",
                       g_zero = 1,
@@ -43,14 +42,14 @@ test_that("test conformite create_obs", {
     slice(1:5)
   
   
-  test_2 <- create_obs(ind_obj = ind,
+  test_2 <- simulate_obs(ind_obj = ind,
                        transect_obj = transects,
                        key = "unif",
                        g_zero = 1,
                        truncation = 200) %>%
     slice(1:5)
   
-  test_3 <- create_obs(ind_obj = ind,
+  test_3 <- simulate_obs(ind_obj = ind,
                        transect_obj = transects,
                        key = "hn",
                        g_zero = 0.8,
@@ -58,7 +57,7 @@ test_that("test conformite create_obs", {
     slice(1:5)
   
   
-  test_4 <- create_obs(ind_obj = ind,
+  test_4 <- simulate_obs(ind_obj = ind,
                        transect_obj = transects,
                        key = "unif",
                        g_zero = 0.6,
@@ -67,40 +66,40 @@ test_that("test conformite create_obs", {
   
   
   exp_1 <- structure(list(object_ID = 1:5, size = c(1, 1, 1, 1, 1), detected = c(0L, 
-0L, 0L, 0L, 0L), proba = c(1.85303850324837e-20, 1.094571120915e-56, 
-6.89602678224973e-69, 2.94160921470329e-113, 8.3114181204342e-62
-), distance = c(1369.0592183218, 2305.56406914338, 2544.51293629123, 
-3269.43192253455, 2408.7186646873), seg_ID = c("6-15", "5-10", 
-"7-15", "3-8", "12-16"), x = c(431775.072857303, 420574.950567477, 
-434997.642150412, 411643.817603619, 471141.824978667), y = c(6953113.82923826, 
-6944770.46572502, 6950439.73189654, 6943461.32505072, 6946109.31119641
+0L, 0L, 0L, 0L), proba = c(8.03158225549473e-79, 4.66293367408908e-19, 
+4.17825190756762e-43, 1.00932158605189e-82, 2.70796644221945e-38
+), distance = c(2723.62665891497, 1319.57027537831, 2006.36890595083, 
+2790.81895410615, 1889.03814715369), seg_ID = c("6-15", "5-10", 
+"7-15", "4-8", "12-16"), x = c(432098.238355977, 420533.286240681, 
+434527.738948383, 411815.477216414, 470612.945042581), y = c(6952762.23628262, 
+6944532.6011364, 6950771.26691599, 6944138.62147687, 6945281.02163264
 )), row.names = c(NA, -5L), class = "data.frame")
     
   exp_2 <- structure(list(object_ID = 1:5, size = c(1, 1, 1, 1, 1), detected = c(0, 
-0, 0, 0, 0), proba = c(0, 0, 0, 0, 0), distance = c(1369.0592183218, 
-2305.56406914338, 2544.51293629123, 3269.43192253455, 2408.7186646873
-), seg_ID = c("6-15", "5-10", "7-15", "3-8", "12-16"), x = c(431775.072857303, 
-420574.950567477, 434997.642150412, 411643.817603619, 471141.824978667
-), y = c(6953113.82923826, 6944770.46572502, 6950439.73189654, 
-6943461.32505072, 6946109.31119641)), row.names = c(NA, -5L), class = "data.frame")
+0, 0, 0, 0), proba = c(0, 0, 0, 0, 0), distance = c(2723.62665891497, 
+1319.57027537831, 2006.36890595083, 2790.81895410615, 1889.03814715369
+), seg_ID = c("6-15", "5-10", "7-15", "4-8", "12-16"), x = c(432098.238355977, 
+420533.286240681, 434527.738948383, 411815.477216414, 470612.945042581
+), y = c(6952762.23628262, 6944532.6011364, 6950771.26691599, 
+6944138.62147687, 6945281.02163264)), row.names = c(NA, -5L), class = "data.frame")
     
   exp_3 <- structure(list(object_ID = 1:5, size = c(1, 1, 1, 1, 1), detected = c(0L, 
-0L, 0L, 0L, 0L), proba = c(1.4824308025987e-20, 8.75656896732001e-57, 
-5.51682142579978e-69, 2.35328737176263e-113, 6.64913449634736e-62
-), distance = c(1369.0592183218, 2305.56406914338, 2544.51293629123, 
-3269.43192253455, 2408.7186646873), seg_ID = c("6-15", "5-10", 
-"7-15", "3-8", "12-16"), x = c(431775.072857303, 420574.950567477, 
-434997.642150412, 411643.817603619, 471141.824978667), y = c(6953113.82923826, 
-6944770.46572502, 6950439.73189654, 6943461.32505072, 6946109.31119641
+0L, 0L, 0L, 0L), proba = c(6.42526580439578e-79, 3.73034693927126e-19, 
+3.3426015260541e-43, 8.0745726884151e-83, 2.16637315377556e-38
+), distance = c(2723.62665891497, 1319.57027537831, 2006.36890595083, 
+2790.81895410615, 1889.03814715369), seg_ID = c("6-15", "5-10", 
+"7-15", "4-8", "12-16"), x = c(432098.238355977, 420533.286240681, 
+434527.738948383, 411815.477216414, 470612.945042581), y = c(6952762.23628262, 
+6944532.6011364, 6950771.26691599, 6944138.62147687, 6945281.02163264
 )), row.names = c(NA, -5L), class = "data.frame")
     
   exp_4 <- structure(list(object_ID = 1:5, size = c(1, 1, 1, 1, 1), detected = c(0, 
-0, 0, 0, 0), proba = c(0, 0, 0, 0, 0), distance = c(1369.0592183218, 
-2305.56406914338, 2544.51293629123, 3269.43192253455, 2408.7186646873
-), seg_ID = c("6-15", "5-10", "7-15", "3-8", "12-16"), x = c(431775.072857303, 
-420574.950567477, 434997.642150412, 411643.817603619, 471141.824978667
-), y = c(6953113.82923826, 6944770.46572502, 6950439.73189654, 
-6943461.32505072, 6946109.31119641)), row.names = c(NA, -5L), class = "data.frame")
+0, 0, 0, 0), proba = c(0, 0, 0, 0, 0), distance = c(2723.62665891497, 
+1319.57027537831, 2006.36890595083, 2790.81895410615, 1889.03814715369
+), seg_ID = c("6-15", "5-10", "7-15", "4-8", "12-16"), x = c(432098.238355977, 
+420533.286240681, 434527.738948383, 411815.477216414, 470612.945042581
+), y = c(6952762.23628262, 6944532.6011364, 6950771.26691599, 
+6944138.62147687, 6945281.02163264)), row.names = c(NA, -5L), class = "data.frame")
     
     
 expect_equal(object = test_1,
@@ -122,28 +121,28 @@ expect_is(test_4, "data.frame")
 
 })
 
-test_that("test erreur create_obs", {
+test_that("test erreur simulate_obs", {
   
 
 
-  expect_error(object = create_obs(ind_obj = c(1,1,2),
+  expect_error(object = simulate_obs(ind_obj = c(1,1,2),
                        transect_obj = transects,
                        key = "hn",
                        g_zero = 1,
                        esw = 180))
   
-  expect_error(object = create_obs(ind_obj = ind,
+  expect_error(object = simulate_obs(ind_obj = ind,
                        transect_obj = c(1,1,2),
                        key = "hn",
                        g_zero = 1,
                        esw = 180))
   
-  expect_error(object = create_obs(ind_obj = ind,
+  expect_error(object = simulate_obs(ind_obj = ind,
                        transect_obj = transects,
                        key = "hn",
                        esw = '180'))
   
-  expect_error(object = create_obs(ind_obj = ind,
+  expect_error(object = simulate_obs(ind_obj = ind,
                        transect_obj = transects,
                        key = "unif",
                        g_zero = 1,

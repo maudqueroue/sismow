@@ -36,7 +36,7 @@ For this example, we used a `shape_obj` that is included in this package `shape_
 - (2) zigzag transects with a approximative length of 400000m that are segmentized with a length of 2000m per segment. 
 
 
-```{r examples-create_transects}
+```{r examples-simulate_transects}
 
 library(ggplot2)
 data("shape_courseulles")
@@ -44,7 +44,7 @@ data("shape_courseulles")
 # ------------------------------
 # Example 1 : systematic parallel transects with a approximative total length of 400000m
 
-transects <- create_transects(shape_obj = shape_courseulles,
+transects <- simulate_transects(shape_obj = shape_courseulles,
                              design = "systematic",
                              line.length = 400000)
 # Plot
@@ -56,7 +56,7 @@ ggplot() +
 # ------------------------------
 # Example 2 : zigzag transects with a approximative total length of 400000m 
 # that are segmentized with a length of 2000m per segment
-transects <- create_transects(shape_obj = shape_courseulles,
+transects <- simulate_transects(shape_obj = shape_courseulles,
                              design = "eszigzag",
                              line.length = 400000,
                              design.angle = 90,
@@ -79,8 +79,7 @@ ggplot() +
 # and crop according to the map_obj grid containing densities
 
 # Create map 
-map <- create_density_map(shape_obj = shape_courseulles,
-                              N = 200,
+map <- simulate_density(shape_obj = shape_courseulles,
                               grid_size = 1000,
                               density_type = "gradient",
                               gradient_direction = "N",
@@ -88,7 +87,7 @@ map <- create_density_map(shape_obj = shape_courseulles,
                               amplitude = 500)
 
 # Create transects
-transects <- create_transects(shape_obj = map,
+transects <- simulate_transects(shape_obj = map,
                              design = "systematic",
                              line.length = 400000,
                              design.angle = 2,

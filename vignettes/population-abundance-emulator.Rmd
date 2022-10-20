@@ -41,7 +41,7 @@ For this example, we used a `shape_obj` that is included in this package `shape_
 - (2) a random density. 
 
 
-```{r examples-create_density_map}
+```{r examples-simulate_density}
 
 library(ggplot2)
 data("shape_courseulles")
@@ -49,8 +49,7 @@ data("shape_courseulles")
 # ------------------------------
 # Example 1 : Create a map with a gradient density from the North with 500 individuals in the area
 
-map <- create_density_map(shape_obj = shape_courseulles,
-                              N = 500,
+map <- simulate_density(shape_obj = shape_courseulles,
                               density_type = "gradient",
                               gradient_direction = "N",
                               wavelength = 40000,
@@ -66,8 +65,7 @@ ggplot() +
 # ------------------------------
 # Example 2 : Create a map with a random density from the North with 500 individuals in the area
 
-map <- create_density_map(shape_obj = shape_courseulles,
-                              N = 500,
+map <- simulate_density(shape_obj = shape_courseulles,
                               density_type = "random",
                               wavelength = 10000,
                               amplitude = 15,
@@ -99,20 +97,15 @@ library(ggplot2)
 data("shape_courseulles")
 
 # First, create a map with a gradient density from the North with 500 individuals in the area
-map <- create_density_map(shape_obj = shape_courseulles,
-                              N = 200,
+map <- simulate_density(shape_obj = shape_courseulles,
                               grid_size = 1000,
                               density_type = "gradient",
                               gradient_direction = "N",
                               wavelength = 20000,
-                              amplitude = 500
-                              
-)
-
+                              amplitude = 20)
 
 # Then simulate the presence of individuals in the study area 
-ind <- simulate_ind(map_obj = map)
-
+ind <- simulate_ind(map_obj = map, N = 500)
 
 # Plot
 ggplot() +

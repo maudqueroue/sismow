@@ -4,7 +4,7 @@
 #' Create transect
 #'
 #' @param shape_obj sf object. The shape of the study site.
-#' @param design character. Variable describing the type of design. Either "random", "systematic", "eszigzag" (equal-spaced zigzag), "eszigzagcom" (equal spaced zigzag with complementary lines) or "segmentedgrid". See dssd package for more information.
+#' @param design character. Variable describing the type of design. Either "random", "systematic", "eszigzag" (equal-spaced zigzag), "eszigzagcom" (equal spaced zigzag with complementary lines). See dssd package for more information.
 #' @param design.angle numeric. Value detailing the angle of the design. A value of -1 will cause a random design angle to be generated. See dssd package for more information. Bydefault = 0.
 #' @param line.length numeric. The approximative total line length desired (in m).
 #' @param segmentize boolean. TRUE = transects are segmentized and a seg_ID is given to each segment. FALSE = transects are not segmentized. By default = FALSE.
@@ -29,7 +29,7 @@
 #' # ------------------------------
 #' # Example 1 : systematic parallel transects with a approximative total length of 400000m
 #' 
-#' transects <- create_transects(shape_obj = shape_courseulles,
+#' transects <- simulate_transects(shape_obj = shape_courseulles,
 #'                              design = "systematic",
 #'                              line.length = 400000)
 #' # Plot
@@ -41,7 +41,7 @@
 #' # ------------------------------
 #' # Example 2 : zigzag transects with a approximative total length of 400000m 
 #' # that are segmentized with a length of 2000m per segment
-#' transects <- create_transects(shape_obj = shape_courseulles,
+#' transects <- simulate_transects(shape_obj = shape_courseulles,
 #'                              design = "eszigzag",
 #'                              line.length = 400000,
 #'                              design.angle = 90,
@@ -64,8 +64,7 @@
 #' # and crop according to the map_obj grid containing densities
 #' 
 #' # Create map 
-#' map <- create_density_map(shape_obj = shape_courseulles,
-#'                               N = 200,
+#' map <- simulate_density(shape_obj = shape_courseulles,
 #'                               grid_size = 1000,
 #'                               density_type = "gradient",
 #'                               gradient_direction = "N",
@@ -73,7 +72,7 @@
 #'                               amplitude = 500)
 #' 
 #' # Create transects
-#' transects <- create_transects(shape_obj = map,
+#' transects <- simulate_transects(shape_obj = map,
 #'                              design = "systematic",
 #'                              line.length = 400000,
 #'                              design.angle = 2,
@@ -88,14 +87,15 @@
 #'       scale_colour_manual(values = pal) +
 #'       theme(legend.position = "none")
 #' 
-create_transects <- function(shape_obj, design = "systematic", design.angle = 0, line.length, segmentize = FALSE, length_segs, crs = 2154, ...) {
+simulate_transects <- function(shape_obj, design = "systematic", design.angle = 0, line.length, segmentize = FALSE, length_segs, crs = 2154, ...) {
   
   # Function checks
   assert_that(inherits(shape_obj, "sf"))
   assert_that(is.numeric(crs))
-  assert_that(is.character(design))
   assert_that(is.numeric(line.length))
   assert_that(is.numeric(design.angle))
+    if(!(design %in% c("random","systematic","eszigzag","eszigzagcom"))){stop("Design argument must be 'random', 'systematic', 'eszigzag' or 'eszigzagcom'.")}
+
 
   # Function
   shape_obj <- shape_obj %>%

@@ -3,18 +3,17 @@
 library(testthat)
 library(dplyr)
 
-test_that("create_transects works", {
-  expect_true(inherits(create_transects, "function"))
+test_that("simulate_transects works", {
+  expect_true(inherits(simulate_transects, "function"))
 })
 
-test_that("test conformite create_transects", {
+test_that("test conformite simulate_transects", {
 
   data("shape_courseulles")
   
   set.seed(2022)
   
-  map <- create_density_map(shape_obj = shape_courseulles,
-                              N = 200,
+  map <- simulate_density(shape_obj = shape_courseulles,
                               grid_size = 1000,
                               density_type = "gradient",
                               gradient_direction = "N",
@@ -22,13 +21,13 @@ test_that("test conformite create_transects", {
                               amplitude = 500)
   
 
-  test_1 <- create_transects(shape_obj = shape_courseulles,
+  test_1 <- simulate_transects(shape_obj = shape_courseulles,
                              design = "systematic",
                              line.length = 400000,
                              design.angle = 2) %>%
     slice(1:5)
   
-  test_2 <- create_transects(shape_obj = map,
+  test_2 <- simulate_transects(shape_obj = map,
                              design = "systematic",
                              line.length = 400000,
                              design.angle = 2,
@@ -91,31 +90,31 @@ expect_is(test_2, "data.frame")
 
 })
 
-test_that("test erreur create_transects", {
+test_that("test erreur simulate_transects", {
   
   data(iris)
   
-  expect_error(object = create_transects(shape_obj = map,
+  expect_error(object = simulate_transects(shape_obj = map,
                                          design = "hoho",
                                          line.length = 400000,
                                          design.angle = 2,
                                          segmentize = TRUE,
                                          length_segs = 2000))
-  
-  expect_error(object = create_transects(shape_obj = iris,
+    
+  expect_error(object = simulate_transects(shape_obj = iris,
                                          design = "systematic",
                                          line.length = 400000))
   
-  expect_error(object = create_transects(shape_obj = map,
+  expect_error(object = simulate_transects(shape_obj = map,
                                          design = "systematic",
                                          line.length = "nop"))
   
-  expect_error(object = create_transects(shape_obj = map,
+  expect_error(object = simulate_transects(shape_obj = map,
                                          design = "systematic",
                                          line.length = 400000,
                                          design.angle = "haha"))
   
-  expect_error(object = create_transects(shape_obj = map,
+  expect_error(object = simulate_transects(shape_obj = map,
                                          design = "systematic",
                                          line.length = 400000,
                                          design.angle = 0,
