@@ -8,7 +8,7 @@
 This data contains the shape of the Courseulles study area
 }
 \author{
-Maud Quéroué \email{maud.queroue@gmail.com}
+Maud Queroue \email{maud.queroue@gmail.com}
 }
 \keyword{Courseulles}
 \keyword{data}

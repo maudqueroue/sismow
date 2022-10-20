@@ -15,7 +15,7 @@ fusen::fill_description(
     Title = "Simulated Survey Of Megafauna At Offshore Windfarms",
     Description = "Ce package contient de nombreuses fonctions permettant de simuler des données de suivis aérien. Ce package permet de simuler différentes abondance de population, différents échnatillonnages ainsi que de simuler différents méthodes de survols aériens.",
     `Authors@R` = c(
-      person("Maud", "Quéroué", email = "maud.queroue@gmail.com", role = c("aut", "cre"))
+      person("Maud", "Queroue", email = "maud.queroue@gmail.com", role = c("aut", "cre"))
     )
   ),
   overwrite = TRUE
@@ -63,7 +63,7 @@ usethis::use_github_action("test-coverage")
 gitlabr::use_gitlab_ci(type = "check-coverage-pkgdown")
 
 # Add new flat template
-fusen::add_flat_template("add")
+fusen::add_flat_template("minimal")
 
 # Data
 usethis::use_data_raw()

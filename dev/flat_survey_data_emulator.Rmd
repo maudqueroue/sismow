@@ -1,0 +1,462 @@
+---
+title: "flat_minimal.Rmd empty"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r development, include=FALSE}
+library(testthat)
+```
+
+<!--
+ You need to run the 'description' chunk in the '0-dev_history.Rmd' file before continuing your code there.
+-->
+
+## Detection function
+
+```{r function-create_obs}
+
+#' Detection function
+#'
+#' @param ind_obj dataframe. Individuals simulated with their coordinates.
+#' @param transect_obj sf dataframe. Transect/segments data.
+#' @param key character. Form of the detection function "hn" or "unif".
+#' @param esw numeric. Effective strip width (in m). This argument is needed only for the 'hn' form.
+#' @param g_zero numeric. The detection probability at distance 0. By default 1.
+#' @param truncation numeric. A single numeric value (in m) describing the longest distance at which an object may be observed. By default = NA.
+#' @param crs numeric. Projection system. By default = 2154.
+#'
+#' @importFrom dplyr mutate rename n
+#' @importFrom stats rbinom
+#' @importFrom units drop_units
+#' @importFrom sf st_as_sf st_nearest_feature st_distance st_drop_geometry
+#' @importFrom assertthat assert_that
+#'
+#' @return dataframe. The dist dataframe with new columns : "proba" (numeric values between 0 and 1), the probability of being detection and 'detected' (0 or 1)informing if the individual is detected by the sample design.
+#' @export
+
+
+create_obs <- function(ind_obj, transect_obj, key, esw = NA, g_zero = 1, truncation = NA, crs = 2154) {
+  
+  # Function checks
+  
+   assert_that(inherits(ind_obj, "data.frame"))
+  if (!all(c("x", "y") %in% names(ind_obj))) {stop("ind_obj must contain `x` and `y` coordinates columns. Verify your column names.")}
+  assert_that(is.numeric(g_zero))
+  assert_that(inherits(transect_obj, "sf"))
+  assert_that(is.numeric(crs))
+  if(!(key %in% c("unif", "hn"))){stop("Key argument must be `unif` or `hn`.")}
+  
+  # Function
+  
+  # Calculate distance between individuals and neerest transect/segment
+  
+  # obs point in sf format
+  dsf <- ind_obj %>%
+    select("x","y") %>%
+    st_as_sf(coords = c("x","y"), crs = crs)
+  
+  # Calculate the closest transect/segment
+  nearest_spee <- st_nearest_feature(x = dsf, y = transect_obj)
+  
+  # Calculate distance between point and transect
+  dist_obj <- st_distance(dsf, transect_obj[nearest_spee,], by_element = TRUE)
+  
+  transect_obj <- transect_obj %>%
+    st_drop_geometry()
+  
+  # summary table
+  dist_obj <- dist_obj %>%
+    as.data.frame() %>%
+    rename(distance = '.') %>%
+    mutate(seg_ID = transect_obj[nearest_spee,'seg_ID'],
+           size = ind_obj$size,
+           distance_km = distance / 1e3,
+           x = ind_obj$x,
+           y = ind_obj$y,
+           object_ID = 1:n()) %>%
+    drop_units()
+  
+  if(key == 'hn'){
+    
+    if(is.numeric(esw)==FALSE) {stop("With 'hn' key, esw must have a numeric value")}
+    
+    esw_km <- esw / 1000
+    sigma <- scale_hn(esw = esw_km)
+    dist_obj <- dist_obj %>%
+      mutate(proba = exp(-(distance_km)^2 / (2 * sigma * sigma))*g_zero) %>%
+      mutate(detected = rbinom(nrow(dist_obj), size = 1, prob = proba))
+    
+    if(is.na(truncation) == FALSE){
+      dist_obj$detected[dist_obj$distance > truncation] <- 0
+    }
+    
+  }
+  
+  if(key == 'unif'){
+    
+    if(is.numeric(truncation)==FALSE) {stop("With 'unif' key, truncation must have a numeric value")}
+
+    dist_obj <- dist_obj %>%
+      mutate(proba = g_zero) %>%
+      mutate(detected = rbinom(nrow(dist_obj), size = 1, prob = proba))
+    
+    dist_obj$detected[dist_obj$distance > truncation] <- 0
+    dist_obj$proba[dist_obj$distance > truncation] <- 0
+  }
+  
+  
+  dist_obj <- dist_obj %>%
+    select(object_ID, size, detected, proba, distance, seg_ID, x, y)
+  
+  return(dist_obj)
+  
+}
+```
+
+### Examples
+
+For this example, we used a `shape_obj` that is included in this package `shape_courseulles`. We create a map contaning 500 individuals with: 
+- (1) a gradient density. 
+- (2) a random density. 
+
+```{r examples-create_obs}
+
+library(ggplot2)
+data("shape_courseulles")
+
+# First, create a density map
+map <- create_density_map(shape_obj = shape_courseulles,
+                          N = 500,
+                          density_type = "gradient",
+                          gradient_direction = "N",
+                          wavelength = 20000,
+                          amplitude = 500
+                          
+)
+
+# Then simulate the presence of individuals in the study area 
+ind <- simulate_ind(map_obj = map)
+
+# Then create transects
+transects <- create_transects(shape_obj = map,
+                             design = "systematic",
+                             line.length = 400000,
+                             design.angle = 2,
+                             segmentize = TRUE,
+                             length_segs = 2000)
+
+# Finally, detection of individuals simulated on the map 
+# according to simulated densities and simulated transects :
+
+# ------------------------------
+# Example 1 : With a half normal detection probability equal to 1 at 0 distance (g_zero)
+# with a effective half width of 180 m.
+
+obs <- create_obs(ind_obj = ind,
+                 transect_obj = transects,
+                 key = "hn",
+                 g_zero = 1,
+                 esw = 180)
+
+# Plot detection probability
+ggplot(obs, aes(x=distance, y=proba)) +
+  geom_point(color = "#EE6C4D") +
+  xlim(0,500) 
+
+# Plot on map
+ggplot() +
+  geom_sf(data = map, fill = "#CDDAFD", color = "#CDDAFD") +
+  geom_sf(data = transects, color = "black") +
+  geom_point(data=obs[obs$detected==0,], aes(x=x, y=y), shape=20, color="#051923") +
+  geom_point(data=obs[obs$detected==1,], aes(x=x, y=y), shape=21, fill="#EE6C4D") +
+  labs(caption = paste("Sightings = ", sum(obs$detected), sep = " "))
+
+
+# ------------------------------
+# Example 2 : With a uniforme detection probability equal to 1 below distance 200 m.
+
+obs <- create_obs(ind_obj = ind,
+                 transect_obj = transects,
+                 key = "unif",
+                 g_zero = 1,
+                 truncation = 200)
+
+# Plot detection probability
+ggplot(obs, aes(x=distance, y=proba)) +
+  geom_point(color = "#EE6C4D") +
+  xlim(0,500) 
+
+# Plot on map
+ggplot() +
+  geom_sf(data = map, fill = "#CDDAFD", color = "#CDDAFD") +
+  geom_sf(data = transects, color = "black") +
+  geom_point(data=obs[obs$detected==0,], aes(x=x, y=y), shape=20, color="#051923") +
+  geom_point(data=obs[obs$detected==1,], aes(x=x, y=y), shape=21, fill="#EE6C4D") +
+  labs(caption = paste("Sightings = ", sum(obs$detected), sep = " "))
+
+```
+
+```{r tests-create_obs}
+library(testthat)
+library(dplyr)
+
+
+test_that("create_obs works", {
+  expect_true(inherits(create_obs, "function")) 
+})
+
+
+test_that("test conformite create_obs", {
+  
+  data("shape_courseulles")
+  
+  set.seed(2022)
+  
+  # First, create a density map
+  map <- create_density_map(shape_obj = shape_courseulles,
+                            N = 1000,
+                            density_type = "gradient",
+                            gradient_direction = "N",
+                            wavelength = 20000,
+                            amplitude = 500)
+  # Simulate ind
+  ind <- simulate_ind(map_obj = map)
+  
+  # Then create transects
+  transects <- create_transects(shape_obj = map,
+                               design = "systematic",
+                               line.length = 400000,
+                               design.angle = 2,
+                               segmentize = TRUE,
+                               length_segs = 2000)
+  
+  
+  
+  test_1 <- create_obs(ind_obj = ind,
+                      transect_obj = transects,
+                      key = "hn",
+                      g_zero = 1,
+                      esw = 180) %>%
+    slice(1:5)
+  
+  
+  test_2 <- create_obs(ind_obj = ind,
+                       transect_obj = transects,
+                       key = "unif",
+                       g_zero = 1,
+                       truncation = 200) %>%
+    slice(1:5)
+  
+  test_3 <- create_obs(ind_obj = ind,
+                       transect_obj = transects,
+                       key = "hn",
+                       g_zero = 0.8,
+                       esw = 180) %>%
+    slice(1:5)
+  
+  
+  test_4 <- create_obs(ind_obj = ind,
+                       transect_obj = transects,
+                       key = "unif",
+                       g_zero = 0.6,
+                       truncation = 300) %>%
+    slice(1:5)
+  
+  
+  exp_1 <- structure(list(object_ID = 1:5, size = c(1, 1, 1, 1, 1), detected = c(0L, 
+0L, 0L, 0L, 0L), proba = c(1.85303850324837e-20, 1.094571120915e-56, 
+6.89602678224973e-69, 2.94160921470329e-113, 8.3114181204342e-62
+), distance = c(1369.0592183218, 2305.56406914338, 2544.51293629123, 
+3269.43192253455, 2408.7186646873), seg_ID = c("6-15", "5-10", 
+"7-15", "3-8", "12-16"), x = c(431775.072857303, 420574.950567477, 
+434997.642150412, 411643.817603619, 471141.824978667), y = c(6953113.82923826, 
+6944770.46572502, 6950439.73189654, 6943461.32505072, 6946109.31119641
+)), row.names = c(NA, -5L), class = "data.frame")
+    
+  exp_2 <- structure(list(object_ID = 1:5, size = c(1, 1, 1, 1, 1), detected = c(0, 
+0, 0, 0, 0), proba = c(0, 0, 0, 0, 0), distance = c(1369.0592183218, 
+2305.56406914338, 2544.51293629123, 3269.43192253455, 2408.7186646873
+), seg_ID = c("6-15", "5-10", "7-15", "3-8", "12-16"), x = c(431775.072857303, 
+420574.950567477, 434997.642150412, 411643.817603619, 471141.824978667
+), y = c(6953113.82923826, 6944770.46572502, 6950439.73189654, 
+6943461.32505072, 6946109.31119641)), row.names = c(NA, -5L), class = "data.frame")
+    
+  exp_3 <- structure(list(object_ID = 1:5, size = c(1, 1, 1, 1, 1), detected = c(0L, 
+0L, 0L, 0L, 0L), proba = c(1.4824308025987e-20, 8.75656896732001e-57, 
+5.51682142579978e-69, 2.35328737176263e-113, 6.64913449634736e-62
+), distance = c(1369.0592183218, 2305.56406914338, 2544.51293629123, 
+3269.43192253455, 2408.7186646873), seg_ID = c("6-15", "5-10", 
+"7-15", "3-8", "12-16"), x = c(431775.072857303, 420574.950567477, 
+434997.642150412, 411643.817603619, 471141.824978667), y = c(6953113.82923826, 
+6944770.46572502, 6950439.73189654, 6943461.32505072, 6946109.31119641
+)), row.names = c(NA, -5L), class = "data.frame")
+    
+  exp_4 <- structure(list(object_ID = 1:5, size = c(1, 1, 1, 1, 1), detected = c(0, 
+0, 0, 0, 0), proba = c(0, 0, 0, 0, 0), distance = c(1369.0592183218, 
+2305.56406914338, 2544.51293629123, 3269.43192253455, 2408.7186646873
+), seg_ID = c("6-15", "5-10", "7-15", "3-8", "12-16"), x = c(431775.072857303, 
+420574.950567477, 434997.642150412, 411643.817603619, 471141.824978667
+), y = c(6953113.82923826, 6944770.46572502, 6950439.73189654, 
+6943461.32505072, 6946109.31119641)), row.names = c(NA, -5L), class = "data.frame")
+    
+    
+expect_equal(object = test_1,
+             expected = exp_1)
+
+expect_equal(object = test_2,
+             expected = exp_2)
+
+expect_equal(object = test_3,
+             expected = exp_3)
+
+expect_equal(object = test_4,
+             expected = exp_4)
+
+expect_is(test_1, "data.frame")
+expect_is(test_2, "data.frame")
+expect_is(test_3, "data.frame")
+expect_is(test_4, "data.frame")
+
+})
+
+test_that("test erreur detection", {
+  
+
+
+  expect_error(object = create_obs(ind_obj = c(1,1,2),
+                       transect_obj = transects,
+                       key = "hn",
+                       g_zero = 1,
+                       esw = 180))
+  
+  expect_error(object = create_obs(ind_obj = ind,
+                       transect_obj = c(1,1,2),
+                       key = "hn",
+                       g_zero = 1,
+                       esw = 180))
+  
+  expect_error(object = create_obs(ind_obj = ind,
+                       transect_obj = transects,
+                       key = "hn",
+                       esw = '180'))
+  
+  expect_error(object = create_obs(ind_obj = ind,
+                       transect_obj = transects,
+                       key = "unif",
+                       g_zero = 1,
+                       truncation = '180'))
+  
+})
+```
+
+```{r function-esw_hn}
+
+#' esw_hn
+#'
+#' @param sigma numeric. Sigma of half normal function.
+#'
+#' @importFrom stats pnorm dnorm
+#' @importFrom assertthat assert_that
+#'
+#' @return numeric. esw value associated to the sigma given.
+#' @keywords internal
+#' @export
+
+esw_hn <- function(sigma){
+  
+  assert_that(is.numeric(sigma))
+  
+  esw <- (pnorm(+Inf, 0, sigma) - 0.5) / dnorm(0, 0, sigma)
+  return(esw)
+  
+  }
+
+```
+
+```{r tests-scale_hn}
+library(testthat)
+
+test_that("scale_hn works", {
+  expect_true(inherits(scale_hn, "function")) 
+})
+
+
+test_that("test conformite scale_hn", {
+  
+  expect_equal(round(scale_hn(esw = 0.16), digits=3),
+               expected = 0.128)
+  
+  expect_is(scale_hn(esw = 0.16), "numeric")
+  
+})
+
+test_that("test erreur scale_hn", {
+  
+  expect_error(object = scale_hn(esw = "haha"))
+  
+})
+```
+
+```{r function-scale_hn}
+
+#' Scale hn
+#'
+#' @param esw numeric. Effective strip width.
+#' @param lower numeric. Lower range of search.
+#' @param upper numeric. Upper range of search.
+#'
+#' @importFrom stats uniroot
+#' @importFrom assertthat assert_that
+#'
+#' @return numeric. The sigma parameter of a half normal function associated with a esw value.
+#' @keywords internal
+#' @export
+
+
+scale_hn <- function(esw, lower = 1e-3, upper = 5) {
+  
+  assert_that(is.numeric(esw))
+  res <- as.numeric(uniroot(function(x, ...) {esw_hn(sigma = x) - esw},
+                            lower = lower,
+                            upper = upper,
+                            tol = 1e-8)[1])
+  return(res)
+}
+
+```
+
+```{r tests-esw_hn}
+library(testthat)
+
+test_that("esw_hn works", {
+  expect_true(inherits(esw_hn, "function")) 
+})
+
+
+test_that("test conformite esw_hn", {
+  
+  expect_equal(round(esw_hn(sigma = 0.3), digits = 3),
+               expected = 0.376)
+  
+  expect_is(esw_hn(sigma = 0.3), "numeric")
+  
+})
+
+test_that("test erreur esw_hn", {
+  
+  expect_error(object = esw_hn(sigma = "haha"))
+  
+})
+```
+
+```{r development-inflate, eval=FALSE}
+# Run but keep eval=FALSE to avoid infinite loop
+# Execute in the console gradient_directionectly
+fusen::inflate(flat_file = "dev/flat_survey_data_emulator.Rmd", 
+               vignette_name = "Survey Data Emulator",
+               open_vignette = FALSE,
+               check = FALSE,
+               overwrite = TRUE)
+```

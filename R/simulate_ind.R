@@ -3,7 +3,8 @@
 
 #' Simulate individuals with a inhomogenous Poisson point process
 #'
-#' @param map_obj Dataframe. Sf map with a colum containg density informations density_m
+#' @param map_obj sf dataframe. Sf map with a colum containg density informations
+#' @param crs numeric. Projection system. By default = 2154. 
 #'
 #' @importFrom glue glue
 #' @importFrom assertthat assert_that
@@ -15,40 +16,42 @@
 #' @return Dataframe. Les localisations des individus.
 #' @export
 
+
+
 #' @examples
 #' 
 #' library(ggplot2)
 #' data("shape_courseulles")
 #' 
 #' # First, create a map with a gradient density from the North with 500 individuals in the area
-#' map_obj <- create_density_map(shape_obj = shape_courseulles,
+#' map <- create_density_map(shape_obj = shape_courseulles,
 #'                               N = 200,
 #'                               grid_size = 1000,
 #'                               density_type = "gradient",
 #'                               gradient_direction = "N",
-#'                               wavelength = 30000,
-#'                               amplitude = 70
+#'                               wavelength = 20000,
+#'                               amplitude = 500
 #'                               
 #' )
 #' 
 #' 
-#' # Then simulate the presence of individuals in the study area with a inhomogenous Poisson point process
-#' obs_obj <- simulate_ind(map_obj = map_obj)
+#' # Then simulate the presence of individuals in the study area 
+#' ind <- simulate_ind(map_obj = map)
 #' 
 #' 
-#' # Plot results
+#' # Plot
 #' ggplot() +
-#'     geom_sf(data = map_obj, aes(fill = density)) +
-#'     geom_point(data = obs_obj, aes(x = x, y = y))
+#'     geom_sf(data = map, aes(fill = density)) +
+#'     geom_point(data = ind, aes(x = x, y = y))
 #'   
-simulate_ind <- function(map_obj) {
+simulate_ind <- function(map_obj, crs = 2154) {
   
   # Function checks
-  
-  
   assert_that(inherits(map_obj, "sf"))
   if (!all(c("density") %in% names(map_obj))) {stop("map_obj must contain `density` column. Verify your column names.")}
   assert_that(is.numeric(map_obj$density))
+  assert_that(is.numeric(crs))
+
   
   
   # Function 
@@ -65,7 +68,7 @@ simulate_ind <- function(map_obj) {
   
   # Convert in grid class
   coordinates(grid) <- ~ X + Y
-  proj4string(grid) <- CRS(st_crs(2154)$proj4string)
+  proj4string(grid) <- CRS(st_crs(crs)$proj4string)
   gridded(grid) <- TRUE
   X_grid <- maptools::as.im.SpatialGridDataFrame(grid)
   

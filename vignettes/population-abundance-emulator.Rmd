@@ -36,7 +36,9 @@ Then, the correct density ratios are calcultating according to the desired numbe
 
 ### Examples
 
-For this example, we used a `shape_obj` that is included in this package `shape_courseulles`. We create a map contaning 500 individuals with (1) a graidnet density and (2) a random density. 
+For this example, we used a `shape_obj` that is included in this package `shape_courseulles`. We create a map contaning 500 individuals with: 
+- (1) a gradient density. 
+- (2) a random density. 
 
 
 ```{r examples-create_density_map}
@@ -44,7 +46,8 @@ For this example, we used a `shape_obj` that is included in this package `shape_
 library(ggplot2)
 data("shape_courseulles")
 
-# Create a map with a gradient density from the North with 500 individuals in the area
+# ------------------------------
+# Example 1 : Create a map with a gradient density from the North with 500 individuals in the area
 
 map_obj <- create_density_map(shape_obj = shape_courseulles,
                               N = 500,
@@ -55,12 +58,13 @@ map_obj <- create_density_map(shape_obj = shape_courseulles,
                               
 )
 
-
+# Plot
 ggplot() +
   geom_sf(data = map_obj, aes(fill = density))
 
 
-# Create a map with a random density from the North with 500 individuals in the area
+# ------------------------------
+# Example 2 : Create a map with a random density from the North with 500 individuals in the area
 
 map_obj <- create_density_map(shape_obj = shape_courseulles,
                               N = 500,
@@ -71,11 +75,9 @@ map_obj <- create_density_map(shape_obj = shape_courseulles,
                               
 )
 
-
-# Plot results
+# Plot 
 ggplot() +
   geom_sf(data = map_obj, aes(fill = density))
-
 
 ```
 
@@ -97,25 +99,25 @@ library(ggplot2)
 data("shape_courseulles")
 
 # First, create a map with a gradient density from the North with 500 individuals in the area
-map_obj <- create_density_map(shape_obj = shape_courseulles,
+map <- create_density_map(shape_obj = shape_courseulles,
                               N = 200,
                               grid_size = 1000,
                               density_type = "gradient",
                               gradient_direction = "N",
-                              wavelength = 30000,
-                              amplitude = 70
+                              wavelength = 20000,
+                              amplitude = 500
                               
 )
 
 
-# Then simulate the presence of individuals in the study area with a inhomogenous Poisson point process
-obs_obj <- simulate_ind(map_obj = map_obj)
+# Then simulate the presence of individuals in the study area 
+ind <- simulate_ind(map_obj = map)
 
 
-# Plot results
+# Plot
 ggplot() +
-    geom_sf(data = map_obj, aes(fill = density)) +
-    geom_point(data = obs_obj, aes(x = x, y = y))
+    geom_sf(data = map, aes(fill = density)) +
+    geom_point(data = ind, aes(x = x, y = y))
   
 ```
 

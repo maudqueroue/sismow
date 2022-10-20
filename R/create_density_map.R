@@ -31,7 +31,8 @@
 #' library(ggplot2)
 #' data("shape_courseulles")
 #' 
-#' # Create a map with a gradient density from the North with 500 individuals in the area
+#' # ------------------------------
+#' # Example 1 : Create a map with a gradient density from the North with 500 individuals in the area
 #' 
 #' map_obj <- create_density_map(shape_obj = shape_courseulles,
 #'                               N = 500,
@@ -42,12 +43,13 @@
 #'                               
 #' )
 #' 
-#' 
+#' # Plot
 #' ggplot() +
 #'   geom_sf(data = map_obj, aes(fill = density))
 #' 
 #' 
-#' # Create a map with a random density from the North with 500 individuals in the area
+#' # ------------------------------
+#' # Example 2 : Create a map with a random density from the North with 500 individuals in the area
 #' 
 #' map_obj <- create_density_map(shape_obj = shape_courseulles,
 #'                               N = 500,
@@ -58,14 +60,16 @@
 #'                               
 #' )
 #' 
-#' 
-#' # Plot results
+#' # Plot 
 #' ggplot() +
 #'   geom_sf(data = map_obj, aes(fill = density))
 #' 
-#' 
 create_density_map <- function(shape_obj, N, grid_size = 1000, density_type, gradient_direction, wavelength, amplitude, nb_hotspots, crs = 2154) {
   
+  
+  # function checks
+  
+  # function
   shape_obj <- shape_obj %>%
     st_transform(crs = crs)
   

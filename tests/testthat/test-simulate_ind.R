@@ -4,52 +4,67 @@ library(testthat)
 library(dplyr)
 
 
-# test_that("simulate_ind works", {
-#   expect_true(inherits(simulate_ind, "function")) 
-# })
-# 
-# 
-# test_that("test conformite simulate_ind", {
-# 
-# data(dataset_map)
-#   
-# set.seed(2022)
-# 
-# test <- dataset_map %>%
-#   simulate_ind(crs = 2154) %>%
-#   slice(1:5)
-# 
-# exp <- structure(list(x = c(-158584.912826839, -141015.496673129, -158621.360360711,
-# -149192.202820974, -167924.465316414), y = c(6267512.74100274,
-# 6260473.11083696, 6254327.17926151, 6247672.87125581, 6253764.45961048
-# ), size = c(1, 1, 1, 1, 1)), class = "data.frame", row.names = c(NA,
-# -5L))
-# 
-# expect_equal(object = test,
-#              expected = exp)
-# 
-# expect_is(test, "data.frame")
-# 
-# })
-# 
-# test_that("test erreur simulate ind", {
-# 
-# data(iris)
-# 
-# expect_error(object = simulate_ind(iris, crs = 2154))
-# 
-# data("dataset_map")
-# 
-# dataset_map_test <- dataset_map %>%
-#   rename(nop = density_m)
-# 
-# expect_error(object = simulate_ind(dataset_map_test, crs=2154))
-# 
-# dataset_map_test <- dataset_map
-# dataset_map_test$density_m[5] <- "nop"
-# 
-# expect_error(object = simulate_ind(dataset_map_test, crs=2154))
-# 
-# 
-# })
+test_that("simulate_ind works", {
+  expect_true(inherits(simulate_ind, "function")) 
+})
+
+
+test_that("test conformite simulate_ind", {
+  
+  data("shape_courseulles")
+  
+  set.seed(2022)
+  
+  # First, create a density map
+  map <- create_density_map(shape_obj = shape_courseulles,
+                            N = 1000,
+                            density_type = "gradient",
+                            gradient_direction = "N",
+                            wavelength = 20000,
+                            amplitude = 500)
+  
+  test <- simulate_ind(map_obj = map) %>%
+                 slice(1:5)
+
+exp <- structure(list(x = c(431775.072857303, 420574.950567477, 434997.642150412, 
+411643.817603619, 471141.824978667), y = c(6953113.82923826, 
+6944770.46572502, 6950439.73189654, 6943461.32505072, 6946109.31119641
+), size = c(1, 1, 1, 1, 1)), class = "data.frame", row.names = c(NA, 
+-5L))
+
+  expect_equal(object = test,
+               expected = exp)
+
+  expect_is(test, "data.frame")
+
+})
+
+test_that("test erreur simulate ind", {
+  
+  data(iris)
+  
+  expect_error(object = simulate_ind(map_obj = iris))
+  
+  # First, create a density map
+  map <- create_density_map(shape_obj = shape_courseulles,
+                            N = 1000,
+                            density_type = "gradient",
+                            gradient_direction = "N",
+                            wavelength = 20000,
+                            amplitude = 500)
+  
+  map_test <- map %>%
+    rename(nop = density)
+  
+  expect_error(object = simulate_ind(map_obj = map_test))
+  
+  map_test <- map
+  map_test$density[5] <- "nop"
+  
+  expect_error(object = simulate_ind(map_obj = map_test))
+  
+  expect_error(object = simulate_ind(map_obj = map,
+                                     crs = "nop"))
+  
+})
 

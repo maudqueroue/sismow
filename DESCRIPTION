@@ -2,7 +2,7 @@ Package: sismow
 Title: Simulated Survey Of Megafauna At Offshore Windfarms
 Version: 0.0.0.9000
 Authors@R: 
-    person("Maud", "Quéroué", , "maud.queroue@gmail.com", role = c("aut", "cre"))
+    person("Maud", "Queroue", , "maud.queroue@gmail.com", role = c("aut", "cre"))
 Description: Ce package contient de nombreuses fonctions permettant de
     simuler des données de suivis aérien. Ce package permet de simuler
     différentes abondance de population, différents échnatillonnages ainsi

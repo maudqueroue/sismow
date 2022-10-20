@@ -46,7 +46,8 @@ Create a map with the desired density of individuals
 library(ggplot2)
 data("shape_courseulles")
 
-# Create a map with a gradient density from the North with 500 individuals in the area
+# ------------------------------
+# Example 1 : Create a map with a gradient density from the North with 500 individuals in the area
 
 map_obj <- create_density_map(shape_obj = shape_courseulles,
                               N = 500,
@@ -57,12 +58,13 @@ map_obj <- create_density_map(shape_obj = shape_courseulles,
                               
 )
 
-
+# Plot
 ggplot() +
   geom_sf(data = map_obj, aes(fill = density))
 
 
-# Create a map with a random density from the North with 500 individuals in the area
+# ------------------------------
+# Example 2 : Create a map with a random density from the North with 500 individuals in the area
 
 map_obj <- create_density_map(shape_obj = shape_courseulles,
                               N = 500,
@@ -73,10 +75,8 @@ map_obj <- create_density_map(shape_obj = shape_courseulles,
                               
 )
 
-
-# Plot results
+# Plot 
 ggplot() +
   geom_sf(data = map_obj, aes(fill = density))
-
 
 }
