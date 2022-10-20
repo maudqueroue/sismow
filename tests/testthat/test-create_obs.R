@@ -26,7 +26,7 @@ test_that("test conformite create_obs", {
   ind <- simulate_ind(map_obj = map)
   
   # Then create transects
-  transects <- create_transect(shape_obj = map,
+  transects <- create_transects(shape_obj = map,
                                design = "systematic",
                                line.length = 400000,
                                design.angle = 2,
@@ -122,7 +122,7 @@ expect_is(test_4, "data.frame")
 
 })
 
-test_that("test erreur detection", {
+test_that("test erreur create_obs", {
   
 
 

@@ -40,7 +40,7 @@
 #' ind <- simulate_ind(map_obj = map)
 #' 
 #' # Then create transects
-#' transects <- create_transect(shape_obj = map,
+#' transects <- create_transects(shape_obj = map,
 #'                              design = "systematic",
 #'                              line.length = 400000,
 #'                              design.angle = 2,

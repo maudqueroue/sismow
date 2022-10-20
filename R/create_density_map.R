@@ -34,7 +34,7 @@
 #' # ------------------------------
 #' # Example 1 : Create a map with a gradient density from the North with 500 individuals in the area
 #' 
-#' map_obj <- create_density_map(shape_obj = shape_courseulles,
+#' map <- create_density_map(shape_obj = shape_courseulles,
 #'                               N = 500,
 #'                               density_type = "gradient",
 #'                               gradient_direction = "N",
@@ -45,13 +45,13 @@
 #' 
 #' # Plot
 #' ggplot() +
-#'   geom_sf(data = map_obj, aes(fill = density))
+#'   geom_sf(data = map, aes(fill = density))
 #' 
 #' 
 #' # ------------------------------
 #' # Example 2 : Create a map with a random density from the North with 500 individuals in the area
 #' 
-#' map_obj <- create_density_map(shape_obj = shape_courseulles,
+#' map <- create_density_map(shape_obj = shape_courseulles,
 #'                               N = 500,
 #'                               density_type = "random",
 #'                               wavelength = 10000,
@@ -62,13 +62,18 @@
 #' 
 #' # Plot 
 #' ggplot() +
-#'   geom_sf(data = map_obj, aes(fill = density))
+#'   geom_sf(data = map, aes(fill = density))
 #' 
 create_density_map <- function(shape_obj, N, grid_size = 1000, density_type, gradient_direction, wavelength, amplitude, nb_hotspots, crs = 2154) {
   
   
   # function checks
-  
+  assert_that(inherits(shape_obj, "sf"))
+  assert_that(is.numeric(N))
+  assert_that(is.numeric(grid_size))
+  assert_that(is.numeric(crs))
+  if(!(density_type %in% c("random","gradient","uniform"))){stop("Density_type argument must be 'random', 'gradient', or 'uniform'.")}
+
   # function
   shape_obj <- shape_obj %>%
     st_transform(crs = crs)
@@ -92,6 +97,11 @@ create_density_map <- function(shape_obj, N, grid_size = 1000, density_type, gra
   
   
   if(density_type == "gradient"){
+    
+    if(!(gradient_direction %in% c("N", "NE","E","SE","S","SW","W","NW","C"))){stop("Gradient_direction argument must be 'N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW' or 'C'.")}
+    assert_that(is.numeric(amplitude))
+    assert_that(is.numeric(wavelength))
+
     
     if(gradient_direction == "N") {          
       x <- mean(xlim)  
@@ -151,6 +161,11 @@ create_density_map <- function(shape_obj, N, grid_size = 1000, density_type, gra
   
 
     if(density_type == "random"){
+
+    assert_that(is.numeric(amplitude))
+    assert_that(is.numeric(wavelength))
+    assert_that(is.numeric(nb_hotspots))
+    
       
           density_obj <- make.density(region = region_obj,
                                 x.space = grid_size,
@@ -190,13 +205,13 @@ create_density_map <- function(shape_obj, N, grid_size = 1000, density_type, gra
       
 
     
-  if(density_type == "covariate") {
-    
-    density_obj <- make.density(region = region_obj,
-                                x.space = grid_size,
-                                y.space = grid_size,
-                                constant = 1)
-  }
+  # if(density_type == "covariate") {
+  #   
+  #   density_obj <- make.density(region = region_obj,
+  #                               x.space = grid_size,
+  #                               y.space = grid_size,
+  #                               constant = 1)
+  # }
   
   
   map_obj <- density_obj@density.surface %>%

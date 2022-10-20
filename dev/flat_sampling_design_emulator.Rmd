@@ -21,7 +21,7 @@ library(testthat)
 #' Create transect
 #'
 #' @param shape_obj sf object. The shape of the study site.
-#' @param design character. Variable describing the type of design. Either "random", "systematic", "eszigzag" (equal-spaced zigzag), "eszigzagcom" (equal spaced zigzag with complementary lines) or "segmentedgrid". See dssd package for more information.
+#' @param design character. Variable describing the type of design. Either "random", "systematic", "eszigzag" (equal-spaced zigzag), "eszigzagcom" (equal spaced zigzag with complementary lines). See dssd package for more information.
 #' @param design.angle numeric. Value detailing the angle of the design. A value of -1 will cause a random design angle to be generated. See dssd package for more information. Bydefault = 0.
 #' @param line.length numeric. The approximative total line length desired (in m).
 #' @param segmentize boolean. TRUE = transects are segmentized and a seg_ID is given to each segment. FALSE = transects are not segmentized. By default = FALSE.
@@ -43,9 +43,10 @@ create_transects <- function(shape_obj, design = "systematic", design.angle = 0,
   # Function checks
   assert_that(inherits(shape_obj, "sf"))
   assert_that(is.numeric(crs))
-  assert_that(is.character(design))
   assert_that(is.numeric(line.length))
   assert_that(is.numeric(design.angle))
+    if(!(design %in% c("random","systematic","eszigzag","eszigzagcom"))){stop("Design argument must be 'random', 'systematic', 'eszigzag' or 'eszigzagcom'.")}
+
 
   # Function
   shape_obj <- shape_obj %>%
@@ -311,7 +312,7 @@ test_that("test erreur create_transects", {
                                          design.angle = 2,
                                          segmentize = TRUE,
                                          length_segs = 2000))
-  
+    
   expect_error(object = create_transects(shape_obj = iris,
                                          design = "systematic",
                                          line.length = 400000))

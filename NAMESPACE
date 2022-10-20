@@ -3,7 +3,6 @@
 export("%>%")
 export(create_density_map)
 export(create_obs)
-export(create_transect)
 export(create_transects)
 export(esw_hn)
 export(scale_hn)

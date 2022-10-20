@@ -321,7 +321,7 @@ expect_is(test_4, "data.frame")
 
 })
 
-test_that("test erreur detection", {
+test_that("test erreur create_obs", {
   
 
 
