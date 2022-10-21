@@ -30,10 +30,10 @@ map <- simulate_density(shape_obj = shape_courseulles,
                               density_type = "gradient",
                               gradient_direction = "N",
                               wavelength = 20000,
-                              amplitude = 20)
+                              amplitude = 100)
 
 # Then simulate the presence of individuals in the study area 
-ind <- simulate_ind(map_obj = map, N = 500)
+ind <- simulate_ind(map_obj = map, N = 200)
 
 # Plot
 ggplot() +

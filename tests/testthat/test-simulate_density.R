@@ -39,102 +39,90 @@ test_that("test conformite simulate_density", {
     slice(1:5)
   
   
-  exp_1 <- structure(list(x = c(462699.599999965, 463699.599999965, 464699.599999965, 
-465699.599999965, 466699.599999965), y = c(6915658.74575047, 
-6915658.74575047, 6915658.74575047, 6915658.74575047, 6915658.74575047
-), density = c(1.06893079882588, 1.05714563936609, 1.04725710843882, 
-1.03898212024591, 1.03207583958285), area = c(1e+06, 1e+06, 1e+06, 
-1e+06, 1e+06), geometry = structure(list(structure(list(structure(c(462199.599999965, 
-462199.599999965, 463199.599999965, 463199.599999965, 462199.599999965, 
-6915158.74575047, 6916158.74575047, 6916158.74575047, 6915158.74575047, 
-6915158.74575047), .Dim = c(5L, 2L))), class = c("XY", "POLYGON", 
-"sfg")), structure(list(structure(c(463199.599999965, 463199.599999965, 
-464199.599999965, 464199.599999965, 463199.599999965, 6915158.74575047, 
-6916158.74575047, 6916158.74575047, 6915158.74575047, 6915158.74575047
-), .Dim = c(5L, 2L))), class = c("XY", "POLYGON", "sfg")), structure(list(
-    structure(c(464199.599999965, 464199.599999965, 465199.599999965, 
-    465199.599999965, 464199.599999965, 6915158.74575047, 6916158.74575047, 
-    6916158.74575047, 6915158.74575047, 6915158.74575047), .Dim = c(5L, 
-    2L))), class = c("XY", "POLYGON", "sfg")), structure(list(
-    structure(c(465199.599999965, 465199.599999965, 466199.599999965, 
-    466199.599999965, 465199.599999965, 6915158.74575047, 6916158.74575047, 
-    6916158.74575047, 6915158.74575047, 6915158.74575047), .Dim = c(5L, 
-    2L))), class = c("XY", "POLYGON", "sfg")), structure(list(
-    structure(c(466199.599999965, 466199.599999965, 467199.599999965, 
-    467199.599999965, 466199.599999965, 6915158.74575047, 6916158.74575047, 
-    6916158.74575047, 6915158.74575047, 6915158.74575047), .Dim = c(5L, 
-    2L))), class = c("XY", "POLYGON", "sfg"))), class = c("sfc_POLYGON", 
+  exp_1 <- structure(list(density = c(1.06893079882588, 1.05714563936609, 
+1.04725710843882, 1.03898212024591, 1.03207583958285), geometry = structure(list(
+    structure(list(structure(c(462199.599999965, 462199.599999965, 
+    463199.599999965, 463199.599999965, 462199.599999965, 6915158.74575047, 
+    6916158.74575047, 6916158.74575047, 6915158.74575047, 6915158.74575047
+    ), .Dim = c(5L, 2L))), class = c("XY", "POLYGON", "sfg")), 
+    structure(list(structure(c(463199.599999965, 463199.599999965, 
+    464199.599999965, 464199.599999965, 463199.599999965, 6915158.74575047, 
+    6916158.74575047, 6916158.74575047, 6915158.74575047, 6915158.74575047
+    ), .Dim = c(5L, 2L))), class = c("XY", "POLYGON", "sfg")), 
+    structure(list(structure(c(464199.599999965, 464199.599999965, 
+    465199.599999965, 465199.599999965, 464199.599999965, 6915158.74575047, 
+    6916158.74575047, 6916158.74575047, 6915158.74575047, 6915158.74575047
+    ), .Dim = c(5L, 2L))), class = c("XY", "POLYGON", "sfg")), 
+    structure(list(structure(c(465199.599999965, 465199.599999965, 
+    466199.599999965, 466199.599999965, 465199.599999965, 6915158.74575047, 
+    6916158.74575047, 6916158.74575047, 6915158.74575047, 6915158.74575047
+    ), .Dim = c(5L, 2L))), class = c("XY", "POLYGON", "sfg")), 
+    structure(list(structure(c(466199.599999965, 466199.599999965, 
+    467199.599999965, 467199.599999965, 466199.599999965, 6915158.74575047, 
+    6916158.74575047, 6916158.74575047, 6915158.74575047, 6915158.74575047
+    ), .Dim = c(5L, 2L))), class = c("XY", "POLYGON", "sfg"))), class = c("sfc_POLYGON", 
 "sfc"), precision = 0, bbox = structure(c(xmin = 462199.599999965, 
 ymin = 6915158.74575047, xmax = 467199.599999965, ymax = 6916158.74575047
 ), class = "bbox"), crs = structure(list(input = "EPSG:2154", 
     wkt = "PROJCRS[\"RGF93 / Lambert-93\",\n    BASEGEOGCRS[\"RGF93\",\n        DATUM[\"Reseau Geodesique Francais 1993\",\n            ELLIPSOID[\"GRS 1980\",6378137,298.257222101,\n                LENGTHUNIT[\"metre\",1]]],\n        PRIMEM[\"Greenwich\",0,\n            ANGLEUNIT[\"degree\",0.0174532925199433]],\n        ID[\"EPSG\",4171]],\n    CONVERSION[\"Lambert-93\",\n        METHOD[\"Lambert Conic Conformal (2SP)\",\n            ID[\"EPSG\",9802]],\n        PARAMETER[\"Latitude of false origin\",46.5,\n            ANGLEUNIT[\"degree\",0.0174532925199433],\n            ID[\"EPSG\",8821]],\n        PARAMETER[\"Longitude of false origin\",3,\n            ANGLEUNIT[\"degree\",0.0174532925199433],\n            ID[\"EPSG\",8822]],\n        PARAMETER[\"Latitude of 1st standard parallel\",49,\n            ANGLEUNIT[\"degree\",0.0174532925199433],\n            ID[\"EPSG\",8823]],\n        PARAMETER[\"Latitude of 2nd standard parallel\",44,\n            ANGLEUNIT[\"degree\",0.0174532925199433],\n            ID[\"EPSG\",8824]],\n        PARAMETER[\"Easting at false origin\",700000,\n            LENGTHUNIT[\"metre\",1],\n            ID[\"EPSG\",8826]],\n        PARAMETER[\"Northing at false origin\",6600000,\n            LENGTHUNIT[\"metre\",1],\n            ID[\"EPSG\",8827]]],\n    CS[Cartesian,2],\n        AXIS[\"easting (X)\",east,\n            ORDER[1],\n            LENGTHUNIT[\"metre\",1]],\n        AXIS[\"northing (Y)\",north,\n            ORDER[2],\n            LENGTHUNIT[\"metre\",1]],\n    USAGE[\n        SCOPE[\"unknown\"],\n        AREA[\"France\"],\n        BBOX[41.15,-9.86,51.56,10.38]],\n    ID[\"EPSG\",2154]]"), class = "crs"), n_empty = 0L)), row.names = c(NA, 
--5L), class = c("sf", "data.frame"), sf_column = "geometry", agr = structure(c(x = NA_integer_, 
-y = NA_integer_, density = NA_integer_, area = NA_integer_), class = "factor", .Label = c("constant", 
+-5L), class = c("sf", "data.frame"), sf_column = "geometry", agr = structure(c(density = NA_integer_), class = "factor", .Label = c("constant", 
 "aggregate", "identity")))
     
-  exp_2 <- structure(list(x = c(462699.599999965, 463699.599999965, 464699.599999965, 
-465699.599999965, 466699.599999965), y = c(6915658.74575047, 
-6915658.74575047, 6915658.74575047, 6915658.74575047, 6915658.74575047
-), density = c(2.35446082022629, 2.3832927533325, 2.39117051553099, 
-2.37776579546915, 2.34373415502516), area = c(1e+06, 1e+06, 1e+06, 
-1e+06, 1e+06), geometry = structure(list(structure(list(structure(c(462199.599999965, 
-462199.599999965, 463199.599999965, 463199.599999965, 462199.599999965, 
-6915158.74575047, 6916158.74575047, 6916158.74575047, 6915158.74575047, 
-6915158.74575047), .Dim = c(5L, 2L))), class = c("XY", "POLYGON", 
-"sfg")), structure(list(structure(c(463199.599999965, 463199.599999965, 
-464199.599999965, 464199.599999965, 463199.599999965, 6915158.74575047, 
-6916158.74575047, 6916158.74575047, 6915158.74575047, 6915158.74575047
-), .Dim = c(5L, 2L))), class = c("XY", "POLYGON", "sfg")), structure(list(
-    structure(c(464199.599999965, 464199.599999965, 465199.599999965, 
-    465199.599999965, 464199.599999965, 6915158.74575047, 6916158.74575047, 
-    6916158.74575047, 6915158.74575047, 6915158.74575047), .Dim = c(5L, 
-    2L))), class = c("XY", "POLYGON", "sfg")), structure(list(
-    structure(c(465199.599999965, 465199.599999965, 466199.599999965, 
-    466199.599999965, 465199.599999965, 6915158.74575047, 6916158.74575047, 
-    6916158.74575047, 6915158.74575047, 6915158.74575047), .Dim = c(5L, 
-    2L))), class = c("XY", "POLYGON", "sfg")), structure(list(
-    structure(c(466199.599999965, 466199.599999965, 467199.599999965, 
-    467199.599999965, 466199.599999965, 6915158.74575047, 6916158.74575047, 
-    6916158.74575047, 6915158.74575047, 6915158.74575047), .Dim = c(5L, 
-    2L))), class = c("XY", "POLYGON", "sfg"))), class = c("sfc_POLYGON", 
+  exp_2 <- structure(list(density = c(2.35446082022629, 2.3832927533325, 
+2.39117051553099, 2.37776579546915, 2.34373415502516), geometry = structure(list(
+    structure(list(structure(c(462199.599999965, 462199.599999965, 
+    463199.599999965, 463199.599999965, 462199.599999965, 6915158.74575047, 
+    6916158.74575047, 6916158.74575047, 6915158.74575047, 6915158.74575047
+    ), .Dim = c(5L, 2L))), class = c("XY", "POLYGON", "sfg")), 
+    structure(list(structure(c(463199.599999965, 463199.599999965, 
+    464199.599999965, 464199.599999965, 463199.599999965, 6915158.74575047, 
+    6916158.74575047, 6916158.74575047, 6915158.74575047, 6915158.74575047
+    ), .Dim = c(5L, 2L))), class = c("XY", "POLYGON", "sfg")), 
+    structure(list(structure(c(464199.599999965, 464199.599999965, 
+    465199.599999965, 465199.599999965, 464199.599999965, 6915158.74575047, 
+    6916158.74575047, 6916158.74575047, 6915158.74575047, 6915158.74575047
+    ), .Dim = c(5L, 2L))), class = c("XY", "POLYGON", "sfg")), 
+    structure(list(structure(c(465199.599999965, 465199.599999965, 
+    466199.599999965, 466199.599999965, 465199.599999965, 6915158.74575047, 
+    6916158.74575047, 6916158.74575047, 6915158.74575047, 6915158.74575047
+    ), .Dim = c(5L, 2L))), class = c("XY", "POLYGON", "sfg")), 
+    structure(list(structure(c(466199.599999965, 466199.599999965, 
+    467199.599999965, 467199.599999965, 466199.599999965, 6915158.74575047, 
+    6916158.74575047, 6916158.74575047, 6915158.74575047, 6915158.74575047
+    ), .Dim = c(5L, 2L))), class = c("XY", "POLYGON", "sfg"))), class = c("sfc_POLYGON", 
 "sfc"), precision = 0, bbox = structure(c(xmin = 462199.599999965, 
 ymin = 6915158.74575047, xmax = 467199.599999965, ymax = 6916158.74575047
 ), class = "bbox"), crs = structure(list(input = "EPSG:2154", 
     wkt = "PROJCRS[\"RGF93 / Lambert-93\",\n    BASEGEOGCRS[\"RGF93\",\n        DATUM[\"Reseau Geodesique Francais 1993\",\n            ELLIPSOID[\"GRS 1980\",6378137,298.257222101,\n                LENGTHUNIT[\"metre\",1]]],\n        PRIMEM[\"Greenwich\",0,\n            ANGLEUNIT[\"degree\",0.0174532925199433]],\n        ID[\"EPSG\",4171]],\n    CONVERSION[\"Lambert-93\",\n        METHOD[\"Lambert Conic Conformal (2SP)\",\n            ID[\"EPSG\",9802]],\n        PARAMETER[\"Latitude of false origin\",46.5,\n            ANGLEUNIT[\"degree\",0.0174532925199433],\n            ID[\"EPSG\",8821]],\n        PARAMETER[\"Longitude of false origin\",3,\n            ANGLEUNIT[\"degree\",0.0174532925199433],\n            ID[\"EPSG\",8822]],\n        PARAMETER[\"Latitude of 1st standard parallel\",49,\n            ANGLEUNIT[\"degree\",0.0174532925199433],\n            ID[\"EPSG\",8823]],\n        PARAMETER[\"Latitude of 2nd standard parallel\",44,\n            ANGLEUNIT[\"degree\",0.0174532925199433],\n            ID[\"EPSG\",8824]],\n        PARAMETER[\"Easting at false origin\",700000,\n            LENGTHUNIT[\"metre\",1],\n            ID[\"EPSG\",8826]],\n        PARAMETER[\"Northing at false origin\",6600000,\n            LENGTHUNIT[\"metre\",1],\n            ID[\"EPSG\",8827]]],\n    CS[Cartesian,2],\n        AXIS[\"easting (X)\",east,\n            ORDER[1],\n            LENGTHUNIT[\"metre\",1]],\n        AXIS[\"northing (Y)\",north,\n            ORDER[2],\n            LENGTHUNIT[\"metre\",1]],\n    USAGE[\n        SCOPE[\"unknown\"],\n        AREA[\"France\"],\n        BBOX[41.15,-9.86,51.56,10.38]],\n    ID[\"EPSG\",2154]]"), class = "crs"), n_empty = 0L)), row.names = c(NA, 
--5L), class = c("sf", "data.frame"), sf_column = "geometry", agr = structure(c(x = NA_integer_, 
-y = NA_integer_, density = NA_integer_, area = NA_integer_), class = "factor", .Label = c("constant", 
+-5L), class = c("sf", "data.frame"), sf_column = "geometry", agr = structure(c(density = NA_integer_), class = "factor", .Label = c("constant", 
 "aggregate", "identity")))
     
-  exp_3 <- structure(list(x = c(462699.599999965, 463699.599999965, 464699.599999965, 
-465699.599999965, 466699.599999965), y = c(6915658.74575047, 
-6915658.74575047, 6915658.74575047, 6915658.74575047, 6915658.74575047
-), density = c(1, 1, 1, 1, 1), area = c(1e+06, 1e+06, 1e+06, 
-1e+06, 1e+06), geometry = structure(list(structure(list(structure(c(462199.599999965, 
-462199.599999965, 463199.599999965, 463199.599999965, 462199.599999965, 
-6915158.74575047, 6916158.74575047, 6916158.74575047, 6915158.74575047, 
-6915158.74575047), .Dim = c(5L, 2L))), class = c("XY", "POLYGON", 
-"sfg")), structure(list(structure(c(463199.599999965, 463199.599999965, 
-464199.599999965, 464199.599999965, 463199.599999965, 6915158.74575047, 
-6916158.74575047, 6916158.74575047, 6915158.74575047, 6915158.74575047
-), .Dim = c(5L, 2L))), class = c("XY", "POLYGON", "sfg")), structure(list(
-    structure(c(464199.599999965, 464199.599999965, 465199.599999965, 
-    465199.599999965, 464199.599999965, 6915158.74575047, 6916158.74575047, 
-    6916158.74575047, 6915158.74575047, 6915158.74575047), .Dim = c(5L, 
-    2L))), class = c("XY", "POLYGON", "sfg")), structure(list(
-    structure(c(465199.599999965, 465199.599999965, 466199.599999965, 
-    466199.599999965, 465199.599999965, 6915158.74575047, 6916158.74575047, 
-    6916158.74575047, 6915158.74575047, 6915158.74575047), .Dim = c(5L, 
-    2L))), class = c("XY", "POLYGON", "sfg")), structure(list(
-    structure(c(466199.599999965, 466199.599999965, 467199.599999965, 
-    467199.599999965, 466199.599999965, 6915158.74575047, 6916158.74575047, 
-    6916158.74575047, 6915158.74575047, 6915158.74575047), .Dim = c(5L, 
-    2L))), class = c("XY", "POLYGON", "sfg"))), class = c("sfc_POLYGON", 
+  exp_3 <- structure(list(density = c(1, 1, 1, 1, 1), geometry = structure(list(
+    structure(list(structure(c(462199.599999965, 462199.599999965, 
+    463199.599999965, 463199.599999965, 462199.599999965, 6915158.74575047, 
+    6916158.74575047, 6916158.74575047, 6915158.74575047, 6915158.74575047
+    ), .Dim = c(5L, 2L))), class = c("XY", "POLYGON", "sfg")), 
+    structure(list(structure(c(463199.599999965, 463199.599999965, 
+    464199.599999965, 464199.599999965, 463199.599999965, 6915158.74575047, 
+    6916158.74575047, 6916158.74575047, 6915158.74575047, 6915158.74575047
+    ), .Dim = c(5L, 2L))), class = c("XY", "POLYGON", "sfg")), 
+    structure(list(structure(c(464199.599999965, 464199.599999965, 
+    465199.599999965, 465199.599999965, 464199.599999965, 6915158.74575047, 
+    6916158.74575047, 6916158.74575047, 6915158.74575047, 6915158.74575047
+    ), .Dim = c(5L, 2L))), class = c("XY", "POLYGON", "sfg")), 
+    structure(list(structure(c(465199.599999965, 465199.599999965, 
+    466199.599999965, 466199.599999965, 465199.599999965, 6915158.74575047, 
+    6916158.74575047, 6916158.74575047, 6915158.74575047, 6915158.74575047
+    ), .Dim = c(5L, 2L))), class = c("XY", "POLYGON", "sfg")), 
+    structure(list(structure(c(466199.599999965, 466199.599999965, 
+    467199.599999965, 467199.599999965, 466199.599999965, 6915158.74575047, 
+    6916158.74575047, 6916158.74575047, 6915158.74575047, 6915158.74575047
+    ), .Dim = c(5L, 2L))), class = c("XY", "POLYGON", "sfg"))), class = c("sfc_POLYGON", 
 "sfc"), precision = 0, bbox = structure(c(xmin = 462199.599999965, 
 ymin = 6915158.74575047, xmax = 467199.599999965, ymax = 6916158.74575047
 ), class = "bbox"), crs = structure(list(input = "EPSG:2154", 
     wkt = "PROJCRS[\"RGF93 / Lambert-93\",\n    BASEGEOGCRS[\"RGF93\",\n        DATUM[\"Reseau Geodesique Francais 1993\",\n            ELLIPSOID[\"GRS 1980\",6378137,298.257222101,\n                LENGTHUNIT[\"metre\",1]]],\n        PRIMEM[\"Greenwich\",0,\n            ANGLEUNIT[\"degree\",0.0174532925199433]],\n        ID[\"EPSG\",4171]],\n    CONVERSION[\"Lambert-93\",\n        METHOD[\"Lambert Conic Conformal (2SP)\",\n            ID[\"EPSG\",9802]],\n        PARAMETER[\"Latitude of false origin\",46.5,\n            ANGLEUNIT[\"degree\",0.0174532925199433],\n            ID[\"EPSG\",8821]],\n        PARAMETER[\"Longitude of false origin\",3,\n            ANGLEUNIT[\"degree\",0.0174532925199433],\n            ID[\"EPSG\",8822]],\n        PARAMETER[\"Latitude of 1st standard parallel\",49,\n            ANGLEUNIT[\"degree\",0.0174532925199433],\n            ID[\"EPSG\",8823]],\n        PARAMETER[\"Latitude of 2nd standard parallel\",44,\n            ANGLEUNIT[\"degree\",0.0174532925199433],\n            ID[\"EPSG\",8824]],\n        PARAMETER[\"Easting at false origin\",700000,\n            LENGTHUNIT[\"metre\",1],\n            ID[\"EPSG\",8826]],\n        PARAMETER[\"Northing at false origin\",6600000,\n            LENGTHUNIT[\"metre\",1],\n            ID[\"EPSG\",8827]]],\n    CS[Cartesian,2],\n        AXIS[\"easting (X)\",east,\n            ORDER[1],\n            LENGTHUNIT[\"metre\",1]],\n        AXIS[\"northing (Y)\",north,\n            ORDER[2],\n            LENGTHUNIT[\"metre\",1]],\n    USAGE[\n        SCOPE[\"unknown\"],\n        AREA[\"France\"],\n        BBOX[41.15,-9.86,51.56,10.38]],\n    ID[\"EPSG\",2154]]"), class = "crs"), n_empty = 0L)), row.names = c(NA, 
--5L), class = c("sf", "data.frame"), sf_column = "geometry", agr = structure(c(x = NA_integer_, 
-y = NA_integer_, density = NA_integer_, area = NA_integer_), class = "factor", .Label = c("constant", 
+-5L), class = c("sf", "data.frame"), sf_column = "geometry", agr = structure(c(density = NA_integer_), class = "factor", .Label = c("constant", 
 "aggregate", "identity")))
     
 expect_equal(object = test_1,

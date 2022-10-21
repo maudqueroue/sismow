@@ -35,11 +35,13 @@ test_that("test conformite simulate_transects", {
                              length_segs = 2000) %>%
     slice(1:5)
 
-  exp_1 <- structure(list(transect = 1:5, seg_ID = 1:5, geometry = structure(list(
-    structure(c(394055.793731328, 394710.958334824, 6936392.0721311, 
-    6955153.53165881), .Dim = c(2L, 2L), class = c("XY", "LINESTRING", 
-    "sfg")), structure(c(401360.757117791, 402360.769378203, 
-    6926116.13476568, 6954752.73914086), .Dim = c(2L, 2L), class = c("XY", 
+  exp_1 <- structure(list(transect = 1:5, seg_ID = 1:5, effort = structure(c(18772.895468405, 
+28654.059654105, 25288.2990032283, 27027.8662220783, 29795.8965123036
+), units = structure(list(numerator = "m", denominator = character(0)), class = "symbolic_units"), class = "units"), 
+    geometry = structure(list(structure(c(394055.793731328, 394710.958334824, 
+    6936392.0721311, 6955153.53165881), .Dim = c(2L, 2L), class = c("XY", 
+    "LINESTRING", "sfg")), structure(c(401360.757117791, 402360.769378203, 
+    6926116.13476568, 6954752.73914085), .Dim = c(2L, 2L), class = c("XY", 
     "LINESTRING", "sfg")), structure(c(409128.031513907, 410010.580421582, 
     6929079.05256815, 6954351.9466229), .Dim = c(2L, 2L), class = c("XY", 
     "LINESTRING", "sfg")), structure(c(416717.132536868, 417660.391464961, 
@@ -47,36 +49,36 @@ test_that("test conformite simulate_transects", {
     "LINESTRING", "sfg")), structure(c(424270.340716261, 425310.20250834, 
     6923772.61592977, 6953550.36158698), .Dim = c(2L, 2L), class = c("XY", 
     "LINESTRING", "sfg"))), class = c("sfc_LINESTRING", "sfc"
-), precision = 0, bbox = structure(c(xmin = 394055.793731328, 
-ymin = 6923772.61592977, xmax = 425310.20250834, ymax = 6955153.53165881
-), class = "bbox"), crs = structure(list(input = "EPSG:2154", 
-    wkt = "PROJCRS[\"RGF93 / Lambert-93\",\n    BASEGEOGCRS[\"RGF93\",\n        DATUM[\"Reseau Geodesique Francais 1993\",\n            ELLIPSOID[\"GRS 1980\",6378137,298.257222101,\n                LENGTHUNIT[\"metre\",1]]],\n        PRIMEM[\"Greenwich\",0,\n            ANGLEUNIT[\"degree\",0.0174532925199433]],\n        ID[\"EPSG\",4171]],\n    CONVERSION[\"Lambert-93\",\n        METHOD[\"Lambert Conic Conformal (2SP)\",\n            ID[\"EPSG\",9802]],\n        PARAMETER[\"Latitude of false origin\",46.5,\n            ANGLEUNIT[\"degree\",0.0174532925199433],\n            ID[\"EPSG\",8821]],\n        PARAMETER[\"Longitude of false origin\",3,\n            ANGLEUNIT[\"degree\",0.0174532925199433],\n            ID[\"EPSG\",8822]],\n        PARAMETER[\"Latitude of 1st standard parallel\",49,\n            ANGLEUNIT[\"degree\",0.0174532925199433],\n            ID[\"EPSG\",8823]],\n        PARAMETER[\"Latitude of 2nd standard parallel\",44,\n            ANGLEUNIT[\"degree\",0.0174532925199433],\n            ID[\"EPSG\",8824]],\n        PARAMETER[\"Easting at false origin\",700000,\n            LENGTHUNIT[\"metre\",1],\n            ID[\"EPSG\",8826]],\n        PARAMETER[\"Northing at false origin\",6600000,\n            LENGTHUNIT[\"metre\",1],\n            ID[\"EPSG\",8827]]],\n    CS[Cartesian,2],\n        AXIS[\"easting (X)\",east,\n            ORDER[1],\n            LENGTHUNIT[\"metre\",1]],\n        AXIS[\"northing (Y)\",north,\n            ORDER[2],\n            LENGTHUNIT[\"metre\",1]],\n    USAGE[\n        SCOPE[\"unknown\"],\n        AREA[\"France\"],\n        BBOX[41.15,-9.86,51.56,10.38]],\n    ID[\"EPSG\",2154]]"), class = "crs"), n_empty = 0L)), row.names = c(NA, 
+    ), precision = 0, bbox = structure(c(xmin = 394055.793731328, 
+    ymin = 6923772.61592977, xmax = 425310.20250834, ymax = 6955153.53165881
+    ), class = "bbox"), crs = structure(list(input = "EPSG:2154", 
+        wkt = "PROJCRS[\"RGF93 / Lambert-93\",\n    BASEGEOGCRS[\"RGF93\",\n        DATUM[\"Reseau Geodesique Francais 1993\",\n            ELLIPSOID[\"GRS 1980\",6378137,298.257222101,\n                LENGTHUNIT[\"metre\",1]]],\n        PRIMEM[\"Greenwich\",0,\n            ANGLEUNIT[\"degree\",0.0174532925199433]],\n        ID[\"EPSG\",4171]],\n    CONVERSION[\"Lambert-93\",\n        METHOD[\"Lambert Conic Conformal (2SP)\",\n            ID[\"EPSG\",9802]],\n        PARAMETER[\"Latitude of false origin\",46.5,\n            ANGLEUNIT[\"degree\",0.0174532925199433],\n            ID[\"EPSG\",8821]],\n        PARAMETER[\"Longitude of false origin\",3,\n            ANGLEUNIT[\"degree\",0.0174532925199433],\n            ID[\"EPSG\",8822]],\n        PARAMETER[\"Latitude of 1st standard parallel\",49,\n            ANGLEUNIT[\"degree\",0.0174532925199433],\n            ID[\"EPSG\",8823]],\n        PARAMETER[\"Latitude of 2nd standard parallel\",44,\n            ANGLEUNIT[\"degree\",0.0174532925199433],\n            ID[\"EPSG\",8824]],\n        PARAMETER[\"Easting at false origin\",700000,\n            LENGTHUNIT[\"metre\",1],\n            ID[\"EPSG\",8826]],\n        PARAMETER[\"Northing at false origin\",6600000,\n            LENGTHUNIT[\"metre\",1],\n            ID[\"EPSG\",8827]]],\n    CS[Cartesian,2],\n        AXIS[\"easting (X)\",east,\n            ORDER[1],\n            LENGTHUNIT[\"metre\",1]],\n        AXIS[\"northing (Y)\",north,\n            ORDER[2],\n            LENGTHUNIT[\"metre\",1]],\n    USAGE[\n        SCOPE[\"unknown\"],\n        AREA[\"France\"],\n        BBOX[41.15,-9.86,51.56,10.38]],\n    ID[\"EPSG\",2154]]"), class = "crs"), n_empty = 0L)), row.names = c(NA, 
 -5L), class = c("sf", "data.frame"), sf_column = "geometry", agr = structure(c(transect = NA_integer_, 
-seg_ID = NA_integer_), class = "factor", .Label = c("constant", 
+seg_ID = NA_integer_, effort = NA_integer_), class = "factor", .Label = c("constant", 
 "aggregate", "identity")))
   
   
-  exp_2 <- structure(list(transect = c(1L, 1L, 1L, 1L, 1L), effort = structure(c(1876.14289556029, 
+  exp_2 <- structure(list(transect = c(1L, 1L, 1L, 1L, 1L), seg_ID = c("1-1", 
+"1-2", "1-3", "1-4", "1-5"), effort = structure(c(1876.14289556029, 
 1876.14289556029, 1876.14289556029, 1876.14289556029, 1876.14289556122
 ), units = structure(list(numerator = "m", denominator = character(0)), class = "symbolic_units"), class = "units"), 
-    seg_ID = c("1-1", "1-2", "1-3", "1-4", "1-5"), geometry = structure(list(
-        structure(c(393461.469060267, 393526.945503064, 6938158.74575047, 
-        6940033.74575047), .Dim = c(2L, 2L), class = c("XY", 
-        "LINESTRING", "sfg")), structure(c(393526.945503064, 
-        393592.421945861, 6940033.74575047, 6941908.74575047), .Dim = c(2L, 
-        2L), class = c("XY", "LINESTRING", "sfg")), structure(c(393592.421945861, 
-        393657.898388658, 6941908.74575047, 6943783.74575047), .Dim = c(2L, 
-        2L), class = c("XY", "LINESTRING", "sfg")), structure(c(393657.898388658, 
-        393723.374831455, 6943783.74575047, 6945658.74575047), .Dim = c(2L, 
-        2L), class = c("XY", "LINESTRING", "sfg")), structure(c(393723.374831455, 
-        393788.851274252, 6945658.74575047, 6947533.74575047), .Dim = c(2L, 
-        2L), class = c("XY", "LINESTRING", "sfg"))), class = c("sfc_LINESTRING", 
-    "sfc"), precision = 0, bbox = structure(c(xmin = 393461.469060267, 
+    geometry = structure(list(structure(c(393461.469060267, 393526.945503064, 
+    6938158.74575047, 6940033.74575047), .Dim = c(2L, 2L), class = c("XY", 
+    "LINESTRING", "sfg")), structure(c(393526.945503064, 393592.421945861, 
+    6940033.74575047, 6941908.74575047), .Dim = c(2L, 2L), class = c("XY", 
+    "LINESTRING", "sfg")), structure(c(393592.421945861, 393657.898388658, 
+    6941908.74575047, 6943783.74575047), .Dim = c(2L, 2L), class = c("XY", 
+    "LINESTRING", "sfg")), structure(c(393657.898388658, 393723.374831455, 
+    6943783.74575047, 6945658.74575047), .Dim = c(2L, 2L), class = c("XY", 
+    "LINESTRING", "sfg")), structure(c(393723.374831455, 393788.851274252, 
+    6945658.74575047, 6947533.74575047), .Dim = c(2L, 2L), class = c("XY", 
+    "LINESTRING", "sfg"))), class = c("sfc_LINESTRING", "sfc"
+    ), precision = 0, bbox = structure(c(xmin = 393461.469060267, 
     ymin = 6938158.74575047, xmax = 393788.851274252, ymax = 6947533.74575047
     ), class = "bbox"), crs = structure(list(input = "EPSG:2154", 
         wkt = "PROJCRS[\"RGF93 / Lambert-93\",\n    BASEGEOGCRS[\"RGF93\",\n        DATUM[\"Reseau Geodesique Francais 1993\",\n            ELLIPSOID[\"GRS 1980\",6378137,298.257222101,\n                LENGTHUNIT[\"metre\",1]]],\n        PRIMEM[\"Greenwich\",0,\n            ANGLEUNIT[\"degree\",0.0174532925199433]],\n        ID[\"EPSG\",4171]],\n    CONVERSION[\"Lambert-93\",\n        METHOD[\"Lambert Conic Conformal (2SP)\",\n            ID[\"EPSG\",9802]],\n        PARAMETER[\"Latitude of false origin\",46.5,\n            ANGLEUNIT[\"degree\",0.0174532925199433],\n            ID[\"EPSG\",8821]],\n        PARAMETER[\"Longitude of false origin\",3,\n            ANGLEUNIT[\"degree\",0.0174532925199433],\n            ID[\"EPSG\",8822]],\n        PARAMETER[\"Latitude of 1st standard parallel\",49,\n            ANGLEUNIT[\"degree\",0.0174532925199433],\n            ID[\"EPSG\",8823]],\n        PARAMETER[\"Latitude of 2nd standard parallel\",44,\n            ANGLEUNIT[\"degree\",0.0174532925199433],\n            ID[\"EPSG\",8824]],\n        PARAMETER[\"Easting at false origin\",700000,\n            LENGTHUNIT[\"metre\",1],\n            ID[\"EPSG\",8826]],\n        PARAMETER[\"Northing at false origin\",6600000,\n            LENGTHUNIT[\"metre\",1],\n            ID[\"EPSG\",8827]]],\n    CS[Cartesian,2],\n        AXIS[\"easting (X)\",east,\n            ORDER[1],\n            LENGTHUNIT[\"metre\",1]],\n        AXIS[\"northing (Y)\",north,\n            ORDER[2],\n            LENGTHUNIT[\"metre\",1]],\n    USAGE[\n        SCOPE[\"unknown\"],\n        AREA[\"France\"],\n        BBOX[41.15,-9.86,51.56,10.38]],\n    ID[\"EPSG\",2154]]"), class = "crs"), n_empty = 0L)), row.names = c("1", 
 "1.1", "1.2", "1.3", "1.4"), class = c("sf", "data.frame"), sf_column = "geometry", agr = structure(c(transect = NA_integer_, 
-effort = NA_integer_, seg_ID = NA_integer_), class = "factor", .Label = c("constant", 
+seg_ID = NA_integer_, effort = NA_integer_), class = "factor", .Label = c("constant", 
 "aggregate", "identity")))
 
 expect_equal(object = test_1,

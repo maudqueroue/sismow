@@ -25,15 +25,26 @@ library(sismow)
 -->
 
 
-# My function
+## Simulate Transects
 
-# proposer segmentize, and crop considering the grid. 
+`simulate_transects` allows to simulate transects with different conditions :     
+
+* different types of survey `design` such as parallel `systematic`, zigzag `eszigzag`, crossed zigzag `eszigzagcom` or `random` transects       
+* total transect length (approximately) `line.transect`      
+* angle of the transects `design angle`      
+* segmentation of the transect `segmentize`
+* length of segments (approximately) `length_segs`
+* and others : see `?make.design` for `dssd` package    
+
+The output is a sf dataframe containing the simulated transects corresponding. The dataframe contains four columns: transect number, seg_ID (a unique identifiant for each segments/transect), effort (length of each segment/transect) and geometry.
+
 
 ### Example
 
-For this example, we used a `shape_obj` that is included in this package `shape_courseulles`. From this region object, we created : 
-- (1) systematic parallel transects with a approximative length of 400000m
-- (2) zigzag transects with a approximative length of 400000m that are segmentized with a length of 2000m per segment. 
+For this example, `shape_courseulles`, a dataframe included in this package is used. Then, with `simulate_transect` some transect design are simulated: 
+- (1) systematic parallel transects with a approximative total length of 400000m
+- (2) zigzag transects with a approximative length of 400000m that are segmentized with a length of approximatively 2000m per segment.
+- (3) the `shape_obj` is a density map simulated with `simulate_density` and the design is systematic parallel transects with a approximative total length of 400000m that are segmentized with a length of approximatively 2000m per segments.
 
 
 ```{r examples-simulate_transects}
@@ -42,7 +53,7 @@ library(ggplot2)
 data("shape_courseulles")
 
 # ------------------------------
-# Example 1 : systematic parallel transects with a approximative total length of 400000m
+# Example 1 : parallel transects with a approximative total length of 400000m
 
 transects <- simulate_transects(shape_obj = shape_courseulles,
                              design = "systematic",
@@ -52,10 +63,9 @@ ggplot() +
       geom_sf(data = shape_courseulles) +
       geom_sf(data = transects) 
 
-
 # ------------------------------
 # Example 2 : zigzag transects with a approximative total length of 400000m 
-# that are segmentized with a length of 2000m per segment
+# that are segmentized with a length of approximately 2000m per segment
 transects <- simulate_transects(shape_obj = shape_courseulles,
                              design = "eszigzag",
                              line.length = 400000,
@@ -75,8 +85,8 @@ ggplot() +
 
 # ------------------------------
 # Example 3 : systematic parallel transects with a approximative total length of 400000m
-# that are segmentized with a length of 2000m per segment 
-# and crop according to the map_obj grid containing densities
+# that are segmentized with a length of approximately 2000m per segment 
+# the `shape_obj` is a density map simulated with `simulate_density`
 
 # Create map 
 map <- simulate_density(shape_obj = shape_courseulles,

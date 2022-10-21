@@ -13,20 +13,37 @@ library(testthat)
  You need to run the 'description' chunk in the '0-dev_history.Rmd' file before continuing your code there.
 -->
 
-# My function
-# proposer segmentize, and crop considering the grid. 
+## Simulate Transects
+`simulate_transects` allows to simulate transects with different conditions :     
+
+* different types of survey `design` such as parallel `systematic`, zigzag `eszigzag`, crossed zigzag `eszigzagcom` or `random` transects       
+* total transect length (approximately) `line.transect`      
+* angle of the transects `design angle`      
+* segmentation of the transects `segmentize`
+* length of segments (approximately) `length_segs`
+* and others : see `?make.design` for `dssd` package    
+
+The output is a sf dataframe containing the simulated transects corresponding. The dataframe contains four columns: `transect` number, `seg_ID` (a unique identifiant for each segments/transect), `effort` (length of each segment/transect) and `geometry`.
 
 ```{r function-simulate_transects}
 
-#' Create transect
+#' Simulate Transects
 #'
-#' @param shape_obj sf object. The shape of the study site.
-#' @param design character. Variable describing the type of design. Either "random", "systematic", "eszigzag" (equal-spaced zigzag), "eszigzagcom" (equal spaced zigzag with complementary lines). See dssd package for more information.
-#' @param design.angle numeric. Value detailing the angle of the design. A value of -1 will cause a random design angle to be generated. See dssd package for more information. Bydefault = 0.
-#' @param line.length numeric. The approximative total line length desired (in m).
-#' @param segmentize boolean. TRUE = transects are segmentized and a seg_ID is given to each segment. FALSE = transects are not segmentized. By default = FALSE.
-#' @param length_segs numeric. Length of the segments desired.
-#' @param crs numeric. Projection system. By default = 2154.
+#' @description
+#' `simulate_transects` allows to simulate transects with different designs and total length. It also allows to segmentize the simulated transects.
+#
+#' @details
+#' This function use create the `make.design` function of the `dssd` package.
+#'
+#' If segmentize is `TRUE`, `seg_ID` is noted "1-2" for transect 1 segment 2. If segmentize is `FALSE`, `seg_ID` is identical to the transect number (first column).
+#'
+#' @param shape_obj sf object. The shape of the study site or a density grid.
+#' @param design character. Variable describing the type of design. Either `random`, `systematic` (parallel), `eszigzag` (equal-spaced zigzag), `eszigzagcom` (equal spaced crossed zigzag). See `dssd` package for more information.
+#' @param design.angle numeric. Value detailing the angle of the design. A value of -1 will cause a random design angle to be generated. See `dssd` package for more information. By default: 0.
+#' @param line.length numeric. The approximative total line length desired in m.
+#' @param segmentize boolean. If `TRUE` transects are segmentized and a `seg_ID` is given to each segment. If `FALSE`transects are not segmentized. By default: `FALSE`.
+#' @param length_segs numeric. Length of the segments desired for segmentation.
+#' @param crs numeric. Projection system. By default: 2154.
 #' @param ... All other arguments that could be used in the make.design function. See dssd package for more information.
 #'
 #' @importFrom dssd make.design generate.transects
@@ -35,7 +52,7 @@ library(testthat)
 #' @importFrom assertthat assert_that
 #' @importFrom units set_units
 #'
-#' @return sf object. The created transects.
+#' @return The simulated transects corresponding to the differents conditions in a sf dataframe. The dataframe contains four columns: `transect` number, `seg_ID` (a unique identifiant for each segments/transect), `effort` (length of each segment/transect) and `geometry`.
 #' @export
 
 simulate_transects <- function(shape_obj, design = "systematic", design.angle = 0, line.length, segmentize = FALSE, length_segs, crs = 2154, ...) {
@@ -69,8 +86,8 @@ simulate_transects <- function(shape_obj, design = "systematic", design.angle = 
   x <- transect.survey@samplers %>%
     as.data.frame() %>%
     select("transect","geometry") %>%
-    st_sf(crs = crs) %>%
-    st_cast("LINESTRING")
+    st_sf(crs = crs) #%>%
+    #st_cast("LINESTRING")
   
 if(segmentize == TRUE){
   
@@ -127,8 +144,13 @@ if(segmentize == TRUE){
   
   if(segmentize == FALSE){
     x <- x %>% 
-      mutate(seg_ID = transect)
+      mutate(seg_ID = transect) %>%
+      mutate(effort = st_length(.))
   }
+  
+  x <- x %>%
+    st_intersection(shape_obj) %>%
+    select(transect, seg_ID, effort, geometry)
   
   return(x)
 }
@@ -137,9 +159,10 @@ if(segmentize == TRUE){
 
 ### Example
 
-For this example, we used a `shape_obj` that is included in this package `shape_courseulles`. From this region object, we created : 
-- (1) systematic parallel transects with a approximative length of 400000m
-- (2) zigzag transects with a approximative length of 400000m that are segmentized with a length of 2000m per segment. 
+For this example, `shape_courseulles`, a dataframe included in this package is used. Then, with `simulate_transect` some transect design are simulated: 
+- (1) systematic parallel transects with a approximative total length of 400000m
+- (2) zigzag transects with a approximative length of 400000m that are segmentized with a length of approximatively 2000m per segment.
+- (3) the `shape_obj` is a density map simulated with `simulate_density` and the design is systematic parallel transects with a approximative total length of 400000m that are segmentized with a length of approximatively 2000m per segments.
 
 ```{r examples-simulate_transects}
 
@@ -147,7 +170,8 @@ library(ggplot2)
 data("shape_courseulles")
 
 # ------------------------------
-# Example 1 : systematic parallel transects with a approximative total length of 400000m
+# Example 1 : parallel transects with a approximative total length of 400000m
+# ------------------------------
 
 transects <- simulate_transects(shape_obj = shape_courseulles,
                              design = "systematic",
@@ -157,10 +181,11 @@ ggplot() +
       geom_sf(data = shape_courseulles) +
       geom_sf(data = transects) 
 
-
 # ------------------------------
 # Example 2 : zigzag transects with a approximative total length of 400000m 
-# that are segmentized with a length of 2000m per segment
+# that are segmentized with a length of approximately 2000m per segment
+# ------------------------------
+
 transects <- simulate_transects(shape_obj = shape_courseulles,
                              design = "eszigzag",
                              line.length = 400000,
@@ -177,11 +202,11 @@ ggplot() +
       theme(legend.position = "none")
 
 
-
 # ------------------------------
 # Example 3 : systematic parallel transects with a approximative total length of 400000m
-# that are segmentized with a length of 2000m per segment 
-# and crop according to the map_obj grid containing densities
+# that are segmentized with a length of approximately 2000m per segment 
+# the `shape_obj` is a density map simulated with `simulate_density`
+#-------------------------------
 
 # Create map 
 map <- simulate_density(shape_obj = shape_courseulles,
@@ -245,11 +270,13 @@ test_that("test conformite simulate_transects", {
                              length_segs = 2000) %>%
     slice(1:5)
 
-  exp_1 <- structure(list(transect = 1:5, seg_ID = 1:5, geometry = structure(list(
-    structure(c(394055.793731328, 394710.958334824, 6936392.0721311, 
-    6955153.53165881), .Dim = c(2L, 2L), class = c("XY", "LINESTRING", 
-    "sfg")), structure(c(401360.757117791, 402360.769378203, 
-    6926116.13476568, 6954752.73914086), .Dim = c(2L, 2L), class = c("XY", 
+  exp_1 <- structure(list(transect = 1:5, seg_ID = 1:5, effort = structure(c(18772.895468405, 
+28654.059654105, 25288.2990032283, 27027.8662220783, 29795.8965123036
+), units = structure(list(numerator = "m", denominator = character(0)), class = "symbolic_units"), class = "units"), 
+    geometry = structure(list(structure(c(394055.793731328, 394710.958334824, 
+    6936392.0721311, 6955153.53165881), .Dim = c(2L, 2L), class = c("XY", 
+    "LINESTRING", "sfg")), structure(c(401360.757117791, 402360.769378203, 
+    6926116.13476568, 6954752.73914085), .Dim = c(2L, 2L), class = c("XY", 
     "LINESTRING", "sfg")), structure(c(409128.031513907, 410010.580421582, 
     6929079.05256815, 6954351.9466229), .Dim = c(2L, 2L), class = c("XY", 
     "LINESTRING", "sfg")), structure(c(416717.132536868, 417660.391464961, 
@@ -257,36 +284,36 @@ test_that("test conformite simulate_transects", {
     "LINESTRING", "sfg")), structure(c(424270.340716261, 425310.20250834, 
     6923772.61592977, 6953550.36158698), .Dim = c(2L, 2L), class = c("XY", 
     "LINESTRING", "sfg"))), class = c("sfc_LINESTRING", "sfc"
-), precision = 0, bbox = structure(c(xmin = 394055.793731328, 
-ymin = 6923772.61592977, xmax = 425310.20250834, ymax = 6955153.53165881
-), class = "bbox"), crs = structure(list(input = "EPSG:2154", 
-    wkt = "PROJCRS[\"RGF93 / Lambert-93\",\n    BASEGEOGCRS[\"RGF93\",\n        DATUM[\"Reseau Geodesique Francais 1993\",\n            ELLIPSOID[\"GRS 1980\",6378137,298.257222101,\n                LENGTHUNIT[\"metre\",1]]],\n        PRIMEM[\"Greenwich\",0,\n            ANGLEUNIT[\"degree\",0.0174532925199433]],\n        ID[\"EPSG\",4171]],\n    CONVERSION[\"Lambert-93\",\n        METHOD[\"Lambert Conic Conformal (2SP)\",\n            ID[\"EPSG\",9802]],\n        PARAMETER[\"Latitude of false origin\",46.5,\n            ANGLEUNIT[\"degree\",0.0174532925199433],\n            ID[\"EPSG\",8821]],\n        PARAMETER[\"Longitude of false origin\",3,\n            ANGLEUNIT[\"degree\",0.0174532925199433],\n            ID[\"EPSG\",8822]],\n        PARAMETER[\"Latitude of 1st standard parallel\",49,\n            ANGLEUNIT[\"degree\",0.0174532925199433],\n            ID[\"EPSG\",8823]],\n        PARAMETER[\"Latitude of 2nd standard parallel\",44,\n            ANGLEUNIT[\"degree\",0.0174532925199433],\n            ID[\"EPSG\",8824]],\n        PARAMETER[\"Easting at false origin\",700000,\n            LENGTHUNIT[\"metre\",1],\n            ID[\"EPSG\",8826]],\n        PARAMETER[\"Northing at false origin\",6600000,\n            LENGTHUNIT[\"metre\",1],\n            ID[\"EPSG\",8827]]],\n    CS[Cartesian,2],\n        AXIS[\"easting (X)\",east,\n            ORDER[1],\n            LENGTHUNIT[\"metre\",1]],\n        AXIS[\"northing (Y)\",north,\n            ORDER[2],\n            LENGTHUNIT[\"metre\",1]],\n    USAGE[\n        SCOPE[\"unknown\"],\n        AREA[\"France\"],\n        BBOX[41.15,-9.86,51.56,10.38]],\n    ID[\"EPSG\",2154]]"), class = "crs"), n_empty = 0L)), row.names = c(NA, 
+    ), precision = 0, bbox = structure(c(xmin = 394055.793731328, 
+    ymin = 6923772.61592977, xmax = 425310.20250834, ymax = 6955153.53165881
+    ), class = "bbox"), crs = structure(list(input = "EPSG:2154", 
+        wkt = "PROJCRS[\"RGF93 / Lambert-93\",\n    BASEGEOGCRS[\"RGF93\",\n        DATUM[\"Reseau Geodesique Francais 1993\",\n            ELLIPSOID[\"GRS 1980\",6378137,298.257222101,\n                LENGTHUNIT[\"metre\",1]]],\n        PRIMEM[\"Greenwich\",0,\n            ANGLEUNIT[\"degree\",0.0174532925199433]],\n        ID[\"EPSG\",4171]],\n    CONVERSION[\"Lambert-93\",\n        METHOD[\"Lambert Conic Conformal (2SP)\",\n            ID[\"EPSG\",9802]],\n        PARAMETER[\"Latitude of false origin\",46.5,\n            ANGLEUNIT[\"degree\",0.0174532925199433],\n            ID[\"EPSG\",8821]],\n        PARAMETER[\"Longitude of false origin\",3,\n            ANGLEUNIT[\"degree\",0.0174532925199433],\n            ID[\"EPSG\",8822]],\n        PARAMETER[\"Latitude of 1st standard parallel\",49,\n            ANGLEUNIT[\"degree\",0.0174532925199433],\n            ID[\"EPSG\",8823]],\n        PARAMETER[\"Latitude of 2nd standard parallel\",44,\n            ANGLEUNIT[\"degree\",0.0174532925199433],\n            ID[\"EPSG\",8824]],\n        PARAMETER[\"Easting at false origin\",700000,\n            LENGTHUNIT[\"metre\",1],\n            ID[\"EPSG\",8826]],\n        PARAMETER[\"Northing at false origin\",6600000,\n            LENGTHUNIT[\"metre\",1],\n            ID[\"EPSG\",8827]]],\n    CS[Cartesian,2],\n        AXIS[\"easting (X)\",east,\n            ORDER[1],\n            LENGTHUNIT[\"metre\",1]],\n        AXIS[\"northing (Y)\",north,\n            ORDER[2],\n            LENGTHUNIT[\"metre\",1]],\n    USAGE[\n        SCOPE[\"unknown\"],\n        AREA[\"France\"],\n        BBOX[41.15,-9.86,51.56,10.38]],\n    ID[\"EPSG\",2154]]"), class = "crs"), n_empty = 0L)), row.names = c(NA, 
 -5L), class = c("sf", "data.frame"), sf_column = "geometry", agr = structure(c(transect = NA_integer_, 
-seg_ID = NA_integer_), class = "factor", .Label = c("constant", 
+seg_ID = NA_integer_, effort = NA_integer_), class = "factor", .Label = c("constant", 
 "aggregate", "identity")))
   
   
-  exp_2 <- structure(list(transect = c(1L, 1L, 1L, 1L, 1L), effort = structure(c(1876.14289556029, 
+  exp_2 <- structure(list(transect = c(1L, 1L, 1L, 1L, 1L), seg_ID = c("1-1", 
+"1-2", "1-3", "1-4", "1-5"), effort = structure(c(1876.14289556029, 
 1876.14289556029, 1876.14289556029, 1876.14289556029, 1876.14289556122
 ), units = structure(list(numerator = "m", denominator = character(0)), class = "symbolic_units"), class = "units"), 
-    seg_ID = c("1-1", "1-2", "1-3", "1-4", "1-5"), geometry = structure(list(
-        structure(c(393461.469060267, 393526.945503064, 6938158.74575047, 
-        6940033.74575047), .Dim = c(2L, 2L), class = c("XY", 
-        "LINESTRING", "sfg")), structure(c(393526.945503064, 
-        393592.421945861, 6940033.74575047, 6941908.74575047), .Dim = c(2L, 
-        2L), class = c("XY", "LINESTRING", "sfg")), structure(c(393592.421945861, 
-        393657.898388658, 6941908.74575047, 6943783.74575047), .Dim = c(2L, 
-        2L), class = c("XY", "LINESTRING", "sfg")), structure(c(393657.898388658, 
-        393723.374831455, 6943783.74575047, 6945658.74575047), .Dim = c(2L, 
-        2L), class = c("XY", "LINESTRING", "sfg")), structure(c(393723.374831455, 
-        393788.851274252, 6945658.74575047, 6947533.74575047), .Dim = c(2L, 
-        2L), class = c("XY", "LINESTRING", "sfg"))), class = c("sfc_LINESTRING", 
-    "sfc"), precision = 0, bbox = structure(c(xmin = 393461.469060267, 
+    geometry = structure(list(structure(c(393461.469060267, 393526.945503064, 
+    6938158.74575047, 6940033.74575047), .Dim = c(2L, 2L), class = c("XY", 
+    "LINESTRING", "sfg")), structure(c(393526.945503064, 393592.421945861, 
+    6940033.74575047, 6941908.74575047), .Dim = c(2L, 2L), class = c("XY", 
+    "LINESTRING", "sfg")), structure(c(393592.421945861, 393657.898388658, 
+    6941908.74575047, 6943783.74575047), .Dim = c(2L, 2L), class = c("XY", 
+    "LINESTRING", "sfg")), structure(c(393657.898388658, 393723.374831455, 
+    6943783.74575047, 6945658.74575047), .Dim = c(2L, 2L), class = c("XY", 
+    "LINESTRING", "sfg")), structure(c(393723.374831455, 393788.851274252, 
+    6945658.74575047, 6947533.74575047), .Dim = c(2L, 2L), class = c("XY", 
+    "LINESTRING", "sfg"))), class = c("sfc_LINESTRING", "sfc"
+    ), precision = 0, bbox = structure(c(xmin = 393461.469060267, 
     ymin = 6938158.74575047, xmax = 393788.851274252, ymax = 6947533.74575047
     ), class = "bbox"), crs = structure(list(input = "EPSG:2154", 
         wkt = "PROJCRS[\"RGF93 / Lambert-93\",\n    BASEGEOGCRS[\"RGF93\",\n        DATUM[\"Reseau Geodesique Francais 1993\",\n            ELLIPSOID[\"GRS 1980\",6378137,298.257222101,\n                LENGTHUNIT[\"metre\",1]]],\n        PRIMEM[\"Greenwich\",0,\n            ANGLEUNIT[\"degree\",0.0174532925199433]],\n        ID[\"EPSG\",4171]],\n    CONVERSION[\"Lambert-93\",\n        METHOD[\"Lambert Conic Conformal (2SP)\",\n            ID[\"EPSG\",9802]],\n        PARAMETER[\"Latitude of false origin\",46.5,\n            ANGLEUNIT[\"degree\",0.0174532925199433],\n            ID[\"EPSG\",8821]],\n        PARAMETER[\"Longitude of false origin\",3,\n            ANGLEUNIT[\"degree\",0.0174532925199433],\n            ID[\"EPSG\",8822]],\n        PARAMETER[\"Latitude of 1st standard parallel\",49,\n            ANGLEUNIT[\"degree\",0.0174532925199433],\n            ID[\"EPSG\",8823]],\n        PARAMETER[\"Latitude of 2nd standard parallel\",44,\n            ANGLEUNIT[\"degree\",0.0174532925199433],\n            ID[\"EPSG\",8824]],\n        PARAMETER[\"Easting at false origin\",700000,\n            LENGTHUNIT[\"metre\",1],\n            ID[\"EPSG\",8826]],\n        PARAMETER[\"Northing at false origin\",6600000,\n            LENGTHUNIT[\"metre\",1],\n            ID[\"EPSG\",8827]]],\n    CS[Cartesian,2],\n        AXIS[\"easting (X)\",east,\n            ORDER[1],\n            LENGTHUNIT[\"metre\",1]],\n        AXIS[\"northing (Y)\",north,\n            ORDER[2],\n            LENGTHUNIT[\"metre\",1]],\n    USAGE[\n        SCOPE[\"unknown\"],\n        AREA[\"France\"],\n        BBOX[41.15,-9.86,51.56,10.38]],\n    ID[\"EPSG\",2154]]"), class = "crs"), n_empty = 0L)), row.names = c("1", 
 "1.1", "1.2", "1.3", "1.4"), class = c("sf", "data.frame"), sf_column = "geometry", agr = structure(c(transect = NA_integer_, 
-effort = NA_integer_, seg_ID = NA_integer_), class = "factor", .Label = c("constant", 
+seg_ID = NA_integer_, effort = NA_integer_), class = "factor", .Label = c("constant", 
 "aggregate", "identity")))
 
 expect_equal(object = test_1,

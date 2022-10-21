@@ -25,13 +25,15 @@ library(sismow)
 -->
 
 
-## Create density map
+## Simulate density map
 
-This function allows to create different densities in the studied area. 
-- A `homogenous` density with the same density througout the studied aera.
-- A `gradient` density with a density decreasing from a hotspot that could be placed on different direction `gradient_direction` (`N` for North, `NE` for North-East, `E` for East, `SE` for South-East, `S` for South, `SW` for South-West, `W` for West, `NW` for North-West and `C` for center). The `amplitude` and the `wavelength` of the hotspot created can be modified.
-- A `random` density, created by adding a certain number of hotspots `nb_hotspots` on the study area. The hotspot created have a maximum `amplitude` and a maximum `wavelength` that can be modified. Each hotspot created have an amplitude and a wavelength randomly choosen between 1 and a maximum `amplitude` and a maximum `wavelength` that can be modified. 
-Then, the correct density ratios are calcultating according to the desired number of individuals in the area `N`.  
+This function allows to simulate different densities in the studied area:     
+
+* A `homogenous` density with the same density througout the studied aera.
+* A `gradient` density with a density decreasing from a hotspot that could be placed on different direction `gradient_direction`: `N` for North, `NE` for North-East, `E` for East, `SE` for South-East, `S` for South, `SW` for South-West, `W` for West, `NW` for North-West and `C` for center). The `amplitude` and the `wavelength` of the hotspot created can be modified.
+* A `random` density, created by adding a certain number of hotspots `nb_hotspots` on the study area. The hotspot created have a maximum `amplitude` and a maximum `wavelength` that can be modified. Each hotspot created have an amplitude and a wavelength randomly chosen between 1 and a maximum `amplitude` and a maximum `wavelength` that can be modified by the user. 
+
+The output is a map in sf dataframe contaning the simulated density. The dataframe contains two columns, `density` simulated for each square of the grid and `geometry` of the grid. 
 
 
 ### Examples
@@ -53,9 +55,7 @@ map <- simulate_density(shape_obj = shape_courseulles,
                               density_type = "gradient",
                               gradient_direction = "N",
                               wavelength = 40000,
-                              amplitude = 15
-                              
-)
+                              amplitude = 15)
 
 # Plot
 ggplot() +
@@ -83,6 +83,8 @@ ggplot() +
 
 From an sf class density map `map_obj` (data.frame), an inohomogene Poisson point process is used to simulate the presence of individuals in the study area. The probability of presence of an individual is dependent on the density given by the map. 
 
+Then, the correct density ratios are calcultating according to the desired number of individuals in the area `N`. 
+
 
 ### Example
 
@@ -102,10 +104,10 @@ map <- simulate_density(shape_obj = shape_courseulles,
                               density_type = "gradient",
                               gradient_direction = "N",
                               wavelength = 20000,
-                              amplitude = 20)
+                              amplitude = 100)
 
 # Then simulate the presence of individuals in the study area 
-ind <- simulate_ind(map_obj = map, N = 500)
+ind <- simulate_ind(map_obj = map, N = 200)
 
 # Plot
 ggplot() +

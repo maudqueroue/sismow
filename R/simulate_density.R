@@ -2,16 +2,29 @@
 
 
 
-#' Create a map with the desired density of individuals
+#' Simulate density map
+#'
+#' @description
+#' `simulate_density` allows to simulate density with different spatial variation. 
+#'
+#' @details
+#' This function use create the `make.density` and the `add.hotspot` functions of the `dsims` package.
+#'
+#' To simulate density on the map, a grid is created. The length of square side could be chosen by the user with `grid_size`. 
+#'
+#' If `density_type` is '`gradient`', one hotspot is added on one direction `gradient_direction` (`N` for North, `NE` for North-East, `E` for East, `SE` for South-East, `S` for South, `SW` for South-West, `W` for West, `NW` for North-West and `C` for center). The hotspot added have a `amplitude` and a `wavelength` chosen by the user. 
+#'
+#' If `density_type` is '`random`', several hotspots, the number is chosen by the user with the argument `nb_hotspots`, are added randomly in the area.The amplitude and wavelength of the differents hotspot are chosen randomly between a minimum of 1 and a maximum corresponding to the `amplitude` and `wavelength` chosen by the user. 
+#'
 #'
 #' @param shape_obj sf object. The shape of the study site.
-#' @param grid_size Numeric. Grid size in m. By default = 1000
+#' @param grid_size Numeric. Length of length of square side. By default: 1000.
 #' @param density_type Character. 'uniform", 'gradient', 'random', 'covariate'.
 #' @param gradient_direction Character. Only for "gradient" `density_type`. Where the highest density comes from. 'N','NE','E'...
 #' @param wavelength Numeric. Only for "gradient" and "random" `density_type`. Wavelength of the hotspots of density created. Maximum wavelength for "random" `density_type`. 
 #' @param amplitude Numeric. Only for "gradient" and "random" `density_type`. Amplitude of the hotspots of density created. Maximum amplitude for "random" `density_type`. 
 #' @param nb_hotspots Numeric. Only for "random" `density_type`. Number of random hotspots to be created.
-#' @param crs Numeric. Only for "random" `density_type`. Number of random hotspots to be created. By default = 2154
+#' @param crs Numeric. Only for "random" `density_type`. Number of random hotspots to be created. By default: 2154.
 #'
 #' @importFrom sf st_area st_sfc st_contains as_Spatial st_point st_sf st_transform
 #' @importFrom sp bbox
@@ -22,7 +35,7 @@
 #' @importFrom stats runif
 #' @importFrom assertthat assert_that
 #'
-#' @return sf object. The map with the densities type choosen and corresponding to the number of individuals desired in the study area. 
+#' @return The map in a sf dataframe contaning the simulated density. The dataframe contains two columns, `density` simulated for each square of the grid and `geometry` of the grid. 
 #' @export
 
 #' @examples
@@ -37,9 +50,7 @@
 #'                               density_type = "gradient",
 #'                               gradient_direction = "N",
 #'                               wavelength = 40000,
-#'                               amplitude = 15
-#'                               
-#' )
+#'                               amplitude = 15)
 #' 
 #' # Plot
 #' ggplot() +
@@ -217,7 +228,7 @@ simulate_density <- function(shape_obj, grid_size = 1000, density_type, gradient
     mutate(area_grid = grid_size^2) %>%
     drop_units() %>%
     filter(area == area_grid) %>%
-    select(x,y,density,area,geometry)
+    select(density, geometry)
   
 }
 

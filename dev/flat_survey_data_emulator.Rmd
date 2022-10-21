@@ -22,9 +22,9 @@ library(testthat)
 #' @param ind_obj dataframe. Individuals simulated with their coordinates.
 #' @param transect_obj sf dataframe. Transect/segments data.
 #' @param key character. Form of the detection function "hn" or "unif".
-#' @param esw numeric. Effective strip width (in m). This argument is needed only for the 'hn' form.
+#' @param esw numeric. Effective strip width in m. This argument is needed only for the 'hn' form.
 #' @param g_zero numeric. The detection probability at distance 0. By default 1.
-#' @param truncation numeric. A single numeric value (in m) describing the longest distance at which an object may be observed. By default = NA.
+#' @param truncation numeric. A single numeric value in m describing the longest distance at which an object may be observed. By default = NA.
 #' @param crs numeric. Projection system. By default = 2154.
 #'
 #' @importFrom dplyr mutate rename n

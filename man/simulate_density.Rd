@@ -2,7 +2,7 @@
 % Please edit documentation in R/simulate_density.R
 \name{simulate_density}
 \alias{simulate_density}
-\title{Create a map with the desired density of individuals}
+\title{Simulate density map}
 \usage{
 simulate_density(
   shape_obj,
@@ -18,7 +18,7 @@ simulate_density(
 \arguments{
 \item{shape_obj}{sf object. The shape of the study site.}
 
-\item{grid_size}{Numeric. Grid size in m. By default = 1000}
+\item{grid_size}{Numeric. Length of length of square side. By default: 1000.}
 
 \item{density_type}{Character. 'uniform", 'gradient', 'random', 'covariate'.}
 
@@ -30,13 +30,22 @@ simulate_density(
 
 \item{nb_hotspots}{Numeric. Only for "random" \code{density_type}. Number of random hotspots to be created.}
 
-\item{crs}{Numeric. Only for "random" \code{density_type}. Number of random hotspots to be created. By default = 2154}
+\item{crs}{Numeric. Only for "random" \code{density_type}. Number of random hotspots to be created. By default: 2154.}
 }
 \value{
-sf object. The map with the densities type choosen and corresponding to the number of individuals desired in the study area.
+The map in a sf dataframe contaning the simulated density. The dataframe contains two columns, \code{density} simulated for each square of the grid and \code{geometry} of the grid.
 }
 \description{
-Create a map with the desired density of individuals
+\code{simulate_density} allows to simulate density with different spatial variation.
+}
+\details{
+This function use create the \code{make.density} and the \code{add.hotspot} functions of the \code{dsims} package.
+
+To simulate density on the map, a grid is created. The length of square side could be chosen by the user with \code{grid_size}.
+
+If \code{density_type} is '\code{gradient}', one hotspot is added on one direction \code{gradient_direction} (\code{N} for North, \code{NE} for North-East, \code{E} for East, \code{SE} for South-East, \code{S} for South, \code{SW} for South-West, \code{W} for West, \code{NW} for North-West and \code{C} for center). The hotspot added have a \code{amplitude} and a \code{wavelength} chosen by the user.
+
+If \code{density_type} is '\code{random}', several hotspots, the number is chosen by the user with the argument \code{nb_hotspots}, are added randomly in the area.The amplitude and wavelength of the differents hotspot are chosen randomly between a minimum of 1 and a maximum corresponding to the \code{amplitude} and \code{wavelength} chosen by the user.
 }
 \examples{
 
@@ -50,9 +59,7 @@ map <- simulate_density(shape_obj = shape_courseulles,
                               density_type = "gradient",
                               gradient_direction = "N",
                               wavelength = 40000,
-                              amplitude = 15
-                              
-)
+                              amplitude = 15)
 
 # Plot
 ggplot() +
