@@ -18,19 +18,19 @@ simulate_density(
 \arguments{
 \item{shape_obj}{sf object. The shape of the study site.}
 
-\item{grid_size}{Numeric. Length of length of square side. By default: 1000.}
+\item{grid_size}{numeric. Length of length of square side. By default: 1000.}
 
-\item{density_type}{Character. 'uniform", 'gradient', 'random', 'covariate'.}
+\item{density_type}{character. 'uniform", 'gradient', 'random', 'covariate'.}
 
-\item{gradient_direction}{Character. Only for "gradient" \code{density_type}. Where the highest density comes from. 'N','NE','E'...}
+\item{gradient_direction}{character. Only for "gradient" \code{density_type}. Where the highest density comes from. 'N','NE','E'...}
 
-\item{wavelength}{Numeric. Only for "gradient" and "random" \code{density_type}. Wavelength of the hotspots of density created. Maximum wavelength for "random" \code{density_type}.}
+\item{wavelength}{numeric. Only for "gradient" and "random" \code{density_type}. Wavelength of the hotspots of density created. Maximum wavelength for "random" \code{density_type}.}
 
-\item{amplitude}{Numeric. Only for "gradient" and "random" \code{density_type}. Amplitude of the hotspots of density created. Maximum amplitude for "random" \code{density_type}.}
+\item{amplitude}{numeric. Only for "gradient" and "random" \code{density_type}. Amplitude of the hotspots of density created. Maximum amplitude for "random" \code{density_type}.}
 
-\item{nb_hotspots}{Numeric. Only for "random" \code{density_type}. Number of random hotspots to be created.}
+\item{nb_hotspots}{numeric. Only for "random" \code{density_type}. Number of random hotspots to be created.}
 
-\item{crs}{Numeric. Only for "random" \code{density_type}. Number of random hotspots to be created. By default: 2154.}
+\item{crs}{numeric. Only for "random" \code{density_type}. Number of random hotspots to be created. By default: 2154.}
 }
 \value{
 The map in a sf dataframe contaning the simulated density. The dataframe contains two columns, \code{density} simulated for each square of the grid and \code{geometry} of the grid.
@@ -53,7 +53,7 @@ library(ggplot2)
 data("shape_courseulles")
 
 # ------------------------------
-# Example 1 : Create a map with a gradient density from the North with 500 individuals in the area
+# Example 1 : Simulate a map with a gradient density from the North
 
 map <- simulate_density(shape_obj = shape_courseulles,
                               density_type = "gradient",
@@ -67,7 +67,7 @@ ggplot() +
 
 
 # ------------------------------
-# Example 2 : Create a map with a random density from the North with 500 individuals in the area
+# Example 2 : Simulate a map with a random density
 
 map <- simulate_density(shape_obj = shape_courseulles,
                               density_type = "random",

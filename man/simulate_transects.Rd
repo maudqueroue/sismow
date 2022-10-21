@@ -18,29 +18,30 @@ simulate_transects(
 \arguments{
 \item{shape_obj}{sf object. The shape of the study site or a density grid.}
 
-\item{design}{character. Variable describing the type of design. Either \code{random}, \code{systematic}, \code{eszigzag} (equal-spaced zigzag), \code{eszigzagcom} (equal spaced zigzag with complementary lines). See 'dssd' package for more information.}
+\item{design}{character. Variable describing the type of design. Either \code{random}, \code{systematic} (parallel), \code{eszigzag} (equal-spaced zigzag), \code{eszigzagcom} (equal spaced crossed zigzag). See \code{dssd} package for more information.}
 
-\item{design.angle}{numeric. Value detailing the angle of the design. A value of -1 will cause a random design angle to be generated. See 'dssd' package for more information. By default = 0.}
+\item{design.angle}{numeric. Value detailing the angle of the design. A value of -1 will cause a random design angle to be generated. See \code{dssd} package for more information. By default: 0.}
 
-\item{line.length}{numeric. The approximative total line length desired (in m).}
+\item{line.length}{numeric. The approximative total line length desired in m.}
 
-\item{segmentize}{boolean. 'TRUE' = transects are segmentized and a 'seg_ID' is given to each segment. 'FALSE' = transects are not segmentized. By default = 'FALSE'.}
+\item{segmentize}{boolean. If \code{TRUE} transects are segmentized and a \code{seg_ID} is given to each segment. If \code{FALSE}transects are not segmentized. By default: \code{FALSE}.}
 
 \item{length_segs}{numeric. Length of the segments desired for segmentation.}
 
-\item{crs}{numeric. Projection system. By default = 2154.}
+\item{crs}{numeric. Projection system. By default: 2154.}
 
 \item{...}{All other arguments that could be used in the make.design function. See dssd package for more information.}
 }
 \value{
-sf dataframe. The simulated transects corresponding to the differents conditions. The dataframe contains four columns: transect number, seg_ID (a unique identifiant for each segments/transect), effort (length of each segment/transect) and geometry.
+The simulated transects corresponding to the differents conditions in a sf dataframe. The dataframe contains four columns: \code{transect} number, \code{seg_ID} (a unique identifiant for each segments/transect), \code{effort} (length of each segment/transect) and \code{geometry}.
 }
 \description{
 \code{simulate_transects} allows to simulate transects with different designs and total length. It also allows to segmentize the simulated transects.
 }
 \details{
 This function use create the \code{make.design} function of the \code{dssd} package.
-If segmentize is 'TRUE', seg_ID is noted "1-2" for transect 1 segment 2. If segmentize is 'FALSE', seg_ID est identical to the transect number (first column).
+
+If segmentize is \code{TRUE}, \code{seg_ID} is noted "1-2" for transect 1 segment 2. If segmentize is \code{FALSE}, \code{seg_ID} is identical to the transect number (first column).
 }
 \examples{
 
@@ -49,6 +50,7 @@ data("shape_courseulles")
 
 # ------------------------------
 # Example 1 : parallel transects with a approximative total length of 400000m
+# ------------------------------
 
 transects <- simulate_transects(shape_obj = shape_courseulles,
                              design = "systematic",
@@ -61,6 +63,8 @@ ggplot() +
 # ------------------------------
 # Example 2 : zigzag transects with a approximative total length of 400000m 
 # that are segmentized with a length of approximately 2000m per segment
+# ------------------------------
+
 transects <- simulate_transects(shape_obj = shape_courseulles,
                              design = "eszigzag",
                              line.length = 400000,
@@ -77,11 +81,11 @@ ggplot() +
       theme(legend.position = "none")
 
 
-
 # ------------------------------
 # Example 3 : systematic parallel transects with a approximative total length of 400000m
 # that are segmentized with a length of approximately 2000m per segment 
 # the `shape_obj` is a density map simulated with `simulate_density`
+#-------------------------------
 
 # Create map 
 map <- simulate_density(shape_obj = shape_courseulles,

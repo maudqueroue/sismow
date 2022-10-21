@@ -2,22 +2,26 @@
 % Please edit documentation in R/simulate_ind.R
 \name{simulate_ind}
 \alias{simulate_ind}
-\title{Simulate individuals with a inhomogenous Poisson point process}
+\title{Simulate individuals}
 \usage{
 simulate_ind(map_obj, N, crs = 2154)
 }
 \arguments{
 \item{map_obj}{sf dataframe. Sf map with a colum containg density informations}
 
-\item{N}{Numeric. The number of individuals desired in the area.}
+\item{N}{numeric. The number of individuals desired in the area.}
 
-\item{crs}{numeric. Projection system. By default = 2154.}
+\item{crs}{numeric. Projection system. By default: 2154.}
 }
 \value{
-Dataframe. Les localisations des individus.
+The simulated individuals in a dataframe. The dataframe contains three columns, \code{x} longitude of the simulated individual, \code{y} latitude of the simulated individual and \code{size} the number of individuals simulated on the location (the possibility of simulate groupe will comming).
 }
 \description{
-Simulate individuals with a inhomogenous Poisson point process
+\code{simulate_ind} allows to simulate a approximate number of individuals with a inhomogenous Poisson point process according to the densities provided.
+}
+\details{
+This function need a grid sf object with density assosciated to each square of the grid.
+For each simulated individuals, a size is associated. For now, it is always one, but in the future it will be possible to simulate groups.
 }
 \examples{
 

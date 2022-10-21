@@ -8,15 +8,16 @@
 #
 #' @details
 #' This function use create the `make.design` function of the `dssd` package.
-#' If segmentize is 'TRUE', seg_ID is noted "1-2" for transect 1 segment 2. If segmentize is 'FALSE', seg_ID est identical to the transect number (first column).
+#'
+#' If segmentize is `TRUE`, `seg_ID` is noted "1-2" for transect 1 segment 2. If segmentize is `FALSE`, `seg_ID` is identical to the transect number (first column).
 #'
 #' @param shape_obj sf object. The shape of the study site or a density grid.
-#' @param design character. Variable describing the type of design. Either `random`, `systematic`, `eszigzag` (equal-spaced zigzag), `eszigzagcom` (equal spaced zigzag with complementary lines). See 'dssd' package for more information.
-#' @param design.angle numeric. Value detailing the angle of the design. A value of -1 will cause a random design angle to be generated. See 'dssd' package for more information. By default = 0.
-#' @param line.length numeric. The approximative total line length desired (in m).
-#' @param segmentize boolean. 'TRUE' = transects are segmentized and a 'seg_ID' is given to each segment. 'FALSE' = transects are not segmentized. By default = 'FALSE'.
+#' @param design character. Variable describing the type of design. Either `random`, `systematic` (parallel), `eszigzag` (equal-spaced zigzag), `eszigzagcom` (equal spaced crossed zigzag). See `dssd` package for more information.
+#' @param design.angle numeric. Value detailing the angle of the design. A value of -1 will cause a random design angle to be generated. See `dssd` package for more information. By default: 0.
+#' @param line.length numeric. The approximative total line length desired in m.
+#' @param segmentize boolean. If `TRUE` transects are segmentized and a `seg_ID` is given to each segment. If `FALSE`transects are not segmentized. By default: `FALSE`.
 #' @param length_segs numeric. Length of the segments desired for segmentation.
-#' @param crs numeric. Projection system. By default = 2154.
+#' @param crs numeric. Projection system. By default: 2154.
 #' @param ... All other arguments that could be used in the make.design function. See dssd package for more information.
 #'
 #' @importFrom dssd make.design generate.transects
@@ -25,7 +26,7 @@
 #' @importFrom assertthat assert_that
 #' @importFrom units set_units
 #'
-#' @return sf dataframe. The simulated transects corresponding to the differents conditions. The dataframe contains four columns: transect number, seg_ID (a unique identifiant for each segments/transect), effort (length of each segment/transect) and geometry.
+#' @return The simulated transects corresponding to the differents conditions in a sf dataframe. The dataframe contains four columns: `transect` number, `seg_ID` (a unique identifiant for each segments/transect), `effort` (length of each segment/transect) and `geometry`.
 #' @export
 
 #' @examples
@@ -35,6 +36,7 @@
 #' 
 #' # ------------------------------
 #' # Example 1 : parallel transects with a approximative total length of 400000m
+#' # ------------------------------
 #' 
 #' transects <- simulate_transects(shape_obj = shape_courseulles,
 #'                              design = "systematic",
@@ -47,6 +49,8 @@
 #' # ------------------------------
 #' # Example 2 : zigzag transects with a approximative total length of 400000m 
 #' # that are segmentized with a length of approximately 2000m per segment
+#' # ------------------------------
+#' 
 #' transects <- simulate_transects(shape_obj = shape_courseulles,
 #'                              design = "eszigzag",
 #'                              line.length = 400000,
@@ -63,11 +67,11 @@
 #'       theme(legend.position = "none")
 #' 
 #' 
-#' 
 #' # ------------------------------
 #' # Example 3 : systematic parallel transects with a approximative total length of 400000m
 #' # that are segmentized with a length of approximately 2000m per segment 
 #' # the `shape_obj` is a density map simulated with `simulate_density`
+#' #-------------------------------
 #' 
 #' # Create map 
 #' map <- simulate_density(shape_obj = shape_courseulles,

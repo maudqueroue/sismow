@@ -15,13 +15,15 @@ library(testthat)
 
 ## Simulate density map
 
-This function allows to simulate different densities in the studied area:     
+This function allows to simulate different densities in the studied area:         
 
-* A `homogenous` density with the same density througout the studied aera.
-* A `gradient` density with a density decreasing from a hotspot that could be placed on different direction `gradient_direction`: `N` for North, `NE` for North-East, `E` for East, `SE` for South-East, `S` for South, `SW` for South-West, `W` for West, `NW` for North-West and `C` for center). The `amplitude` and the `wavelength` of the hotspot created can be modified.
-* A `random` density, created by adding a certain number of hotspots `nb_hotspots` on the study area. The hotspot created have a maximum `amplitude` and a maximum `wavelength` that can be modified. Each hotspot created have an amplitude and a wavelength randomly chosen between 1 and a maximum `amplitude` and a maximum `wavelength` that can be modified by the user. 
+- A **homogenous** density with the same density througout the studied aera.    
+- A **gradient** density with a density decreasing from a hotspot that could be placed on different direction: `N` for North, `NE` for North-East, `E` for East, `SE` for South-East, `S` for South, `SW` for South-West, `W` for West, `NW` for North-West and `C` for center). The amplitude and the wavelength of the hotspot created can be modified.    
+- A **random** density, created by adding a certain number of hotspots on the study area. The hotspot created have a maximum amplitude and a maximum wavelength` that can be modified. Each hotspot created have an amplitude and a wavelength randomly chosen between 1 and a maximum amplitude and a maximum wavelength that can be modified by the user.     
 
-The output is a map in sf dataframe contaning the simulated density. The dataframe contains two columns, `density` simulated for each square of the grid and `geometry` of the grid. 
+The output is a map in sf dataframe contaning the simulated density. The dataframe contains two columns:    
+- `density` : simulated for each square of the grid    
+- `geometry` 
 
 ```{r function-simulate_density}
 
@@ -42,13 +44,13 @@ The output is a map in sf dataframe contaning the simulated density. The datafra
 #'
 #'
 #' @param shape_obj sf object. The shape of the study site.
-#' @param grid_size Numeric. Length of length of square side. By default: 1000.
-#' @param density_type Character. 'uniform", 'gradient', 'random', 'covariate'.
-#' @param gradient_direction Character. Only for "gradient" `density_type`. Where the highest density comes from. 'N','NE','E'...
-#' @param wavelength Numeric. Only for "gradient" and "random" `density_type`. Wavelength of the hotspots of density created. Maximum wavelength for "random" `density_type`. 
-#' @param amplitude Numeric. Only for "gradient" and "random" `density_type`. Amplitude of the hotspots of density created. Maximum amplitude for "random" `density_type`. 
-#' @param nb_hotspots Numeric. Only for "random" `density_type`. Number of random hotspots to be created.
-#' @param crs Numeric. Only for "random" `density_type`. Number of random hotspots to be created. By default: 2154.
+#' @param grid_size numeric. Length of length of square side. By default: 1000.
+#' @param density_type character. 'uniform", 'gradient', 'random', 'covariate'.
+#' @param gradient_direction character. Only for "gradient" `density_type`. Where the highest density comes from. 'N','NE','E'...
+#' @param wavelength numeric. Only for "gradient" and "random" `density_type`. Wavelength of the hotspots of density created. Maximum wavelength for "random" `density_type`. 
+#' @param amplitude numeric. Only for "gradient" and "random" `density_type`. Amplitude of the hotspots of density created. Maximum amplitude for "random" `density_type`. 
+#' @param nb_hotspots numeric. Only for "random" `density_type`. Number of random hotspots to be created.
+#' @param crs numeric. Only for "random" `density_type`. Number of random hotspots to be created. By default: 2154.
 #'
 #' @importFrom sf st_area st_sfc st_contains as_Spatial st_point st_sf st_transform
 #' @importFrom sp bbox
@@ -226,9 +228,9 @@ simulate_density <- function(shape_obj, grid_size = 1000, density_type, gradient
 
 ### Examples
 
-For this example, we used a `shape_obj` that is included in this package `shape_courseulles`. We create a map contaning 500 individuals with: 
-- (1) a gradient density. 
-- (2) a random density. 
+For this example, `shape_courseulles`, a dataframe included in this package is used. With `simulate_density` some density maps are simulated:      
+- (1) a **gradient** density map with a hotspot of density in the North. 
+- (2) a **random** density map with 10 random hotspots   
 
 ```{r examples-simulate_density}
 
@@ -236,7 +238,7 @@ library(ggplot2)
 data("shape_courseulles")
 
 # ------------------------------
-# Example 1 : Create a map with a gradient density from the North with 500 individuals in the area
+# Example 1 : Simulate a map with a gradient density from the North
 
 map <- simulate_density(shape_obj = shape_courseulles,
                               density_type = "gradient",
@@ -250,7 +252,7 @@ ggplot() +
 
 
 # ------------------------------
-# Example 2 : Create a map with a random density from the North with 500 individuals in the area
+# Example 2 : Simulate a map with a random density
 
 map <- simulate_density(shape_obj = shape_courseulles,
                               density_type = "random",
@@ -450,19 +452,31 @@ test_that("test erreur simulate_density", {
 })
 ```
 
-## Simulate individuals with a inhomogenous Poisson point process.
+## Simulate individuals
 
-From an sf class density map `map_obj` (data.frame), an inohomogene Poisson point process is used to simulate the presence of individuals in the study area. The probability of presence of an individual is dependent on the density given by the map. 
+This function allows to simulate a approximate number of individuals with a inhomogenous Poisson point process according to the densities provided.
 
-Then, the correct density ratios are calcultating according to the desired number of individuals in the area `N`. 
+From an sf class density map `map_obj`, an inohomogene Poisson point process is used to simulate the presence of `N` individuals in the study area. The probability of presence of an individual is dependent on the density given by the map. 
+
+The output is the simulated individuals in a dataframe. The dataframe contains three columns:    
+-`x` : longitude of the simulated individual. 
+-`y` : latitude of the simulated individual. 
+- `size` : the number of individuals simulated on the location (the possibility of simulate groupe will comming).
 
 ```{r function-simulate_ind}
 
-#' Simulate individuals with a inhomogenous Poisson point process
+#' Simulate individuals
+#'
+#' @description
+#' `simulate_ind` allows to simulate a approximate number of individuals with a inhomogenous Poisson point process according to the densities provided.
+#'
+#' @details
+#' This function need a grid sf object with density assosciated to each square of the grid.
+#' For each simulated individuals, a size is associated. For now, it is always one, but in the future it will be possible to simulate groups. 
 #'
 #' @param map_obj sf dataframe. Sf map with a colum containg density informations
-#' @param N Numeric. The number of individuals desired in the area.
-#' @param crs numeric. Projection system. By default = 2154. 
+#' @param N numeric. The number of individuals desired in the area.
+#' @param crs numeric. Projection system. By default: 2154. 
 #'
 #' @importFrom glue glue
 #' @importFrom assertthat assert_that
@@ -471,10 +485,8 @@ Then, the correct density ratios are calcultating according to the desired numbe
 #' @importFrom sp coordinates<- proj4string<- gridded<- CRS
 #' @importFrom maptools as.im.SpatialGridDataFrame
 #'
-#' @return Dataframe. Les localisations des individus.
+#' @return The simulated individuals in a dataframe. The dataframe contains three columns, `x` longitude of the simulated individual, `y` latitude of the simulated individual and `size` the number of individuals simulated on the location (the possibility of simulate groupe will comming).  
 #' @export
-
-
 
 simulate_ind <- function(map_obj, N, crs = 2154) {
   
@@ -520,7 +532,6 @@ simulate_ind <- function(map_obj, N, crs = 2154) {
     mutate(size = 1)
   
   return(sim_ind)
-  
 }
 
 ```

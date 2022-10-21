@@ -82,6 +82,15 @@ attachment::att_amend_desc()
 devtools::check()
 ```
 
+
+
+# code coverage 
+```{r}
+covr::report()
+```
+
+
+
 # Share the package
 
 ```{r}

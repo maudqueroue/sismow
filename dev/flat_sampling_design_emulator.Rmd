@@ -16,14 +16,17 @@ library(testthat)
 ## Simulate Transects
 `simulate_transects` allows to simulate transects with different conditions :     
 
-* different types of survey `design` such as parallel `systematic`, zigzag `eszigzag`, crossed zigzag `eszigzagcom` or `random` transects       
-* total transect length (approximately) `line.transect`      
-* angle of the transects `design angle`      
-* segmentation of the transects `segmentize`
-* length of segments (approximately) `length_segs`
-* and others : see `?make.design` for `dssd` package    
+- different types of **survey design** such as parallel, zigzag, crossed zigzag or random transects       
+- **total transect length** (approximately)   
+- **angle** of the transects      
+- **segmentation** of the transects
+- **segments** length (approximately)
 
-The output is a sf dataframe containing the simulated transects corresponding. The dataframe contains four columns: `transect` number, `seg_ID` (a unique identifiant for each segments/transect), `effort` (length of each segment/transect) and `geometry`.
+The output is a sf dataframe containing the simulated transects corresponding. The dataframe contains four columns:         
+- `transect` : number of the transect    
+- `seg_ID` : a unique identifiant for each segments/transect)    
+- `effort` : length of each segment/transect)    
+- `geometry`    
 
 ```{r function-simulate_transects}
 
@@ -157,14 +160,14 @@ if(segmentize == TRUE){
 
 ```
 
-### Example
+### Examples
 
-For this example, `shape_courseulles`, a dataframe included in this package is used. Then, with `simulate_transect` some transect design are simulated: 
-- (1) systematic parallel transects with a approximative total length of 400000m
-- (2) zigzag transects with a approximative length of 400000m that are segmentized with a length of approximatively 2000m per segment.
-- (3) the `shape_obj` is a density map simulated with `simulate_density` and the design is systematic parallel transects with a approximative total length of 400000m that are segmentized with a length of approximatively 2000m per segments.
+For this example, `shape_courseulles`, a dataframe included in this package is used. With `simulate_transects` some transect designs are simulated:     
+- (1) **parallel** transects with a approximative total length of **400000m**    
+- (2) **zigzag** transects with a approximative length of **400000m** that are segmentized with a length of approximatively **2000m** per segment.    
+- (3) the `shape_obj` is a density map simulated with `simulate_density` and the design is **parallel** transects with a approximative total length of **400000m** that are segmentized with a length of approximatively **2000m** per segments.
 
-```{r examples-simulate_transects}
+```{r examples-simulate_transects, warning = FALSE}
 
 library(ggplot2)
 data("shape_courseulles")
