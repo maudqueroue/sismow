@@ -7,3 +7,6 @@
 ^\.Rproj\.user$
 ^sismow\.Rproj$
 ^data-raw$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$

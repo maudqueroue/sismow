@@ -5,8 +5,6 @@ editor_options:
   chunk_output_type: console
 ---
 
-- Fill the following chunk to create the DESCRIPTION of your package
-
 ```{r description, eval=FALSE}
 # Describe your package
 fusen::fill_description(
@@ -41,32 +39,26 @@ usethis::use_code_of_conduct("maud.queroue@gmail.com")
 #usethis::use_news_md()
 ```
 
-**From now, you will need to "inflate" your package at least once to be able to use the following commands. Let's go to your flat template, and come back here later if/when needed.**
-
 
 # Package development tools
-## Use once
 
 ```{r, eval=FALSE}
 # Pipe
 usethis::use_pipe()
 
+# Data
+usethis::use_data_raw()
+
 # package-level documentation
-usethis::use_package_doc()
+#usethis::use_package_doc()
 
 # Set CI
 # _GitHub
-usethis::use_github_action_check_standard()
-usethis::use_github_action("pkgdown")
-usethis::use_github_action("test-coverage")
-# _GitLab
-gitlabr::use_gitlab_ci(type = "check-coverage-pkgdown")
+# usethis::use_github_action_check_standard()
+# usethis::use_github_action("pkgdown")
+# usethis::use_github_action("test-coverage")
 
-# Add new flat template
-fusen::add_flat_template("minimal")
 
-# Data
-usethis::use_data_raw()
 ```
 
 ## Use everytime needed

@@ -17,13 +17,13 @@ library(testthat)
 
 This function allows to simulate different densities in the studied area:         
 
-- A **homogenous** density with the same density througout the studied aera.    
-- A **gradient** density with a density decreasing from a hotspot that could be placed on different direction: `N` for North, `NE` for North-East, `E` for East, `SE` for South-East, `S` for South, `SW` for South-West, `W` for West, `NW` for North-West and `C` for center). The amplitude and the wavelength of the hotspot created can be modified.    
+- A **homogeneous** density with the same density througout the studied aera.    
+- A **gradient** density with a density decreasing from a hotspot that could be placed on different direction: North, North-East, East, South-East, South, South-West, West, North-West and center). The amplitude and the wavelength of the hotspot created can be modified.    
 - A **random** density, created by adding a certain number of hotspots on the study area. The hotspot created have a maximum amplitude and a maximum wavelength` that can be modified. Each hotspot created have an amplitude and a wavelength randomly chosen between 1 and a maximum amplitude and a maximum wavelength that can be modified by the user.     
 
 The output is a map in sf dataframe contaning the simulated density. The dataframe contains two columns:    
-- `density` : simulated for each square of the grid    
-- `geometry` 
+- `density` : density simulated for each square of the grid    
+- `geometry` : geometry of the grid 
 
 ```{r function-simulate_density}
 
@@ -38,7 +38,7 @@ The output is a map in sf dataframe contaning the simulated density. The datafra
 #'
 #' To simulate density on the map, a grid is created. The length of square side could be chosen by the user with `grid_size`. 
 #'
-#' If `density_type` is '`gradient`', one hotspot is added on one direction `gradient_direction` (`N` for North, `NE` for North-East, `E` for East, `SE` for South-East, `S` for South, `SW` for South-West, `W` for West, `NW` for North-West and `C` for center). The hotspot added have a `amplitude` and a `wavelength` chosen by the user. 
+#' If `density_type` is '`gradient`', one hotspot is added on one direction `gradient_direction` (North, North-East, East, South-East, South, South-West, West, North-West and center). The hotspot added have a `amplitude` and a `wavelength` chosen by the user. 
 #'
 #' If `density_type` is '`random`', several hotspots, the number is chosen by the user with the argument `nb_hotspots`, are added randomly in the area.The amplitude and wavelength of the differents hotspot are chosen randomly between a minimum of 1 and a maximum corresponding to the `amplitude` and `wavelength` chosen by the user. 
 #'
@@ -46,7 +46,7 @@ The output is a map in sf dataframe contaning the simulated density. The datafra
 #' @param shape_obj sf object. The shape of the study site.
 #' @param grid_size numeric. Length of length of square side. By default: 1000.
 #' @param density_type character. 'uniform", 'gradient', 'random', 'covariate'.
-#' @param gradient_direction character. Only for "gradient" `density_type`. Where the highest density comes from. 'N','NE','E'...
+#' @param gradient_direction character. Only for "gradient" `density_type`. Where the highest density comes from. 'N' for North,'NE','E'... and 'C" for center
 #' @param wavelength numeric. Only for "gradient" and "random" `density_type`. Wavelength of the hotspots of density created. Maximum wavelength for "random" `density_type`. 
 #' @param amplitude numeric. Only for "gradient" and "random" `density_type`. Amplitude of the hotspots of density created. Maximum amplitude for "random" `density_type`. 
 #' @param nb_hotspots numeric. Only for "random" `density_type`. Number of random hotspots to be created.
@@ -97,6 +97,7 @@ simulate_density <- function(shape_obj, grid_size = 1000, density_type, gradient
   
   if(density_type == "gradient"){
     
+    assert_that(is.character(gradient_direction))
     if(!(gradient_direction %in% c("N", "NE","E","SE","S","SW","W","NW","C"))){stop("Gradient_direction argument must be 'N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW' or 'C'.")}
     assert_that(is.numeric(amplitude))
     assert_that(is.numeric(wavelength))
@@ -228,17 +229,18 @@ simulate_density <- function(shape_obj, grid_size = 1000, density_type, gradient
 
 ### Examples
 
-For this example, `shape_courseulles`, a dataframe included in this package is used. With `simulate_density` some density maps are simulated:      
-- (1) a **gradient** density map with a hotspot of density in the North. 
+For this example, `shape_courseulles`, a dataframe included in this package is used. With `simulate_density` some density maps are simulated:     
+- (1) a **gradient** density map with a hotspot of density in the North.     
 - (2) a **random** density map with 10 random hotspots   
 
-```{r examples-simulate_density}
+```{r examples-simulate_density, warning = FALSE}
 
 library(ggplot2)
 data("shape_courseulles")
 
 # ------------------------------
 # Example 1 : Simulate a map with a gradient density from the North
+#-------------------------------
 
 map <- simulate_density(shape_obj = shape_courseulles,
                               density_type = "gradient",
@@ -248,11 +250,14 @@ map <- simulate_density(shape_obj = shape_courseulles,
 
 # Plot
 ggplot() +
-  geom_sf(data = map, aes(fill = density))
+  geom_sf(data = map, aes(fill = density)) +
+  theme(panel.background = element_rect(fill = "white"),
+        panel.grid.major = element_line(colour = "#EDEDE9"))
 
 
 # ------------------------------
 # Example 2 : Simulate a map with a random density
+# ------------------------------
 
 map <- simulate_density(shape_obj = shape_courseulles,
                               density_type = "random",
@@ -264,7 +269,9 @@ map <- simulate_density(shape_obj = shape_courseulles,
 
 # Plot 
 ggplot() +
-  geom_sf(data = map, aes(fill = density))
+  geom_sf(data = map, aes(fill = density)) +
+  theme(panel.background = element_rect(fill = "white"),
+        panel.grid.major = element_line(colour = "#EDEDE9"))
 
 ```
 
@@ -456,12 +463,12 @@ test_that("test erreur simulate_density", {
 
 This function allows to simulate a approximate number of individuals with a inhomogenous Poisson point process according to the densities provided.
 
-From an sf class density map `map_obj`, an inohomogene Poisson point process is used to simulate the presence of `N` individuals in the study area. The probability of presence of an individual is dependent on the density given by the map. 
+From an sf class density map `map_obj`, an inohomogene Poisson point process is used to simulate the presence of `N` individuals/group in the study area. The probability of presence of an individual/group is dependent on the density given by the map. Group are simulated using a Poisson distribution, with parameter `mean_group_size`.  
 
-The output is the simulated individuals in a dataframe. The dataframe contains three columns:    
--`x` : longitude of the simulated individual. 
--`y` : latitude of the simulated individual. 
-- `size` : the number of individuals simulated on the location (the possibility of simulate groupe will comming).
+The output is the simulated individuals in a dataframe. The dataframe contains three columns:        
+-`x` : longitude of the simulated individual.     
+-`y` : latitude of the simulated individual.     
+- `size` : the number of individuals simulated on the location..
 
 ```{r function-simulate_ind}
 
@@ -472,14 +479,16 @@ The output is the simulated individuals in a dataframe. The dataframe contains t
 #'
 #' @details
 #' This function need a grid sf object with density assosciated to each square of the grid.
-#' For each simulated individuals, a size is associated. For now, it is always one, but in the future it will be possible to simulate groups. 
+#' For each simulated individuals, a size is associated. Thus, it is possible to simulate group. Group are simulated using a Poisson distribution, with parameter `mean_group_size`. By default size is 1.
 #'
 #' @param map_obj sf dataframe. Sf map with a colum containg density informations
 #' @param N numeric. The number of individuals desired in the area.
+#' @param mean_group_size numeric. Mean size of groups to simulate. By default = 1.
 #' @param crs numeric. Projection system. By default: 2154. 
 #'
 #' @importFrom glue glue
 #' @importFrom assertthat assert_that
+#' @importFrom stats rpois
 #' @importFrom dplyr mutate select filter
 #' @importFrom sf st_centroid st_coordinates st_crs st_area
 #' @importFrom sp coordinates<- proj4string<- gridded<- CRS
@@ -488,7 +497,7 @@ The output is the simulated individuals in a dataframe. The dataframe contains t
 #' @return The simulated individuals in a dataframe. The dataframe contains three columns, `x` longitude of the simulated individual, `y` latitude of the simulated individual and `size` the number of individuals simulated on the location (the possibility of simulate groupe will comming).  
 #' @export
 
-simulate_ind <- function(map_obj, N, crs = 2154) {
+simulate_ind <- function(map_obj, N, mean_group_size = 1, crs = 2154) {
   
   # Function checks
   assert_that(inherits(map_obj, "sf"))
@@ -496,6 +505,7 @@ simulate_ind <- function(map_obj, N, crs = 2154) {
   assert_that(is.numeric(map_obj$density))
   assert_that(is.numeric(crs))
   assert_that(is.numeric(N))
+  assert_that(is.numeric(mean_group_size))
 
   
   map_obj <- map_obj %>%
@@ -529,18 +539,20 @@ simulate_ind <- function(map_obj, N, crs = 2154) {
   
   # Possibility to add group size
   sim_ind <- sim_ind %>%
-    mutate(size = 1)
+    mutate(size = rpois(nrow(sim_ind), lambda = (mean_group_size - 1)) + 1)
   
   return(sim_ind)
 }
 
 ```
 
-### Example
+### Examples
 
-An example of this function use a dataset `dataset_map` consisting in a dataframe of class `sf` containing density information. 
+For this example, we used `shape_courseulles`, a dataframe included in this package and the function `simulate_density` to simulate a density map. Then, with used `simulate_ind` to simulate individuals:          
+- (1) simulation of **200 individuals** in the studied region.     
+- (2) simulation of **100 groups** with a **mean group size of 5** individuals.       
 
-From this map, the aim of the function `simulate_ind` is to simulate the presence of individuals in the study area. The function return a dataframe, here `ind`, containing the differents individuals simulated and their geographic coordinates. 
+The function return a dataframe, here `ind`, containing the different individuals simulated, the size of each group and their geographic coordinates. 
 
 ```{r examples-simulate_ind, warning = FALSE}
 
@@ -555,13 +567,33 @@ map <- simulate_density(shape_obj = shape_courseulles,
                               wavelength = 20000,
                               amplitude = 100)
 
-# Then simulate the presence of individuals in the study area 
+# ------------------------------
+# Example 1. Simulate the presence of 200 individuals 
+# ------------------------------
+
 ind <- simulate_ind(map_obj = map, N = 200)
 
 # Plot
 ggplot() +
-    geom_sf(data = map, aes(fill = density)) +
-    geom_point(data = ind, aes(x = x, y = y))
+  geom_sf(data = map, aes(fill = density)) +
+  geom_point(data = ind, aes(x = x, y = y)) +
+  theme(panel.background = element_rect(fill = "white"),
+        panel.grid.major = element_line(colour = "#EDEDE9"))
+
+
+# ------------------------------
+# Example 2. Simulate the presence of 100 groups with a mean group size of 5 individuals 
+# ------------------------------
+
+# Then simulate the presence of individuals in the study area 
+ind <- simulate_ind(map_obj = map, mean_group_size = 5, N = 100)
+
+# Plot
+ggplot() +
+  geom_sf(data = map) +
+  geom_point(data = ind, aes(x = x, y = y, color = size)) +
+  theme(panel.background = element_rect(fill = "white"),
+        panel.grid.major = element_line(colour = "#EDEDE9"))
   
 ```
 
@@ -569,11 +601,9 @@ ggplot() +
 library(testthat)
 library(dplyr)
 
-
 test_that("simulate_ind works", {
   expect_true(inherits(simulate_ind, "function")) 
 })
-
 
 test_that("test conformite simulate_ind", {
   
@@ -588,19 +618,32 @@ test_that("test conformite simulate_ind", {
                             wavelength = 20000,
                             amplitude = 500)
   
-  test <- simulate_ind(map_obj = map, N = 500) %>%
+  test_1 <- simulate_ind(map_obj = map, N = 500) %>%
+                 slice(1:5)
+  
+  test_2 <- simulate_ind(map_obj = map, N = 500, mean_group_size = 3) %>%
                  slice(1:5)
 
-exp <- structure(list(x = c(432098.238355977, 420533.286240681, 434527.738948383, 
+exp_1 <- structure(list(x = c(432098.238355977, 420533.286240681, 434527.738948383, 
 411815.477216414, 470612.945042581), y = c(6952762.23628262, 
 6944532.6011364, 6950771.26691599, 6944138.62147687, 6945281.02163264
 ), size = c(1, 1, 1, 1, 1)), class = "data.frame", row.names = c(NA, 
 -5L))
 
-  expect_equal(object = test,
-               expected = exp)
+exp_2 <- structure(list(x = c(392685.185622455, 429778.109058536, 437555.810525346, 
+462633.647628858, 414106.671207615), y = c(6950978.15048733, 
+6947096.386525, 6941737.78689435, 6947947.10736784, 6946151.73028891
+), size = c(3, 5, 7, 3, 4)), class = "data.frame", row.names = c(NA, 
+-5L))
 
-  expect_is(test, "data.frame")
+  expect_equal(object = test_1,
+               expected = exp_1)
+  
+  expect_equal(object = test_2,
+               expected = exp_2)
+
+  expect_is(test_1, "data.frame")
+  expect_is(test_2, "data.frame")
 
 })
 
@@ -630,7 +673,8 @@ test_that("test erreur simulate ind", {
   map_test$density[5] <- "nop"
   
   expect_error(object = simulate_ind(map_obj = map_test, N = 500))
-  
+    expect_error(object = simulate_ind(map_obj = map, N = 500, mean_group_size = "ahah"))
+
   expect_error(object = simulate_ind(map_obj = map,
                                      N = 500,
                                      crs = "nop"))

@@ -12,7 +12,7 @@
 #'
 #' To simulate density on the map, a grid is created. The length of square side could be chosen by the user with `grid_size`. 
 #'
-#' If `density_type` is '`gradient`', one hotspot is added on one direction `gradient_direction` (`N` for North, `NE` for North-East, `E` for East, `SE` for South-East, `S` for South, `SW` for South-West, `W` for West, `NW` for North-West and `C` for center). The hotspot added have a `amplitude` and a `wavelength` chosen by the user. 
+#' If `density_type` is '`gradient`', one hotspot is added on one direction `gradient_direction` (North, North-East, East, South-East, South, South-West, West, North-West and center). The hotspot added have a `amplitude` and a `wavelength` chosen by the user. 
 #'
 #' If `density_type` is '`random`', several hotspots, the number is chosen by the user with the argument `nb_hotspots`, are added randomly in the area.The amplitude and wavelength of the differents hotspot are chosen randomly between a minimum of 1 and a maximum corresponding to the `amplitude` and `wavelength` chosen by the user. 
 #'
@@ -20,7 +20,7 @@
 #' @param shape_obj sf object. The shape of the study site.
 #' @param grid_size numeric. Length of length of square side. By default: 1000.
 #' @param density_type character. 'uniform", 'gradient', 'random', 'covariate'.
-#' @param gradient_direction character. Only for "gradient" `density_type`. Where the highest density comes from. 'N','NE','E'...
+#' @param gradient_direction character. Only for "gradient" `density_type`. Where the highest density comes from. 'N' for North,'NE','E'... and 'C" for center
 #' @param wavelength numeric. Only for "gradient" and "random" `density_type`. Wavelength of the hotspots of density created. Maximum wavelength for "random" `density_type`. 
 #' @param amplitude numeric. Only for "gradient" and "random" `density_type`. Amplitude of the hotspots of density created. Maximum amplitude for "random" `density_type`. 
 #' @param nb_hotspots numeric. Only for "random" `density_type`. Number of random hotspots to be created.
@@ -45,6 +45,7 @@
 #' 
 #' # ------------------------------
 #' # Example 1 : Simulate a map with a gradient density from the North
+#' #-------------------------------
 #' 
 #' map <- simulate_density(shape_obj = shape_courseulles,
 #'                               density_type = "gradient",
@@ -54,11 +55,14 @@
 #' 
 #' # Plot
 #' ggplot() +
-#'   geom_sf(data = map, aes(fill = density))
+#'   geom_sf(data = map, aes(fill = density)) +
+#'   theme(panel.background = element_rect(fill = "white"),
+#'         panel.grid.major = element_line(colour = "#EDEDE9"))
 #' 
 #' 
 #' # ------------------------------
 #' # Example 2 : Simulate a map with a random density
+#' # ------------------------------
 #' 
 #' map <- simulate_density(shape_obj = shape_courseulles,
 #'                               density_type = "random",
@@ -70,7 +74,9 @@
 #' 
 #' # Plot 
 #' ggplot() +
-#'   geom_sf(data = map, aes(fill = density))
+#'   geom_sf(data = map, aes(fill = density)) +
+#'   theme(panel.background = element_rect(fill = "white"),
+#'         panel.grid.major = element_line(colour = "#EDEDE9"))
 #' 
 simulate_density <- function(shape_obj, grid_size = 1000, density_type, gradient_direction, wavelength, amplitude, nb_hotspots, crs = 2154) {
   

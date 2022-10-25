@@ -3,11 +3,9 @@
 library(testthat)
 library(dplyr)
 
-
 test_that("simulate_ind works", {
   expect_true(inherits(simulate_ind, "function")) 
 })
-
 
 test_that("test conformite simulate_ind", {
   
@@ -22,19 +20,32 @@ test_that("test conformite simulate_ind", {
                             wavelength = 20000,
                             amplitude = 500)
   
-  test <- simulate_ind(map_obj = map, N = 500) %>%
+  test_1 <- simulate_ind(map_obj = map, N = 500) %>%
+                 slice(1:5)
+  
+  test_2 <- simulate_ind(map_obj = map, N = 500, mean_group_size = 3) %>%
                  slice(1:5)
 
-exp <- structure(list(x = c(432098.238355977, 420533.286240681, 434527.738948383, 
+exp_1 <- structure(list(x = c(432098.238355977, 420533.286240681, 434527.738948383, 
 411815.477216414, 470612.945042581), y = c(6952762.23628262, 
 6944532.6011364, 6950771.26691599, 6944138.62147687, 6945281.02163264
 ), size = c(1, 1, 1, 1, 1)), class = "data.frame", row.names = c(NA, 
 -5L))
 
-  expect_equal(object = test,
-               expected = exp)
+exp_2 <- structure(list(x = c(392685.185622455, 429778.109058536, 437555.810525346, 
+462633.647628858, 414106.671207615), y = c(6950978.15048733, 
+6947096.386525, 6941737.78689435, 6947947.10736784, 6946151.73028891
+), size = c(3, 5, 7, 3, 4)), class = "data.frame", row.names = c(NA, 
+-5L))
 
-  expect_is(test, "data.frame")
+  expect_equal(object = test_1,
+               expected = exp_1)
+  
+  expect_equal(object = test_2,
+               expected = exp_2)
+
+  expect_is(test_1, "data.frame")
+  expect_is(test_2, "data.frame")
 
 })
 
@@ -64,7 +75,8 @@ test_that("test erreur simulate ind", {
   map_test$density[5] <- "nop"
   
   expect_error(object = simulate_ind(map_obj = map_test, N = 500))
-  
+    expect_error(object = simulate_ind(map_obj = map, N = 500, mean_group_size = "ahah"))
+
   expect_error(object = simulate_ind(map_obj = map,
                                      N = 500,
                                      crs = "nop"))

@@ -4,12 +4,14 @@
 \alias{simulate_ind}
 \title{Simulate individuals}
 \usage{
-simulate_ind(map_obj, N, crs = 2154)
+simulate_ind(map_obj, N, mean_group_size = 1, crs = 2154)
 }
 \arguments{
 \item{map_obj}{sf dataframe. Sf map with a colum containg density informations}
 
 \item{N}{numeric. The number of individuals desired in the area.}
+
+\item{mean_group_size}{numeric. Mean size of groups to simulate. By default = 1.}
 
 \item{crs}{numeric. Projection system. By default: 2154.}
 }
@@ -21,7 +23,7 @@ The simulated individuals in a dataframe. The dataframe contains three columns, 
 }
 \details{
 This function need a grid sf object with density assosciated to each square of the grid.
-For each simulated individuals, a size is associated. For now, it is always one, but in the future it will be possible to simulate groups.
+For each simulated individuals, a size is associated. Thus, it is possible to simulate group. Group are simulated using a Poisson distribution, with parameter \code{mean_group_size}. By default size is 1.
 }
 \examples{
 
@@ -36,12 +38,32 @@ map <- simulate_density(shape_obj = shape_courseulles,
                               wavelength = 20000,
                               amplitude = 100)
 
-# Then simulate the presence of individuals in the study area 
+# ------------------------------
+# Example 1. Simulate the presence of 200 individuals 
+# ------------------------------
+
 ind <- simulate_ind(map_obj = map, N = 200)
 
 # Plot
 ggplot() +
-    geom_sf(data = map, aes(fill = density)) +
-    geom_point(data = ind, aes(x = x, y = y))
+  geom_sf(data = map, aes(fill = density)) +
+  geom_point(data = ind, aes(x = x, y = y)) +
+  theme(panel.background = element_rect(fill = "white"),
+        panel.grid.major = element_line(colour = "#EDEDE9"))
+
+
+# ------------------------------
+# Example 2. Simulate the presence of 100 groups with a mean group size of 5 individuals 
+# ------------------------------
+
+# Then simulate the presence of individuals in the study area 
+ind <- simulate_ind(map_obj = map, mean_group_size = 5, N = 100)
+
+# Plot
+ggplot() +
+  geom_sf(data = map) +
+  geom_point(data = ind, aes(x = x, y = y, color = size)) +
+  theme(panel.background = element_rect(fill = "white"),
+        panel.grid.major = element_line(colour = "#EDEDE9"))
   
 }

@@ -9,15 +9,38 @@ editor_options:
 library(testthat)
 ```
 
-<!--
- You need to run the 'description' chunk in the '0-dev_history.Rmd' file before continuing your code there.
--->
 
-## Detection function
+## Simulate Observation
+`simulate_obs` allows to simulate dataset of observations according to:
+- The individuals simulated on the density map
+- The transect design simulated
+- A detection probability     
+
+To determine the detection probability it is possible to choose:
+- The form of the detection function : **uniform** or **half-normal**
+- The maximum distance of observation (**truncation**)
+- The probability of observation at distance 0 (**g_zero**)
+- The effective strip width (**esw**) for half-normal detection function
+
+The output is a dataframe containing all the individuals/groups of the map. The dataframe contains four columns:         
+- `object_ID` : unique identification of individuals/groups 
+- `size` : size of group (=1 for individuals).    
+- `detected` : 0 for non detected or 1 for detected individuals/groups
+- `proba` : probability of detection of the individual/group (according to the distance to the nearest transect/segment)
+- `distance` : distance in m between individual/group and the nearest transect/segment.
+- `seg_ID` : identification of the nearest segment/transect
+- `x` : longitude of the individual/group
+- `y` : latitude of the individual/ group
 
 ```{r function-simulate_obs}
 
-#' Detection function
+#' Simulate observation
+#'
+#' @description
+#' `simulate_obs` allows to simulate to simulate dataset of observations according to individuals simulated on the density map, a transect design a detection probability 
+#
+#' @details
+#' To calculate the detection probability, the function calculate first the distance between the individual/group and the nearest transect.
 #'
 #' @param ind_obj dataframe. Individuals simulated with their coordinates.
 #' @param transect_obj sf dataframe. Transect/segments data.
@@ -33,7 +56,7 @@ library(testthat)
 #' @importFrom sf st_as_sf st_nearest_feature st_distance st_drop_geometry
 #' @importFrom assertthat assert_that
 #'
-#' @return dataframe. The dist dataframe with new columns : "proba" (numeric values between 0 and 1), the probability of being detection and 'detected' (0 or 1)informing if the individual is detected by the sample design.
+#' @return dataframe. The dataframe contains all the individuals/groups of the map. The dataframe contains the identification of individuals/groups, their size, if their are detected, their probability of detection, the identification of nearest transect/segment and their localisation. 
 #' @export
 
 
@@ -50,7 +73,7 @@ simulate_obs <- function(ind_obj, transect_obj, key, esw = NA, g_zero = 1, trunc
   
   # Function
   
-  # Calculate distance between individuals and neerest transect/segment
+  # Calculate distance between individuals and nearest transect/segment
   
   # obs point in sf format
   dsf <- ind_obj %>%
@@ -117,34 +140,32 @@ simulate_obs <- function(ind_obj, transect_obj, key, esw = NA, g_zero = 1, trunc
 
 ### Examples
 
-For this example, we used a `shape_obj` that is included in this package `shape_courseulles`. We create a map contaning 500 individuals with: 
-- (1) a gradient density. 
-- (2) a random density. 
+For this example, `shape_courseulles`, a dataframe included in this package is used. With `simulate_obs` observations of individuals and group are simulated under diffrent conditions:     
+- (1) **Half normal** detection probability equal to **1** at 0 distance (g_zero) with a effective half width of **180m** (esw). 
+- (2) **Uniform** detection probability equal to **1** below distance **200m** (truncation).    
 
-```{r examples-simulate_obs}
+```{r examples-simulate_obs, warning = FALSE}
 
 library(ggplot2)
 data("shape_courseulles")
 
 # First, create a density map
 map <- simulate_density(shape_obj = shape_courseulles,
-                          density_type = "gradient",
-                          gradient_direction = "N",
-                          wavelength = 20000,
-                          amplitude = 500
-                          
-)
+                        density_type = "gradient",
+                        gradient_direction = "N",
+                        wavelength = 20000,
+                        amplitude = 500)
 
 # Then simulate the presence of individuals in the study area 
 ind <- simulate_ind(map_obj = map, N = 500)
 
 # Then create transects
 transects <- simulate_transects(shape_obj = map,
-                             design = "systematic",
-                             line.length = 400000,
-                             design.angle = 2,
-                             segmentize = TRUE,
-                             length_segs = 2000)
+                                design = "systematic",
+                                line.length = 400000,
+                                design.angle = 2,
+                                segmentize = TRUE,
+                                length_segs = 2000)
 
 # Finally, detection of individuals simulated on the map 
 # according to simulated densities and simulated transects :
@@ -152,12 +173,13 @@ transects <- simulate_transects(shape_obj = map,
 # ------------------------------
 # Example 1 : With a half normal detection probability equal to 1 at 0 distance (g_zero)
 # with a effective half width of 180 m.
+# ------------------------------
 
 obs <- simulate_obs(ind_obj = ind,
-                 transect_obj = transects,
-                 key = "hn",
-                 g_zero = 1,
-                 esw = 180)
+                    transect_obj = transects,
+                    key = "hn",
+                    g_zero = 1,
+                    esw = 180)
 
 # Plot detection probability
 ggplot(obs, aes(x=distance, y=proba)) +
@@ -170,17 +192,21 @@ ggplot() +
   geom_sf(data = transects, color = "black") +
   geom_point(data=obs[obs$detected==0,], aes(x=x, y=y), shape=20, color="#051923") +
   geom_point(data=obs[obs$detected==1,], aes(x=x, y=y), shape=21, fill="#EE6C4D") +
-  labs(caption = paste("Sightings = ", sum(obs$detected), sep = " "))
+  labs(caption = paste("Sightings = ", sum(obs$detected), sep = " ")) +
+  theme(legend.position = "none",
+        panel.background = element_rect(fill = "white"),
+        panel.grid.major = element_line(colour = "#EDEDE9"))
 
 
 # ------------------------------
 # Example 2 : With a uniforme detection probability equal to 1 below distance 200 m.
+# ------------------------------
 
 obs <- simulate_obs(ind_obj = ind,
-                 transect_obj = transects,
-                 key = "unif",
-                 g_zero = 1,
-                 truncation = 200)
+                    transect_obj = transects,
+                    key = "unif",
+                    g_zero = 1,
+                    truncation = 200)
 
 # Plot detection probability
 ggplot(obs, aes(x=distance, y=proba)) +
@@ -193,7 +219,10 @@ ggplot() +
   geom_sf(data = transects, color = "black") +
   geom_point(data=obs[obs$detected==0,], aes(x=x, y=y), shape=20, color="#051923") +
   geom_point(data=obs[obs$detected==1,], aes(x=x, y=y), shape=21, fill="#EE6C4D") +
-  labs(caption = paste("Sightings = ", sum(obs$detected), sep = " "))
+  labs(caption = paste("Sightings = ", sum(obs$detected), sep = " ")) +
+  theme(legend.position = "none",
+        panel.background = element_rect(fill = "white"),
+        panel.grid.major = element_line(colour = "#EDEDE9"))
 
 ```
 

@@ -9,10 +9,6 @@ editor_options:
 library(testthat)
 ```
 
-<!--
- You need to run the 'description' chunk in the '0-dev_history.Rmd' file before continuing your code there.
--->
-
 ## Simulate Transects
 `simulate_transects` allows to simulate transects with different conditions :     
 
@@ -163,9 +159,9 @@ if(segmentize == TRUE){
 ### Examples
 
 For this example, `shape_courseulles`, a dataframe included in this package is used. With `simulate_transects` some transect designs are simulated:     
-- (1) **parallel** transects with a approximative total length of **400000m**    
-- (2) **zigzag** transects with a approximative length of **400000m** that are segmentized with a length of approximatively **2000m** per segment.    
-- (3) the `shape_obj` is a density map simulated with `simulate_density` and the design is **parallel** transects with a approximative total length of **400000m** that are segmentized with a length of approximatively **2000m** per segments.
+- (1) **parallel** transects with a approximative total length of **400 km**    
+- (2) **zigzag** transects with a approximative length of **400 km** that are segmentized with a length of approximatively **2000m** per segment.    
+- (3) the `shape_obj` is a density map simulated with `simulate_density` and the design is **parallel** transects with a approximative total length of **400 km** that are segmentized with a length of approximatively **2000m** per segments.
 
 ```{r examples-simulate_transects, warning = FALSE}
 
@@ -181,8 +177,10 @@ transects <- simulate_transects(shape_obj = shape_courseulles,
                              line.length = 400000)
 # Plot
 ggplot() +
-      geom_sf(data = shape_courseulles) +
-      geom_sf(data = transects) 
+      geom_sf(data = shape_courseulles, fill = "#EDEDE9") +
+      geom_sf(data = transects) +
+      theme(panel.background = element_rect(fill = "white"),
+      panel.grid.major = element_line(colour = "#EDEDE9"))
 
 # ------------------------------
 # Example 2 : zigzag transects with a approximative total length of 400000m 
@@ -199,10 +197,12 @@ transects <- simulate_transects(shape_obj = shape_courseulles,
 # Plot
 pal <- rep(c("#98C1D9","#EE6C4D","#293241"),nrow(transects)) 
 ggplot() +
-      geom_sf(data = shape_courseulles) +
+      geom_sf(data = shape_courseulles, fill = "#EDEDE9") +
       geom_sf(data = transects, aes(colour = seg_ID))+
       scale_colour_manual(values=pal) +
-      theme(legend.position = "none")
+      theme(legend.position = "none",
+      panel.background = element_rect(fill = "white"),
+      panel.grid.major = element_line(colour = "#EDEDE9"))
 
 
 # ------------------------------
@@ -233,7 +233,9 @@ ggplot() +
       geom_sf(data = map, color = "#D9D9D9") +
       geom_sf(data = transects, aes(colour = seg_ID))+
       scale_colour_manual(values = pal) +
-      theme(legend.position = "none")
+      theme(legend.position = "none",
+      panel.background = element_rect(fill = "white"),
+      panel.grid.major = element_line(colour = "#EDEDE9"))
 
 ```
 

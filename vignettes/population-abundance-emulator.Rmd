@@ -34,24 +34,25 @@ This function allows to simulate different densities in the studied area:
 - A **random** density, created by adding a certain number of hotspots on the study area. The hotspot created have a maximum amplitude and a maximum wavelength` that can be modified. Each hotspot created have an amplitude and a wavelength randomly chosen between 1 and a maximum amplitude and a maximum wavelength that can be modified by the user.     
 
 The output is a map in sf dataframe contaning the simulated density. The dataframe contains two columns:    
-- `density` : simulated for each square of the grid    
-- `geometry` 
+- `density` : density simulated for each square of the grid    
+- `geometry` : geometry of the grid 
 
 
 ### Examples
 
-For this example, `shape_courseulles`, a dataframe included in this package is used. With `simulate_density` some density maps are simulated:      
-- (1) a **gradient** density map with a hotspot of density in the North. 
+For this example, `shape_courseulles`, a dataframe included in this package is used. With `simulate_density` some density maps are simulated:     
+- (1) a **gradient** density map with a hotspot of density in the North.     
 - (2) a **random** density map with 10 random hotspots   
 
 
-```{r examples-simulate_density}
+```{r examples-simulate_density, warning = FALSE}
 
 library(ggplot2)
 data("shape_courseulles")
 
 # ------------------------------
 # Example 1 : Simulate a map with a gradient density from the North
+#-------------------------------
 
 map <- simulate_density(shape_obj = shape_courseulles,
                               density_type = "gradient",
@@ -61,11 +62,14 @@ map <- simulate_density(shape_obj = shape_courseulles,
 
 # Plot
 ggplot() +
-  geom_sf(data = map, aes(fill = density))
+  geom_sf(data = map, aes(fill = density)) +
+  theme(panel.background = element_rect(fill = "white"),
+        panel.grid.major = element_line(colour = "#EDEDE9"))
 
 
 # ------------------------------
 # Example 2 : Simulate a map with a random density
+# ------------------------------
 
 map <- simulate_density(shape_obj = shape_courseulles,
                               density_type = "random",
@@ -77,7 +81,9 @@ map <- simulate_density(shape_obj = shape_courseulles,
 
 # Plot 
 ggplot() +
-  geom_sf(data = map, aes(fill = density))
+  geom_sf(data = map, aes(fill = density)) +
+  theme(panel.background = element_rect(fill = "white"),
+        panel.grid.major = element_line(colour = "#EDEDE9"))
 
 ```
 
@@ -87,17 +93,19 @@ This function allows to simulate a approximate number of individuals with a inho
 
 From an sf class density map `map_obj`, an inohomogene Poisson point process is used to simulate the presence of `N` individuals in the study area. The probability of presence of an individual is dependent on the density given by the map. 
 
-The output is the simulated individuals in a dataframe. The dataframe contains three columns:    
--`x` : longitude of the simulated individual. 
--`y` : latitude of the simulated individual. 
+The output is the simulated individuals in a dataframe. The dataframe contains three columns:        
+-`x` : longitude of the simulated individual.     
+-`y` : latitude of the simulated individual.     
 - `size` : the number of individuals simulated on the location (the possibility of simulate groupe will comming).
 
 
-### Example
+### Examples
 
-An example of this function use a dataset `dataset_map` consisting in a dataframe of class `sf` containing density information. 
+For this example, we used `shape_courseulles`, a dataframe included in this package and the function `simulate_density` to simulate a density map. Then, with used `simulate_ind` to simulate individuals:          
+- (1) simulation of **200 individuals** in the studied region.     
+- (2) simulation of **100 groups** with a **mean group size of 5** individuals.       
 
-From this map, the aim of the function `simulate_ind` is to simulate the presence of individuals in the study area. The function return a dataframe, here `ind`, containing the differents individuals simulated and their geographic coordinates. 
+The function return a dataframe, here `ind`, containing the different individuals simulated, the size of each group and their geographic coordinates. 
 
 
 ```{r examples-simulate_ind, warning = FALSE}
@@ -113,13 +121,33 @@ map <- simulate_density(shape_obj = shape_courseulles,
                               wavelength = 20000,
                               amplitude = 100)
 
-# Then simulate the presence of individuals in the study area 
+# ------------------------------
+# Example 1. Simulate the presence of 200 individuals 
+# ------------------------------
+
 ind <- simulate_ind(map_obj = map, N = 200)
 
 # Plot
 ggplot() +
-    geom_sf(data = map, aes(fill = density)) +
-    geom_point(data = ind, aes(x = x, y = y))
+  geom_sf(data = map, aes(fill = density)) +
+  geom_point(data = ind, aes(x = x, y = y)) +
+  theme(panel.background = element_rect(fill = "white"),
+        panel.grid.major = element_line(colour = "#EDEDE9"))
+
+
+# ------------------------------
+# Example 2. Simulate the presence of 100 groups with a mean group size of 5 individuals 
+# ------------------------------
+
+# Then simulate the presence of individuals in the study area 
+ind <- simulate_ind(map_obj = map, mean_group_size = 5, N = 100)
+
+# Plot
+ggplot() +
+  geom_sf(data = map) +
+  geom_point(data = ind, aes(x = x, y = y, color = size)) +
+  theme(panel.background = element_rect(fill = "white"),
+        panel.grid.major = element_line(colour = "#EDEDE9"))
   
 ```
 

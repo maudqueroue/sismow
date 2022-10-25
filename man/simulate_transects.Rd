@@ -57,8 +57,10 @@ transects <- simulate_transects(shape_obj = shape_courseulles,
                              line.length = 400000)
 # Plot
 ggplot() +
-      geom_sf(data = shape_courseulles) +
-      geom_sf(data = transects) 
+      geom_sf(data = shape_courseulles, fill = "#EDEDE9") +
+      geom_sf(data = transects) +
+      theme(panel.background = element_rect(fill = "white"),
+      panel.grid.major = element_line(colour = "#EDEDE9"))
 
 # ------------------------------
 # Example 2 : zigzag transects with a approximative total length of 400000m 
@@ -75,10 +77,12 @@ transects <- simulate_transects(shape_obj = shape_courseulles,
 # Plot
 pal <- rep(c("#98C1D9","#EE6C4D","#293241"),nrow(transects)) 
 ggplot() +
-      geom_sf(data = shape_courseulles) +
+      geom_sf(data = shape_courseulles, fill = "#EDEDE9") +
       geom_sf(data = transects, aes(colour = seg_ID))+
       scale_colour_manual(values=pal) +
-      theme(legend.position = "none")
+      theme(legend.position = "none",
+      panel.background = element_rect(fill = "white"),
+      panel.grid.major = element_line(colour = "#EDEDE9"))
 
 
 # ------------------------------
@@ -109,6 +113,8 @@ ggplot() +
       geom_sf(data = map, color = "#D9D9D9") +
       geom_sf(data = transects, aes(colour = seg_ID))+
       scale_colour_manual(values = pal) +
-      theme(legend.position = "none")
+      theme(legend.position = "none",
+      panel.background = element_rect(fill = "white"),
+      panel.grid.major = element_line(colour = "#EDEDE9"))
 
 }

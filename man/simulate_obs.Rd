@@ -21,11 +21,11 @@ simulate_obs(
 
 \item{key}{character. Form of the detection function "hn" or "unif".}
 
-\item{esw}{numeric. Effective strip width (in m). This argument is needed only for the 'hn' form.}
+\item{esw}{numeric. Effective strip width in m. This argument is needed only for the 'hn' form.}
 
 \item{g_zero}{numeric. The detection probability at distance 0. By default 1.}
 
-\item{truncation}{numeric. A single numeric value (in m) describing the longest distance at which an object may be observed. By default = NA.}
+\item{truncation}{numeric. A single numeric value in m describing the longest distance at which an object may be observed. By default = NA.}
 
 \item{crs}{numeric. Projection system. By default = 2154.}
 }
@@ -66,6 +66,7 @@ transects <- simulate_transects(shape_obj = map,
 # ------------------------------
 # Example 1 : With a half normal detection probability equal to 1 at 0 distance (g_zero)
 # with a effective half width of 180 m.
+# ------------------------------
 
 obs <- simulate_obs(ind_obj = ind,
                  transect_obj = transects,
@@ -84,11 +85,15 @@ ggplot() +
   geom_sf(data = transects, color = "black") +
   geom_point(data=obs[obs$detected==0,], aes(x=x, y=y), shape=20, color="#051923") +
   geom_point(data=obs[obs$detected==1,], aes(x=x, y=y), shape=21, fill="#EE6C4D") +
-  labs(caption = paste("Sightings = ", sum(obs$detected), sep = " "))
+  labs(caption = paste("Sightings = ", sum(obs$detected), sep = " ")) +
+  theme(legend.position = "none",
+        panel.background = element_rect(fill = "white"),
+        panel.grid.major = element_line(colour = "#EDEDE9"))
 
 
 # ------------------------------
 # Example 2 : With a uniforme detection probability equal to 1 below distance 200 m.
+# ------------------------------
 
 obs <- simulate_obs(ind_obj = ind,
                  transect_obj = transects,
@@ -107,6 +112,9 @@ ggplot() +
   geom_sf(data = transects, color = "black") +
   geom_point(data=obs[obs$detected==0,], aes(x=x, y=y), shape=20, color="#051923") +
   geom_point(data=obs[obs$detected==1,], aes(x=x, y=y), shape=21, fill="#EE6C4D") +
-  labs(caption = paste("Sightings = ", sum(obs$detected), sep = " "))
+  labs(caption = paste("Sightings = ", sum(obs$detected), sep = " ")) +
+  theme(legend.position = "none",
+        panel.background = element_rect(fill = "white"),
+        panel.grid.major = element_line(colour = "#EDEDE9"))
 
 }
