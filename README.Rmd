@@ -28,7 +28,7 @@ The goal of `sismow` is to simulate different **datasets of aerial monitoring**.
 
 With the different functions of this package, it is possible to simulate digital and visual aerial monitoring for different conditions (more or less abundant species, more or less homogeneously distributed in space, more or less discreet...). This allows then to calculate abundances and distributions from the different datasets under different conditions and to calculate the intercalibration parameters between the two methods.
 
-## Installation
+### Installation
 
 ---
 
@@ -40,10 +40,11 @@ You can install the development version of `sismow` from [GitHub](https://github
 library(sismow)
 ```
 
-## Population Abondance Emulator
+### Population Abondance Emulator
+
 ---
 
-### Simulate density
+#### Simulate density
 
 First, the function `simulate_density` allows to create map with different density types.
 
@@ -52,7 +53,7 @@ First, the function `simulate_density` allows to create map with different densi
 - **homogeneous**: same density througout the studied area.  
 
 ```{r, echo = FALSE, warning = FALSE, message = FALSE}
-library(sismow)
+set.seed(2022)
 library(ggplot2)
 
 data("shape_courseulles")
@@ -64,13 +65,13 @@ shape_courseulles <- shape_courseulles %>%
 map <- simulate_density(shape_obj = shape_courseulles,
                         density_type = "uniform")
 ```
-```{r, echo = FALSE, warning = FALSE}
+```{r, echo = FALSE, warning = FALSE, fig.height = 3, fig.width= 7}
 # Plot
 ggplot() +
   geom_sf(data = map, aes(fill = density)) +
   theme(legend.position = "none",
         panel.background = element_rect(fill = "white"),
-        panel.grid.major = element_line(colour = "#EDEDE9"))+
+        panel.grid.major = element_line(colour = "#EDEDE9")) +
   ggtitle("Homogeneous density")
 ```
 
@@ -82,12 +83,12 @@ map <- simulate_density(shape_obj = shape_courseulles,
                         amplitude = 200,
                         wavelength = 40000)
 ```
-```{r, echo = FALSE, warning = FALSE}
+```{r, echo = FALSE, warning = FALSE, fig.height = 3, fig.width= 7}
 # Plot
 ggplot() +
   geom_sf(data = map, aes(fill = density)) +
   theme(panel.background = element_rect(fill = "white"),
-        panel.grid.major = element_line(colour = "#EDEDE9"))+
+        panel.grid.major = element_line(colour = "#EDEDE9")) +
   ggtitle("Gradient density")
 ```
 
@@ -99,7 +100,7 @@ map <- simulate_density(shape_obj = shape_courseulles,
                         wavelength = 10000,
                         nb_hotspots = 15)
 ```
-```{r, echo = FALSE, warning = FALSE}
+```{r, echo = FALSE, warning = FALSE, fig.height = 3, fig.width= 7}
 # Plot
 ggplot() +
   geom_sf(data = map, aes(fill = density)) +
@@ -108,7 +109,7 @@ ggplot() +
   ggtitle("Random density")
 ```
 
-### Simulate individuals
+#### Simulate individuals
 The `simulate_ind` function allows to simulate a approximate number of individuals/groups with a inhomogenous Poisson point process according to the densities provided.
 
 ##### Examples :    
@@ -125,7 +126,7 @@ ind <- simulate_ind(map_obj = map,
                     mean_group_size = 1, 
                     N = 200)
 ```
-```{r, echo = FALSE, warning = FALSE}
+```{r, echo = FALSE, warning = FALSE, fig.height = 3, fig.width= 7}
 ggplot() +
   geom_sf(data = map, aes(fill = density)) +
   geom_point(data = ind, aes(x = x, y = y)) +
@@ -142,7 +143,7 @@ ind <- simulate_ind(map_obj = map,
                     mean_group_size = 5, 
                     N = 100)
 ```
-```{r, echo = FALSE, warning = FALSE}
+```{r, echo = FALSE, warning = FALSE, fig.height = 3, fig.width= 7}
 ggplot()+
   geom_sf(data = map, colour = "#EDEDE9") +
   geom_point(data = ind, aes(x = x, y = y, color = size)) +
@@ -153,9 +154,11 @@ ggplot()+
   ggtitle("Simulated groups")
 ```
 
-## Sampling Design Emulator
+### Sampling Design Emulator
 
-### Simulate transects
+---
+
+#### Simulate transects
 The function `simulate_transects` allows to simulate transects with different conditions :       
 - different types of **survey design** such as parallel, zigzag, crossed zigzag or random transects       
 - **total transect length** (approximately)   
@@ -171,7 +174,7 @@ transects <- simulate_transects(shape_obj = shape_courseulles,
                              design = "systematic",
                              line.length = 400000)
 ```
-```{r, echo = FALSE, warning = FALSE}
+```{r, echo = FALSE, warning = FALSE, fig.height = 3, fig.width= 7}
 # Plot
 ggplot() +
       geom_sf(data = shape_courseulles, fill = "#EDEDE9") +
@@ -190,7 +193,7 @@ transects <- simulate_transects(shape_obj = shape_courseulles,
                              segmentize = TRUE,
                              length_segs = 2000)
 ```
-```{r, echo = FALSE, warning = FALSE}
+```{r, echo = FALSE, warning = FALSE, fig.height = 3, fig.width= 7}
 pal <- rep(c("#98C1D9","#EE6C4D","#293241"),nrow(transects)) 
 ggplot() +
       geom_sf(data = shape_courseulles, fill = "#EDEDE9") +
@@ -202,8 +205,11 @@ ggplot() +
   ggtitle("Zigzag design")
 ```
 
-## Observation Data Emulator
-### Simulate observation 
+### Observation Data Emulator
+
+---
+
+#### Simulate observations 
 The function `simulate_obs` allows to simulate dataset of observations according to:    
 1. The **individuals/groups simulated** on the **density** map.   
 2. The **transect design** simulated.   
@@ -236,7 +242,7 @@ obs <- simulate_obs(ind_obj = ind,
                     g_zero = 1,
                     esw = 180)
 ```
-```{r, echo = FALSE, warning = FALSE}
+```{r, echo = FALSE, warning = FALSE, fig.height = 3, fig.width= 7}
 # Plot detection probability
 ggplot(obs, aes(x=distance, y=proba)) +
   geom_point(color = "#EE6C4D") +
@@ -268,7 +274,7 @@ obs <- simulate_obs(ind_obj = ind,
                     g_zero = 1,
                     truncation = 200)
 ```
-```{r, echo = FALSE, warning = FALSE}
+```{r, echo = FALSE, warning = FALSE, fig.height = 3, fig.width= 7}
 # Plot detection probability
 ggplot(obs, aes(x=distance, y=proba)) +
   geom_point(color = "#EE6C4D") +

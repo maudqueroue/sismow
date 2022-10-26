@@ -26,7 +26,7 @@ more or less discreet…). This allows then to calculate abundances and
 distributions from the different datasets under different conditions and
 to calculate the intercalibration parameters between the two methods.
 
-## Installation
+### Installation
 
 -----
 
@@ -39,9 +39,11 @@ You can install the development version of `sismow` from
 library(sismow)
 ```
 
-## \#\# Population Abondance Emulator
+### Population Abondance Emulator
 
-### Simulate density
+-----
+
+#### Simulate density
 
 First, the function `simulate_density` allows to create map with
 different density types.
@@ -88,7 +90,7 @@ map <- simulate_density(shape_obj = shape_courseulles,
 
 <img src="man/figures/README-unnamed-chunk-9-1.png" width="100%" />
 
-### Simulate individuals
+#### Simulate individuals
 
 The `simulate_ind` function allows to simulate a approximate number of
 individuals/groups with a inhomogenous Poisson point process according
@@ -120,9 +122,11 @@ ind <- simulate_ind(map_obj = map,
 
 <img src="man/figures/README-unnamed-chunk-14-1.png" width="100%" />
 
-## Sampling Design Emulator
+### Sampling Design Emulator
 
-### Simulate transects
+-----
+
+#### Simulate transects
 
 The function `simulate_transects` allows to simulate transects with
 different conditions :  
@@ -165,9 +169,11 @@ transects <- simulate_transects(shape_obj = shape_courseulles,
 
 <img src="man/figures/README-unnamed-chunk-18-1.png" width="100%" />
 
-## Observation Data Emulator
+### Observation Data Emulator
 
-### Simulate observation
+-----
+
+#### Simulate observations
 
 The function `simulate_obs` allows to simulate dataset of observations
 according to:  
