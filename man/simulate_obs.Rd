@@ -2,7 +2,7 @@
 % Please edit documentation in R/simulate_obs.R
 \name{simulate_obs}
 \alias{simulate_obs}
-\title{Detection function}
+\title{Simulate observation}
 \usage{
 simulate_obs(
   ind_obj,
@@ -30,10 +30,13 @@ simulate_obs(
 \item{crs}{numeric. Projection system. By default = 2154.}
 }
 \value{
-dataframe. The dist dataframe with new columns : "proba" (numeric values between 0 and 1), the probability of being detection and 'detected' (0 or 1)informing if the individual is detected by the sample design.
+dataframe. The dataframe contains all the individuals/groups of the map. The dataframe contains the identification of individuals/groups, their size, if their are detected, their probability of detection, the identification of nearest transect/segment and their localisation.
 }
 \description{
-Detection function
+\code{simulate_obs} allows to simulate to simulate dataset of observations according to individuals simulated on the density map, a transect design a detection probability
+}
+\details{
+To calculate the detection probability, the function calculate first the distance between the individual/group and the nearest transect.
 }
 \examples{
 
@@ -42,23 +45,21 @@ data("shape_courseulles")
 
 # First, create a density map
 map <- simulate_density(shape_obj = shape_courseulles,
-                          density_type = "gradient",
-                          gradient_direction = "N",
-                          wavelength = 20000,
-                          amplitude = 500
-                          
-)
+                        density_type = "gradient",
+                        gradient_direction = "N",
+                        wavelength = 20000,
+                        amplitude = 500)
 
 # Then simulate the presence of individuals in the study area 
 ind <- simulate_ind(map_obj = map, N = 500)
 
 # Then create transects
 transects <- simulate_transects(shape_obj = map,
-                             design = "systematic",
-                             line.length = 400000,
-                             design.angle = 2,
-                             segmentize = TRUE,
-                             length_segs = 2000)
+                                design = "systematic",
+                                line.length = 400000,
+                                design.angle = 2,
+                                segmentize = TRUE,
+                                length_segs = 2000)
 
 # Finally, detection of individuals simulated on the map 
 # according to simulated densities and simulated transects :
@@ -69,10 +70,10 @@ transects <- simulate_transects(shape_obj = map,
 # ------------------------------
 
 obs <- simulate_obs(ind_obj = ind,
-                 transect_obj = transects,
-                 key = "hn",
-                 g_zero = 1,
-                 esw = 180)
+                    transect_obj = transects,
+                    key = "hn",
+                    g_zero = 1,
+                    esw = 180)
 
 # Plot detection probability
 ggplot(obs, aes(x=distance, y=proba)) +
@@ -96,10 +97,10 @@ ggplot() +
 # ------------------------------
 
 obs <- simulate_obs(ind_obj = ind,
-                 transect_obj = transects,
-                 key = "unif",
-                 g_zero = 1,
-                 truncation = 200)
+                    transect_obj = transects,
+                    key = "unif",
+                    g_zero = 1,
+                    truncation = 200)
 
 # Plot detection probability
 ggplot(obs, aes(x=distance, y=proba)) +

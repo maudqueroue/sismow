@@ -111,6 +111,7 @@ simulate_density <- function(shape_obj, grid_size = 1000, density_type, gradient
   
   if(density_type == "gradient"){
     
+    assert_that(is.character(gradient_direction))
     if(!(gradient_direction %in% c("N", "NE","E","SE","S","SW","W","NW","C"))){stop("Gradient_direction argument must be 'N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW' or 'C'.")}
     assert_that(is.numeric(amplitude))
     assert_that(is.numeric(wavelength))
@@ -118,7 +119,7 @@ simulate_density <- function(shape_obj, grid_size = 1000, density_type, gradient
     
     if(gradient_direction == "N") {          
       x <- mean(xlim)  
-      y <- max(ylim) + (max(ylim) - min(ylim))
+      y <- max(ylim)
     }
     if(gradient_direction == "NE") {
       x <- max(xlim)  
@@ -126,7 +127,7 @@ simulate_density <- function(shape_obj, grid_size = 1000, density_type, gradient
     }
     
     if(gradient_direction == "E"){
-      x <- max(xlim) + (max(xlim) - min(xlim))  
+      x <- max(xlim) 
       y <- mean(ylim)
     }
     
@@ -137,7 +138,7 @@ simulate_density <- function(shape_obj, grid_size = 1000, density_type, gradient
     
     if(gradient_direction == "S") {
       x <- mean(xlim)  
-      y <- min(ylim) - (max(ylim) - min(ylim)) 
+      y <- min(ylim)
     }
     
     if(gradient_direction == "SW"){
@@ -146,7 +147,7 @@ simulate_density <- function(shape_obj, grid_size = 1000, density_type, gradient
     }
     
     if(gradient_direction == "W"){
-      x <- min(xlim) - (max(xlim) - min(xlim))  
+      x <- min(xlim)
       y <- mean(ylim) 
     }
     

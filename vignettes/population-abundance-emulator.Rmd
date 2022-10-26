@@ -29,8 +29,8 @@ library(sismow)
 
 This function allows to simulate different densities in the studied area:         
 
-- A **homogenous** density with the same density througout the studied aera.    
-- A **gradient** density with a density decreasing from a hotspot that could be placed on different direction: `N` for North, `NE` for North-East, `E` for East, `SE` for South-East, `S` for South, `SW` for South-West, `W` for West, `NW` for North-West and `C` for center). The amplitude and the wavelength of the hotspot created can be modified.    
+- A **homogeneous** density with the same density througout the studied aera.    
+- A **gradient** density with a density decreasing from a hotspot that could be placed on different direction: North, North-East, East, South-East, South, South-West, West, North-West and center). The amplitude and the wavelength of the hotspot created can be modified.    
 - A **random** density, created by adding a certain number of hotspots on the study area. The hotspot created have a maximum amplitude and a maximum wavelength` that can be modified. Each hotspot created have an amplitude and a wavelength randomly chosen between 1 and a maximum amplitude and a maximum wavelength that can be modified by the user.     
 
 The output is a map in sf dataframe contaning the simulated density. The dataframe contains two columns:    
@@ -91,12 +91,12 @@ ggplot() +
 
 This function allows to simulate a approximate number of individuals with a inhomogenous Poisson point process according to the densities provided.
 
-From an sf class density map `map_obj`, an inohomogene Poisson point process is used to simulate the presence of `N` individuals in the study area. The probability of presence of an individual is dependent on the density given by the map. 
+From an sf class density map `map_obj`, an inohomogene Poisson point process is used to simulate the presence of `N` individuals/group in the study area. The probability of presence of an individual/group is dependent on the density given by the map. Group are simulated using a Poisson distribution, with parameter `mean_group_size`.  
 
 The output is the simulated individuals in a dataframe. The dataframe contains three columns:        
 -`x` : longitude of the simulated individual.     
 -`y` : latitude of the simulated individual.     
-- `size` : the number of individuals simulated on the location (the possibility of simulate groupe will comming).
+- `size` : the number of individuals simulated on the location..
 
 
 ### Examples

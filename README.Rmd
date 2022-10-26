@@ -13,14 +13,14 @@ knitr::opts_chunk$set(
 )
 ```
 
-# Simulated Survey Of Megafauna At Offshore Windfarms
+# Simulated Survey Of Megafauna At Offshore Windfarms :airplane::dolphin:
 
 <!-- badges: start -->
 <!-- badges: end -->
 
 **sismow** was developed as part of the OWFSOMM project. The objective of this project is to demonstrate the technical relevance of aerial digital monitoring while ensuring their comparability with observer-based visual monitoring.
 
-The goal of `sismow` is to simulate different **datasets of aerial monitoring**. To do this, sismow allows to simulate :
+The goal of `sismow` is to simulate different **datasets of aerial monitoring**. To do this, `sismow` allows to simulate :
 
 1. different density map
 2. different sampling transect
@@ -29,6 +29,8 @@ The goal of `sismow` is to simulate different **datasets of aerial monitoring**.
 With the different functions of this package, it is possible to simulate digital and visual aerial monitoring for different conditions (more or less abundant species, more or less homogeneously distributed in space, more or less discreet...). This allows then to calculate abundances and distributions from the different datasets under different conditions and to calculate the intercalibration parameters between the two methods.
 
 ## Installation
+
+---
 
 You can install the development version of `sismow` from [GitHub](https://github.com/) with:
 
@@ -39,6 +41,7 @@ library(sismow)
 ```
 
 ## Population Abondance Emulator
+---
 
 ### Simulate density
 
@@ -48,10 +51,14 @@ First, the function `simulate_density` allows to create map with different densi
          
 - **homogeneous**: same density througout the studied area.  
 
-```{r, echo = FALSE, warning = FALSE}
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
 library(sismow)
 library(ggplot2)
+
 data("shape_courseulles")
+shape_courseulles <- shape_courseulles %>%
+    sf::st_transform(crs = 2154)
+  
 ```
 ```{r, echo = TRUE, warning = FALSE}
 map <- simulate_density(shape_obj = shape_courseulles,
@@ -137,7 +144,7 @@ ind <- simulate_ind(map_obj = map,
 ```
 ```{r, echo = FALSE, warning = FALSE}
 ggplot()+
-  geom_sf(data = map) +
+  geom_sf(data = map, colour = "#EDEDE9") +
   geom_point(data = ind, aes(x = x, y = y, color = size)) +
   theme(panel.background = element_rect(fill = "white"),
         panel.grid.major = element_line(colour = "#EDEDE9")) +
@@ -146,7 +153,7 @@ ggplot()+
   ggtitle("Simulated groups")
 ```
 
-## Sampling Design Emulator 
+## Sampling Design Emulator
 
 ### Simulate transects
 The function `simulate_transects` allows to simulate transects with different conditions :       
@@ -176,7 +183,7 @@ ggplot() +
 
 - **zigzag** transects with a approximative length of **600 km** that are segmentized with a length of approximatively **2000m** per segment. 
 ```{r, warning = FALSE}
-transects <- simulate_transects(shape_obj = map,
+transects <- simulate_transects(shape_obj = shape_courseulles,
                              design = "eszigzag",
                              line.length = 600000,
                              design.angle = 90,
@@ -186,7 +193,7 @@ transects <- simulate_transects(shape_obj = map,
 ```{r, echo = FALSE, warning = FALSE}
 pal <- rep(c("#98C1D9","#EE6C4D","#293241"),nrow(transects)) 
 ggplot() +
-      geom_sf(data = map, fill = "#EDEDE9") +
+      geom_sf(data = shape_courseulles, fill = "#EDEDE9") +
       geom_sf(data = transects, aes(colour = seg_ID))+
       scale_colour_manual(values=pal) +
       theme(legend.position = "none",

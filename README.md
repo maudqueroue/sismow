@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# Simulated Survey Of Megafauna At Offshore Windfarms
+# Simulated Survey Of Megafauna At Offshore Windfarms :airplane::dolphin:
 
 <!-- badges: start -->
 
@@ -13,7 +13,7 @@ digital monitoring while ensuring their comparability with
 observer-based visual monitoring.
 
 The goal of `sismow` is to simulate different **datasets of aerial
-monitoring**. To do this, sismow allows to simulate :
+monitoring**. To do this, `sismow` allows to simulate :
 
 1.  different density map
 2.  different sampling transect
@@ -28,6 +28,8 @@ to calculate the intercalibration parameters between the two methods.
 
 ## Installation
 
+-----
+
 You can install the development version of `sismow` from
 [GitHub](https://github.com/) with:
 
@@ -37,7 +39,7 @@ You can install the development version of `sismow` from
 library(sismow)
 ```
 
-## Population Abondance Emulator
+## \#\# Population Abondance Emulator
 
 ### Simulate density
 
@@ -153,7 +155,7 @@ transects <- simulate_transects(shape_obj = shape_courseulles,
 <!-- end list -->
 
 ``` r
-transects <- simulate_transects(shape_obj = map,
+transects <- simulate_transects(shape_obj = shape_courseulles,
                              design = "eszigzag",
                              line.length = 600000,
                              design.angle = 90,

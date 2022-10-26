@@ -105,7 +105,7 @@ simulate_density <- function(shape_obj, grid_size = 1000, density_type, gradient
     
     if(gradient_direction == "N") {          
       x <- mean(xlim)  
-      y <- max(ylim) + (max(ylim) - min(ylim))
+      y <- max(ylim)
     }
     if(gradient_direction == "NE") {
       x <- max(xlim)  
@@ -113,7 +113,7 @@ simulate_density <- function(shape_obj, grid_size = 1000, density_type, gradient
     }
     
     if(gradient_direction == "E"){
-      x <- max(xlim) + (max(xlim) - min(xlim))  
+      x <- max(xlim) 
       y <- mean(ylim)
     }
     
@@ -124,7 +124,7 @@ simulate_density <- function(shape_obj, grid_size = 1000, density_type, gradient
     
     if(gradient_direction == "S") {
       x <- mean(xlim)  
-      y <- min(ylim) - (max(ylim) - min(ylim)) 
+      y <- min(ylim)
     }
     
     if(gradient_direction == "SW"){
@@ -133,7 +133,7 @@ simulate_density <- function(shape_obj, grid_size = 1000, density_type, gradient
     }
     
     if(gradient_direction == "W"){
-      x <- min(xlim) - (max(xlim) - min(xlim))  
+      x <- min(xlim)
       y <- mean(ylim) 
     }
     
@@ -624,15 +624,15 @@ test_that("test conformite simulate_ind", {
   test_2 <- simulate_ind(map_obj = map, N = 500, mean_group_size = 3) %>%
                  slice(1:5)
 
-exp_1 <- structure(list(x = c(432098.238355977, 420533.286240681, 434527.738948383, 
-411815.477216414, 470612.945042581), y = c(6952762.23628262, 
-6944532.6011364, 6950771.26691599, 6944138.62147687, 6945281.02163264
+exp_1 <- structure(list(x = c(442098.238355977, 420533.286240681, 443527.738948383, 
+411815.477216414, 470612.945042581), y = c(6926762.23628262, 
+6944532.6011364, 6939771.26691599, 6944138.62147687, 6945281.02163264
 ), size = c(1, 1, 1, 1, 1)), class = "data.frame", row.names = c(NA, 
 -5L))
 
-exp_2 <- structure(list(x = c(392685.185622455, 429778.109058536, 437555.810525346, 
-462633.647628858, 414106.671207615), y = c(6950978.15048733, 
-6947096.386525, 6941737.78689435, 6947947.10736784, 6946151.73028891
+exp_2 <- structure(list(x = c(472685.185622455, 438778.109058536, 437555.810525346, 
+459633.647628858, 456106.671207615), y = c(6940978.15048733, 
+6932096.386525, 6941737.78689435, 6950947.10736784, 6928151.73028891
 ), size = c(3, 5, 7, 3, 4)), class = "data.frame", row.names = c(NA, 
 -5L))
 

@@ -49,7 +49,13 @@ scale_hn <- function(esw, lower = 1e-3, upper = 5) {
 
 
 
-#' Detection function
+#' Simulate observation
+#'
+#' @description
+#' `simulate_obs` allows to simulate to simulate dataset of observations according to individuals simulated on the density map, a transect design a detection probability 
+#
+#' @details
+#' To calculate the detection probability, the function calculate first the distance between the individual/group and the nearest transect.
 #'
 #' @param ind_obj dataframe. Individuals simulated with their coordinates.
 #' @param transect_obj sf dataframe. Transect/segments data.
@@ -65,7 +71,7 @@ scale_hn <- function(esw, lower = 1e-3, upper = 5) {
 #' @importFrom sf st_as_sf st_nearest_feature st_distance st_drop_geometry
 #' @importFrom assertthat assert_that
 #'
-#' @return dataframe. The dist dataframe with new columns : "proba" (numeric values between 0 and 1), the probability of being detection and 'detected' (0 or 1)informing if the individual is detected by the sample design.
+#' @return dataframe. The dataframe contains all the individuals/groups of the map. The dataframe contains the identification of individuals/groups, their size, if their are detected, their probability of detection, the identification of nearest transect/segment and their localisation. 
 #' @export
 
 
@@ -76,23 +82,21 @@ scale_hn <- function(esw, lower = 1e-3, upper = 5) {
 #' 
 #' # First, create a density map
 #' map <- simulate_density(shape_obj = shape_courseulles,
-#'                           density_type = "gradient",
-#'                           gradient_direction = "N",
-#'                           wavelength = 20000,
-#'                           amplitude = 500
-#'                           
-#' )
+#'                         density_type = "gradient",
+#'                         gradient_direction = "N",
+#'                         wavelength = 20000,
+#'                         amplitude = 500)
 #' 
 #' # Then simulate the presence of individuals in the study area 
 #' ind <- simulate_ind(map_obj = map, N = 500)
 #' 
 #' # Then create transects
 #' transects <- simulate_transects(shape_obj = map,
-#'                              design = "systematic",
-#'                              line.length = 400000,
-#'                              design.angle = 2,
-#'                              segmentize = TRUE,
-#'                              length_segs = 2000)
+#'                                 design = "systematic",
+#'                                 line.length = 400000,
+#'                                 design.angle = 2,
+#'                                 segmentize = TRUE,
+#'                                 length_segs = 2000)
 #' 
 #' # Finally, detection of individuals simulated on the map 
 #' # according to simulated densities and simulated transects :
@@ -103,10 +107,10 @@ scale_hn <- function(esw, lower = 1e-3, upper = 5) {
 #' # ------------------------------
 #' 
 #' obs <- simulate_obs(ind_obj = ind,
-#'                  transect_obj = transects,
-#'                  key = "hn",
-#'                  g_zero = 1,
-#'                  esw = 180)
+#'                     transect_obj = transects,
+#'                     key = "hn",
+#'                     g_zero = 1,
+#'                     esw = 180)
 #' 
 #' # Plot detection probability
 #' ggplot(obs, aes(x=distance, y=proba)) +
@@ -130,10 +134,10 @@ scale_hn <- function(esw, lower = 1e-3, upper = 5) {
 #' # ------------------------------
 #' 
 #' obs <- simulate_obs(ind_obj = ind,
-#'                  transect_obj = transects,
-#'                  key = "unif",
-#'                  g_zero = 1,
-#'                  truncation = 200)
+#'                     transect_obj = transects,
+#'                     key = "unif",
+#'                     g_zero = 1,
+#'                     truncation = 200)
 #' 
 #' # Plot detection probability
 #' ggplot(obs, aes(x=distance, y=proba)) +
@@ -164,7 +168,7 @@ simulate_obs <- function(ind_obj, transect_obj, key, esw = NA, g_zero = 1, trunc
   
   # Function
   
-  # Calculate distance between individuals and neerest transect/segment
+  # Calculate distance between individuals and nearest transect/segment
   
   # obs point in sf format
   dsf <- ind_obj %>%

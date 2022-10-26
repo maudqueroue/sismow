@@ -78,10 +78,10 @@ map <- simulate_density(shape_obj = shape_courseulles,
                               wavelength = 10000,
                               amplitude = 15,
                               nb_hotspots = 10
-                              
+
 )
 
-# Plot 
+# Plot
 ggplot() +
   geom_sf(data = map, aes(fill = density)) +
   theme(panel.background = element_rect(fill = "white"),
