@@ -27,10 +27,10 @@ test_that("test conformite simulate_obs", {
   # Then create transects
   transects <- simulate_transects(shape_obj = map,
                                design = "systematic",
-                               line.length = 400000,
-                               design.angle = 2,
+                               line_length = 400000,
+                               design_angle = 2,
                                segmentize = TRUE,
-                               length_segs = 2000)
+                               seg_length = 2000)
   
   
   

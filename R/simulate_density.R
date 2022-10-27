@@ -2,7 +2,7 @@
 
 
 
-#' Simulate density map
+#' Simulate density maps
 #'
 #' @description
 #' `simulate_density` allows to simulate density with different spatial variation. 
@@ -44,14 +44,14 @@
 #' data("shape_courseulles")
 #' 
 #' # ------------------------------
-#' # Example 1 : Simulate a map with a gradient density from the North
+#' # Example 1: Simulate a map with a gradient density from the North
 #' #-------------------------------
 #' 
 #' map <- simulate_density(shape_obj = shape_courseulles,
 #'                               density_type = "gradient",
 #'                               gradient_direction = "N",
-#'                               wavelength = 40000,
-#'                               amplitude = 15)
+#'                               wavelength = 20000,
+#'                               amplitude = 10)
 #' 
 #' # Plot
 #' ggplot() +
@@ -61,7 +61,7 @@
 #' 
 #' 
 #' # ------------------------------
-#' # Example 2 : Simulate a map with a random density
+#' # Example 2: Simulate a map with a random density
 #' # ------------------------------
 #' 
 #' map <- simulate_density(shape_obj = shape_courseulles,

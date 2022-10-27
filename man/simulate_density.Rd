@@ -2,7 +2,7 @@
 % Please edit documentation in R/simulate_density.R
 \name{simulate_density}
 \alias{simulate_density}
-\title{Simulate density map}
+\title{Simulate density maps}
 \usage{
 simulate_density(
   shape_obj,
@@ -53,14 +53,14 @@ library(ggplot2)
 data("shape_courseulles")
 
 # ------------------------------
-# Example 1 : Simulate a map with a gradient density from the North
+# Example 1: Simulate a map with a gradient density from the North
 #-------------------------------
 
 map <- simulate_density(shape_obj = shape_courseulles,
                               density_type = "gradient",
                               gradient_direction = "N",
-                              wavelength = 40000,
-                              amplitude = 15)
+                              wavelength = 20000,
+                              amplitude = 10)
 
 # Plot
 ggplot() +
@@ -70,7 +70,7 @@ ggplot() +
 
 
 # ------------------------------
-# Example 2 : Simulate a map with a random density
+# Example 2: Simulate a map with a random density
 # ------------------------------
 
 map <- simulate_density(shape_obj = shape_courseulles,
@@ -78,10 +78,10 @@ map <- simulate_density(shape_obj = shape_courseulles,
                               wavelength = 10000,
                               amplitude = 15,
                               nb_hotspots = 10
-
+                              
 )
 
-# Plot
+# Plot 
 ggplot() +
   geom_sf(data = map, aes(fill = density)) +
   theme(panel.background = element_rect(fill = "white"),

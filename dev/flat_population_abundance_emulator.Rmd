@@ -13,22 +13,22 @@ library(testthat)
  You need to run the 'description' chunk in the '0-dev_history.Rmd' file before continuing your code there.
 -->
 
-## Simulate density map
+## Simulate density maps
 
-This function allows to simulate different densities in the studied area:         
+The `simulate_density`function allows to simulate different densities in a given area:         
 
-- A **homogeneous** density with the same density througout the studied aera.    
-- A **gradient** density with a density decreasing from a hotspot that could be placed on different direction: North, North-East, East, South-East, South, South-West, West, North-West and center). The amplitude and the wavelength of the hotspot created can be modified.    
-- A **random** density, created by adding a certain number of hotspots on the study area. The hotspot created have a maximum amplitude and a maximum wavelength` that can be modified. Each hotspot created have an amplitude and a wavelength randomly chosen between 1 and a maximum amplitude and a maximum wavelength that can be modified by the user.     
+- A **homogeneous** density with the same density througout the aera.    
+- A **gradient** density with a density decreasing from a hotspot that could be placed on different direction: North, North-East, East, South-East, South, South-West, West, North-West and center). The amplitude and the wavelength of the hotspot created can be modified by the user.    
+- A **random** density, created by adding a certain number of hotspots on the area. Each hotspot created have an amplitude and a wavelength randomly chosen between 1 and a maximum amplitude and a maximum wavelength that can be modified by the user.     
 
-The output is a map in sf dataframe contaning the simulated density. The dataframe contains two columns:    
+The output is a sf dataframe of the simulated density on the map. The dataframe contains two columns:    
 - `density` : density simulated for each square of the grid    
 - `geometry` : geometry of the grid 
 
 ```{r function-simulate_density}
 
 
-#' Simulate density map
+#' Simulate density maps
 #'
 #' @description
 #' `simulate_density` allows to simulate density with different spatial variation. 
@@ -229,24 +229,24 @@ simulate_density <- function(shape_obj, grid_size = 1000, density_type, gradient
 
 ### Examples
 
-For this example, `shape_courseulles`, a dataframe included in this package is used. With `simulate_density` some density maps are simulated:     
-- (1) a **gradient** density map with a hotspot of density in the North.     
+For these examples, `shape_courseulles`, a dataframe included in this package is used. With `simulate_density` some density maps are simulated:     
+- (1) a **gradient** density map with a hotspot of density in the North     
 - (2) a **random** density map with 10 random hotspots   
 
-```{r examples-simulate_density, warning = FALSE}
+```{r examples-simulate_density, warning = FALSE,fig.height = 3, fig.width= 7}
 
 library(ggplot2)
 data("shape_courseulles")
 
 # ------------------------------
-# Example 1 : Simulate a map with a gradient density from the North
+# Example 1: Simulate a map with a gradient density from the North
 #-------------------------------
 
 map <- simulate_density(shape_obj = shape_courseulles,
                               density_type = "gradient",
                               gradient_direction = "N",
-                              wavelength = 40000,
-                              amplitude = 15)
+                              wavelength = 20000,
+                              amplitude = 10)
 
 # Plot
 ggplot() +
@@ -256,7 +256,7 @@ ggplot() +
 
 
 # ------------------------------
-# Example 2 : Simulate a map with a random density
+# Example 2: Simulate a map with a random density
 # ------------------------------
 
 map <- simulate_density(shape_obj = shape_courseulles,
@@ -461,14 +461,14 @@ test_that("test erreur simulate_density", {
 
 ## Simulate individuals
 
-This function allows to simulate a approximate number of individuals with a inhomogenous Poisson point process according to the densities provided.
+The `simulate_ind` function allows to simulate an approximate number of individuals/groups with an inhomogenous Poisson point process according to the densities provided.
 
-From an sf class density map `map_obj`, an inohomogene Poisson point process is used to simulate the presence of `N` individuals/group in the study area. The probability of presence of an individual/group is dependent on the density given by the map. Group are simulated using a Poisson distribution, with parameter `mean_group_size`.  
+From a sf dataframe containing density map `map_obj`, an inohomogene Poisson point process is used to simulate the presence of `N` individuals/groups on the map. The probability of presence of an individual/group is dependent on the density given by the map. Groups are simulated using a Poisson distribution, with parameter `mean_group_size`.  
 
 The output is the simulated individuals in a dataframe. The dataframe contains three columns:        
--`x` : longitude of the simulated individual.     
--`y` : latitude of the simulated individual.     
-- `size` : the number of individuals simulated on the location..
+-`x` : longitude of the simulated individual/group.     
+-`y` : latitude of the simulated individual/group.     
+- `size` : the number of individuals simulated on the location.
 
 ```{r function-simulate_ind}
 
@@ -548,24 +548,24 @@ simulate_ind <- function(map_obj, N, mean_group_size = 1, crs = 2154) {
 
 ### Examples
 
-For this example, we used `shape_courseulles`, a dataframe included in this package and the function `simulate_density` to simulate a density map. Then, with used `simulate_ind` to simulate individuals:          
-- (1) simulation of **200 individuals** in the studied region.     
-- (2) simulation of **100 groups** with a **mean group size of 5** individuals.       
+For these examples, we used `shape_courseulles`, a dataframe included in this package and the function `simulate_density` to simulate a density map. Then, with used `simulate_ind` to simulate individuals:          
+- (1) simulation of **200 individuals** in the area.     
+- (2) simulation of **100 groups** with a **mean group size of 5 individuals**.       
 
-The function return a dataframe, here `ind`, containing the different individuals simulated, the size of each group and their geographic coordinates. 
+The function returns a dataframe, containing the different individuals simulated in line, the size of each group and their geographic coordinates in column. 
 
-```{r examples-simulate_ind, warning = FALSE}
+```{r examples-simulate_ind, warning = FALSE, fig.height = 3, fig.width= 7}
 
 library(ggplot2)
 data("shape_courseulles")
 
-# First, create a map with a gradient density from the North with 500 individuals in the area
+# First, create a map with a gradient density from the North
 map <- simulate_density(shape_obj = shape_courseulles,
                               grid_size = 1000,
                               density_type = "gradient",
                               gradient_direction = "N",
                               wavelength = 20000,
-                              amplitude = 100)
+                              amplitude = 15)
 
 # ------------------------------
 # Example 1. Simulate the presence of 200 individuals 
@@ -585,7 +585,6 @@ ggplot() +
 # Example 2. Simulate the presence of 100 groups with a mean group size of 5 individuals 
 # ------------------------------
 
-# Then simulate the presence of individuals in the study area 
 ind <- simulate_ind(map_obj = map, mean_group_size = 5, N = 100)
 
 # Plot

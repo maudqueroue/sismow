@@ -85,25 +85,25 @@ scale_hn <- function(esw, lower = 1e-3, upper = 5) {
 #'                         density_type = "gradient",
 #'                         gradient_direction = "N",
 #'                         wavelength = 20000,
-#'                         amplitude = 500)
+#'                         amplitude = 15)
 #' 
-#' # Then simulate the presence of individuals in the study area 
-#' ind <- simulate_ind(map_obj = map, N = 500)
+#' # Then simulate the presence of individuals 
+#' ind <- simulate_ind(map_obj = map, N = 400)
 #' 
 #' # Then create transects
 #' transects <- simulate_transects(shape_obj = map,
 #'                                 design = "systematic",
-#'                                 line.length = 400000,
-#'                                 design.angle = 2,
+#'                                 line_length = 400000,
+#'                                 design_angle = 2,
 #'                                 segmentize = TRUE,
-#'                                 length_segs = 2000)
+#'                                 seg_length = 2000)
 #' 
-#' # Finally, detection of individuals simulated on the map 
-#' # according to simulated densities and simulated transects :
+#' # Finally, detection of individuals is simulated according to 
+#' # simulated individuals and simulated transects:
 #' 
 #' # ------------------------------
-#' # Example 1 : With a half normal detection probability equal to 1 at 0 distance (g_zero)
-#' # with a effective half width of 180 m.
+#' # Example 1 : With half normal detection probability equal to 1 at 0 distance (g_zero)
+#' # with a effective strip half width of 180m.
 #' # ------------------------------
 #' 
 #' obs <- simulate_obs(ind_obj = ind,
@@ -130,7 +130,7 @@ scale_hn <- function(esw, lower = 1e-3, upper = 5) {
 #' 
 #' 
 #' # ------------------------------
-#' # Example 2 : With a uniforme detection probability equal to 1 below distance 200 m.
+#' # Example 2 : With uniform detection probability equal to 1 below distance 200m.
 #' # ------------------------------
 #' 
 #' obs <- simulate_obs(ind_obj = ind,

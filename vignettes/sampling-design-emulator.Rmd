@@ -28,35 +28,35 @@ library(sismow)
 - **total transect length** (approximately)   
 - **angle** of the transects      
 - **segmentation** of the transects
-- **segments** length (approximately)
+- **segment** length (approximately)
 
-The output is a sf dataframe containing the simulated transects corresponding. The dataframe contains four columns:         
+The output is a sf dataframe containing the simulated transects. The dataframe contains four columns:         
 - `transect` : number of the transect    
-- `seg_ID` : a unique identifiant for each segments/transect)    
-- `effort` : length of each segment/transect)    
-- `geometry`    
+- `seg_ID` : a unique identifiant for each segments/transect    
+- `effort` : length of each segment/transect    
+- `geometry` : geometry of the transects    
 
 
 ### Examples
 
-For this example, `shape_courseulles`, a dataframe included in this package is used. With `simulate_transects` some transect designs are simulated:     
-- (1) **parallel** transects with a approximative total length of **400 km**    
-- (2) **zigzag** transects with a approximative length of **400 km** that are segmentized with a length of approximatively **2000m** per segment.    
-- (3) the `shape_obj` is a density map simulated with `simulate_density` and the design is **parallel** transects with a approximative total length of **400 km** that are segmentized with a length of approximatively **2000m** per segments.
+For these examples, `shape_courseulles`, a dataframe included in this package is used. With `simulate_transects` some transect designs are simulated:     
+- (1) **parallel** transects with an approximate total line length of **400km**    
+- (2) **zigzag** transects with an approximate line length of **400km** that are segmented with a length of approximatively **2000m** per segment.    
+- (3) the `shape_obj` is a density map simulated with `simulate_density` and the design is **parallel** transects with an approximate total line length of **400km** that are segmented with a length of approximatively **2000m** per segments.
 
 
-```{r examples-simulate_transects, warning = FALSE}
+```{r examples-simulate_transects, warning = FALSE, fig.height = 3, fig.width = 7}
 
 library(ggplot2)
 data("shape_courseulles")
 
 # ------------------------------
-# Example 1 : parallel transects with a approximative total length of 400000m
+# Example 1 : parallel transects with an approximate total line length of 400000m
 # ------------------------------
 
 transects <- simulate_transects(shape_obj = shape_courseulles,
                              design = "systematic",
-                             line.length = 400000)
+                             line_length = 400000)
 # Plot
 ggplot() +
       geom_sf(data = shape_courseulles, fill = "#EDEDE9") +
@@ -65,16 +65,16 @@ ggplot() +
       panel.grid.major = element_line(colour = "#EDEDE9"))
 
 # ------------------------------
-# Example 2 : zigzag transects with a approximative total length of 400000m 
-# that are segmentized with a length of approximately 2000m per segment
+# Example 2 : zigzag transects with an approximate total line length of 400000m 
+# that are segmented with a length of approximately 2000m per segment
 # ------------------------------
 
 transects <- simulate_transects(shape_obj = shape_courseulles,
                              design = "eszigzag",
-                             line.length = 400000,
-                             design.angle = 90,
+                             line_length = 400000,
+                             design_angle = 90,
                              segmentize = TRUE,
-                             length_segs = 2000)
+                             seg_length = 2000)
 
 # Plot
 pal <- rep(c("#98C1D9","#EE6C4D","#293241"),nrow(transects)) 
@@ -88,8 +88,8 @@ ggplot() +
 
 
 # ------------------------------
-# Example 3 : systematic parallel transects with a approximative total length of 400000m
-# that are segmentized with a length of approximately 2000m per segment 
+# Example 3 : systematic parallel transects with an approximative total length of 400000m
+# that are segmented with a length of approximately 2000m per segment 
 # the `shape_obj` is a density map simulated with `simulate_density`
 #-------------------------------
 
@@ -104,10 +104,10 @@ map <- simulate_density(shape_obj = shape_courseulles,
 # Create transects
 transects <- simulate_transects(shape_obj = map,
                              design = "systematic",
-                             line.length = 400000,
-                             design.angle = 2,
+                             line_length = 400000,
+                             design_angle = 2,
                              segmentize = TRUE,
-                             length_segs = 2000)
+                             seg_length = 2000)
 
 # Plot
 pal <- rep(c("#98C1D9","#EE6C4D","#293241"),nrow(transects)) 

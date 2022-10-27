@@ -30,13 +30,13 @@ For each simulated individuals, a size is associated. Thus, it is possible to si
 library(ggplot2)
 data("shape_courseulles")
 
-# First, create a map with a gradient density from the North with 500 individuals in the area
+# First, create a map with a gradient density from the North
 map <- simulate_density(shape_obj = shape_courseulles,
                               grid_size = 1000,
                               density_type = "gradient",
                               gradient_direction = "N",
                               wavelength = 20000,
-                              amplitude = 100)
+                              amplitude = 15)
 
 # ------------------------------
 # Example 1. Simulate the presence of 200 individuals 
@@ -56,7 +56,6 @@ ggplot() +
 # Example 2. Simulate the presence of 100 groups with a mean group size of 5 individuals 
 # ------------------------------
 
-# Then simulate the presence of individuals in the study area 
 ind <- simulate_ind(map_obj = map, mean_group_size = 5, N = 100)
 
 # Plot

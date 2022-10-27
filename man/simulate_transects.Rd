@@ -7,10 +7,10 @@
 simulate_transects(
   shape_obj,
   design = "systematic",
-  design.angle = 0,
-  line.length,
+  design_angle = 0,
+  line_length,
   segmentize = FALSE,
-  length_segs,
+  seg_length,
   crs = 2154,
   ...
 )
@@ -20,13 +20,13 @@ simulate_transects(
 
 \item{design}{character. Variable describing the type of design. Either \code{random}, \code{systematic} (parallel), \code{eszigzag} (equal-spaced zigzag), \code{eszigzagcom} (equal spaced crossed zigzag). See \code{dssd} package for more information.}
 
-\item{design.angle}{numeric. Value detailing the angle of the design. A value of -1 will cause a random design angle to be generated. See \code{dssd} package for more information. By default: 0.}
+\item{design_angle}{numeric. Value detailing the angle of the design. A value of -1 will cause a random design angle to be generated. See \code{dssd} package for more information. By default: 0.}
 
-\item{line.length}{numeric. The approximative total line length desired in m.}
+\item{line_length}{numeric. The approximative total line length desired in m.}
 
-\item{segmentize}{boolean. If \code{TRUE} transects are segmentized and a \code{seg_ID} is given to each segment. If \code{FALSE}transects are not segmentized. By default: \code{FALSE}.}
+\item{segmentize}{boolean. If \code{TRUE} transects are segmented and a \code{seg_ID} is given to each segment. If \code{FALSE}transects are not segmented. By default: \code{FALSE}.}
 
-\item{length_segs}{numeric. Length of the segments desired for segmentation.}
+\item{seg_length}{numeric. Length of the segments desired for segmentation.}
 
 \item{crs}{numeric. Projection system. By default: 2154.}
 
@@ -49,12 +49,12 @@ library(ggplot2)
 data("shape_courseulles")
 
 # ------------------------------
-# Example 1 : parallel transects with a approximative total length of 400000m
+# Example 1 : parallel transects with an approximate total line length of 400000m
 # ------------------------------
 
 transects <- simulate_transects(shape_obj = shape_courseulles,
                              design = "systematic",
-                             line.length = 400000)
+                             line_length = 400000)
 # Plot
 ggplot() +
       geom_sf(data = shape_courseulles, fill = "#EDEDE9") +
@@ -63,16 +63,16 @@ ggplot() +
       panel.grid.major = element_line(colour = "#EDEDE9"))
 
 # ------------------------------
-# Example 2 : zigzag transects with a approximative total length of 400000m 
-# that are segmentized with a length of approximately 2000m per segment
+# Example 2 : zigzag transects with an approximate total line length of 400000m 
+# that are segmented with a length of approximately 2000m per segment
 # ------------------------------
 
 transects <- simulate_transects(shape_obj = shape_courseulles,
                              design = "eszigzag",
-                             line.length = 400000,
-                             design.angle = 90,
+                             line_length = 400000,
+                             design_angle = 90,
                              segmentize = TRUE,
-                             length_segs = 2000)
+                             seg_length = 2000)
 
 # Plot
 pal <- rep(c("#98C1D9","#EE6C4D","#293241"),nrow(transects)) 
@@ -86,8 +86,8 @@ ggplot() +
 
 
 # ------------------------------
-# Example 3 : systematic parallel transects with a approximative total length of 400000m
-# that are segmentized with a length of approximately 2000m per segment 
+# Example 3 : systematic parallel transects with an approximative total length of 400000m
+# that are segmented with a length of approximately 2000m per segment 
 # the `shape_obj` is a density map simulated with `simulate_density`
 #-------------------------------
 
@@ -102,10 +102,10 @@ map <- simulate_density(shape_obj = shape_courseulles,
 # Create transects
 transects <- simulate_transects(shape_obj = map,
                              design = "systematic",
-                             line.length = 400000,
-                             design.angle = 2,
+                             line_length = 400000,
+                             design_angle = 2,
                              segmentize = TRUE,
-                             length_segs = 2000)
+                             seg_length = 2000)
 
 # Plot
 pal <- rep(c("#98C1D9","#EE6C4D","#293241"),nrow(transects)) 

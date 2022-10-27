@@ -23,16 +23,16 @@ test_that("test conformite simulate_transects", {
 
   test_1 <- simulate_transects(shape_obj = shape_courseulles,
                              design = "systematic",
-                             line.length = 400000,
-                             design.angle = 2) %>%
+                             line_length = 400000,
+                             design_angle = 2) %>%
     slice(1:5)
   
   test_2 <- simulate_transects(shape_obj = map,
                              design = "systematic",
-                             line.length = 400000,
-                             design.angle = 2,
+                             line_length = 400000,
+                             design_angle = 2,
                              segmentize = TRUE,
-                             length_segs = 2000) %>%
+                             seg_length = 2000) %>%
     slice(1:5)
 
   exp_1 <- structure(list(transect = 1:5, seg_ID = 1:5, effort = structure(c(18772.895468405, 
@@ -98,29 +98,29 @@ test_that("test erreur simulate_transects", {
   
   expect_error(object = simulate_transects(shape_obj = map,
                                          design = "hoho",
-                                         line.length = 400000,
-                                         design.angle = 2,
+                                         line_length = 400000,
+                                         design_angle = 2,
                                          segmentize = TRUE,
-                                         length_segs = 2000))
+                                         seg_length = 2000))
     
   expect_error(object = simulate_transects(shape_obj = iris,
                                          design = "systematic",
-                                         line.length = 400000))
+                                         line_length = 400000))
   
   expect_error(object = simulate_transects(shape_obj = map,
                                          design = "systematic",
-                                         line.length = "nop"))
+                                         line_length = "nop"))
   
   expect_error(object = simulate_transects(shape_obj = map,
                                          design = "systematic",
-                                         line.length = 400000,
-                                         design.angle = "haha"))
+                                         line_length = 400000,
+                                         design_angle = "haha"))
   
   expect_error(object = simulate_transects(shape_obj = map,
                                          design = "systematic",
-                                         line.length = 400000,
-                                         design.angle = 0,
+                                         line_length = 400000,
+                                         design_angle = 0,
                                          segmentize = TRUE,
-                                         length_segs = "hehe"))
+                                         seg_length = "hehe"))
 })
 

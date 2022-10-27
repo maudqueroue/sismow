@@ -13,10 +13,10 @@
 #'
 #' @param shape_obj sf object. The shape of the study site or a density grid.
 #' @param design character. Variable describing the type of design. Either `random`, `systematic` (parallel), `eszigzag` (equal-spaced zigzag), `eszigzagcom` (equal spaced crossed zigzag). See `dssd` package for more information.
-#' @param design.angle numeric. Value detailing the angle of the design. A value of -1 will cause a random design angle to be generated. See `dssd` package for more information. By default: 0.
-#' @param line.length numeric. The approximative total line length desired in m.
-#' @param segmentize boolean. If `TRUE` transects are segmentized and a `seg_ID` is given to each segment. If `FALSE`transects are not segmentized. By default: `FALSE`.
-#' @param length_segs numeric. Length of the segments desired for segmentation.
+#' @param design_angle numeric. Value detailing the angle of the design. A value of -1 will cause a random design angle to be generated. See `dssd` package for more information. By default: 0.
+#' @param line_length numeric. The approximative total line length desired in m.
+#' @param segmentize boolean. If `TRUE` transects are segmented and a `seg_ID` is given to each segment. If `FALSE`transects are not segmented. By default: `FALSE`.
+#' @param seg_length numeric. Length of the segments desired for segmentation.
 #' @param crs numeric. Projection system. By default: 2154.
 #' @param ... All other arguments that could be used in the make.design function. See dssd package for more information.
 #'
@@ -35,12 +35,12 @@
 #' data("shape_courseulles")
 #' 
 #' # ------------------------------
-#' # Example 1 : parallel transects with a approximative total length of 400000m
+#' # Example 1 : parallel transects with an approximate total line length of 400000m
 #' # ------------------------------
 #' 
 #' transects <- simulate_transects(shape_obj = shape_courseulles,
 #'                              design = "systematic",
-#'                              line.length = 400000)
+#'                              line_length = 400000)
 #' # Plot
 #' ggplot() +
 #'       geom_sf(data = shape_courseulles, fill = "#EDEDE9") +
@@ -49,16 +49,16 @@
 #'       panel.grid.major = element_line(colour = "#EDEDE9"))
 #' 
 #' # ------------------------------
-#' # Example 2 : zigzag transects with a approximative total length of 400000m 
-#' # that are segmentized with a length of approximately 2000m per segment
+#' # Example 2 : zigzag transects with an approximate total line length of 400000m 
+#' # that are segmented with a length of approximately 2000m per segment
 #' # ------------------------------
 #' 
 #' transects <- simulate_transects(shape_obj = shape_courseulles,
 #'                              design = "eszigzag",
-#'                              line.length = 400000,
-#'                              design.angle = 90,
+#'                              line_length = 400000,
+#'                              design_angle = 90,
 #'                              segmentize = TRUE,
-#'                              length_segs = 2000)
+#'                              seg_length = 2000)
 #' 
 #' # Plot
 #' pal <- rep(c("#98C1D9","#EE6C4D","#293241"),nrow(transects)) 
@@ -72,8 +72,8 @@
 #' 
 #' 
 #' # ------------------------------
-#' # Example 3 : systematic parallel transects with a approximative total length of 400000m
-#' # that are segmentized with a length of approximately 2000m per segment 
+#' # Example 3 : systematic parallel transects with an approximative total length of 400000m
+#' # that are segmented with a length of approximately 2000m per segment 
 #' # the `shape_obj` is a density map simulated with `simulate_density`
 #' #-------------------------------
 #' 
@@ -88,10 +88,10 @@
 #' # Create transects
 #' transects <- simulate_transects(shape_obj = map,
 #'                              design = "systematic",
-#'                              line.length = 400000,
-#'                              design.angle = 2,
+#'                              line_length = 400000,
+#'                              design_angle = 2,
 #'                              segmentize = TRUE,
-#'                              length_segs = 2000)
+#'                              seg_length = 2000)
 #' 
 #' # Plot
 #' pal <- rep(c("#98C1D9","#EE6C4D","#293241"),nrow(transects)) 
@@ -103,13 +103,13 @@
 #'       panel.background = element_rect(fill = "white"),
 #'       panel.grid.major = element_line(colour = "#EDEDE9"))
 #' 
-simulate_transects <- function(shape_obj, design = "systematic", design.angle = 0, line.length, segmentize = FALSE, length_segs, crs = 2154, ...) {
+simulate_transects <- function(shape_obj, design = "systematic", design_angle = 0, line_length, segmentize = FALSE, seg_length, crs = 2154, ...) {
   
   # Function checks
   assert_that(inherits(shape_obj, "sf"))
   assert_that(is.numeric(crs))
-  assert_that(is.numeric(line.length))
-  assert_that(is.numeric(design.angle))
+  assert_that(is.numeric(line_length))
+  assert_that(is.numeric(design_angle))
     if(!(design %in% c("random","systematic","eszigzag","eszigzagcom"))){stop("Design argument must be 'random', 'systematic', 'eszigzag' or 'eszigzagcom'.")}
 
 
@@ -125,8 +125,8 @@ simulate_transects <- function(shape_obj, design = "systematic", design.angle = 
   
   transect.design <- make.design(region = region_obj,
                                  design = design,
-                                 design.angle = design.angle,
-                                 line.length = line.length,
+                                 design.angle = design_angle,
+                                 line.length = line_length,
                                  ...)
   
   transect.survey <- generate.transects(transect.design)
@@ -141,9 +141,9 @@ if(segmentize == TRUE){
   
   ### Segmentize
   #-----------------
-  assert_that(is.numeric(length_segs))
+  assert_that(is.numeric(seg_length))
   
-  transect_obj <- st_segmentize(x, dfMaxLength = set_units(length_segs, "metres"))
+  transect_obj <- st_segmentize(x, dfMaxLength = set_units(seg_length, "metres"))
   # geometry
   ggg <- st_geometry(transect_obj)
   
