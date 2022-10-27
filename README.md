@@ -15,7 +15,7 @@ aerial digital monitoring while ensuring their comparability with
 observer-based visual monitoring.
 
 The goal of `sismow` is to simulate different **datasets of aerial
-monitoring**. To do this, `sismow` allows to simulate :
+monitoring**. To do this, `sismow` allows to simulate:
 
 1.  density maps
 2.  sampling transects
@@ -39,6 +39,9 @@ You can install the development version of `sismow` from
 # install.packages("devtools")
 #devtools::install_github("maudqueroue/sismow")
 library(sismow)
+#> Registered S3 method overwritten by 'spatstat.geom':
+#>   method     from
+#>   print.boxx cli
 ```
 
 ### Population Abondance Emulator
