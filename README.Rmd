@@ -42,7 +42,7 @@ You can install the development version of `sismow` from [GitHub](https://github
 library(sismow)
 ```
 
-### Population Abondance Emulator
+### Population Abundance Emulator
 
 ---
 

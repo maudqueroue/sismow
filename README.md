@@ -44,7 +44,7 @@ library(sismow)
 #>   print.boxx cli
 ```
 
-### Population Abondance Emulator
+### Population Abundance Emulator
 
 -----
 

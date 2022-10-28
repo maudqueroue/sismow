@@ -535,7 +535,7 @@ simulate_ind <- function(map_obj, N, mean_group_size = 1, crs = 2154) {
   X_grid <- maptools::as.im.SpatialGridDataFrame(grid)
   
   # Inhomogenous Poisson point process
-  ppp <- spatstat.core::rpoispp(lambda = X_grid, drop = TRUE)
+  ppp <- rpoispp(lambda = X_grid, drop = TRUE)
   sim_ind <- data.frame(x = ppp$x, y = ppp$y)
   
   # Possibility to add group size
