@@ -20,7 +20,7 @@ Imports:
     maptools,
     sf,
     sp,
-    spatstat.core,
+    spatstat.random,
     stats,
     units
 Suggests: 

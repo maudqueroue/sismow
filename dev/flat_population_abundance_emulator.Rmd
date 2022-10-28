@@ -493,7 +493,7 @@ The output is the simulated individuals in a dataframe. The dataframe contains t
 #' @importFrom sf st_centroid st_coordinates st_crs st_area
 #' @importFrom sp coordinates<- proj4string<- gridded<- CRS
 #' @importFrom maptools as.im.SpatialGridDataFrame
-#' @importFrom spatstat.core rpoispp
+#' @importFrom spatstat.random rpoispp
 #'
 #' @return The simulated individuals in a dataframe. The dataframe contains three columns, `x` longitude of the simulated individual, `y` latitude of the simulated individual and `size` the number of individuals simulated on the location (the possibility of simulate groupe will comming).  
 #' @export
