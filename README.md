@@ -4,14 +4,13 @@
 # Simulated Survey Of Megafauna At Offshore Windfarms :airplane::dolphin:
 
 <!-- badges: start -->
-
 <!-- badges: end -->
 
 <br/>
 
-**sismow** was developed as part of the **OWFSOMM** project. The
-objective of this project is to demonstrate the technical relevance of
-aerial digital monitoring while ensuring their comparability with
+The package **sismow** was developed as part of the **OWFSOMM** project.
+The objective of this project is to demonstrate the technical relevance
+of aerial digital monitoring while ensuring their comparability with
 observer-based visual monitoring.
 
 The goal of `sismow` is to simulate different **datasets of aerial
@@ -30,7 +29,7 @@ intercalibration parameters between the two methods.
 
 ### Installation
 
------
+------------------------------------------------------------------------
 
 You can install the development version of `sismow` from
 [GitHub](https://github.com/) with:
@@ -39,14 +38,11 @@ You can install the development version of `sismow` from
 # install.packages("devtools")
 #devtools::install_github("maudqueroue/sismow")
 library(sismow)
-#> Registered S3 method overwritten by 'spatstat.geom':
-#>   method     from
-#>   print.boxx cli
 ```
 
 ### Population Abundance Emulator
 
------
+------------------------------------------------------------------------
 
 #### Simulate density
 
@@ -55,9 +51,7 @@ different spatial variation of density.
 
 ##### Examples :
 
-  - **homogeneous**: same density througout the studied area.
-
-<!-- end list -->
+- **homogeneous**: same density througout the studied area.
 
 ``` r
 map <- simulate_density(shape_obj = shape_courseulles,
@@ -66,12 +60,10 @@ map <- simulate_density(shape_obj = shape_courseulles,
 
 <img src="man/figures/README-unnamed-chunk-5-1.png" width="100%" />
 
-  - **gradient** : density decreasing from a hotspot that could be
-    placed on different directions (`gradient_direction` : Center,
-    North, East…). The `amplitude` and `wavelength` of the hotspot
-    created can be modulated by the user.
-
-<!-- end list -->
+- **gradient** : density decreasing from a hotspot that could be placed
+  on different directions (`gradient_direction` : Center, North, East…).
+  The `amplitude` and `wavelength` of the hotspot created can be
+  modulated by the user.
 
 ``` r
 map <- simulate_density(shape_obj = shape_courseulles,
@@ -83,12 +75,10 @@ map <- simulate_density(shape_obj = shape_courseulles,
 
 <img src="man/figures/README-unnamed-chunk-7-1.png" width="100%" />
 
-  - **Random**: random density. Several hotspots `nb_hotspots` are
-    randomly created with amplitude and wavelength randomly chosen. The
-    maximum value of `amplitude` and `wavelength` can be modulated by
-    the user.
-
-<!-- end list -->
+- **Random**: random density. Several hotspots `nb_hotspots` are
+  randomly created with amplitude and wavelength randomly chosen. The
+  maximum value of `amplitude` and `wavelength` can be modulated by the
+  user.
 
 ``` r
 map <- simulate_density(shape_obj = shape_courseulles,
@@ -108,9 +98,7 @@ to the densities provided in the `map` object.
 
 ##### Examples :
 
-  - Simulation of `N` = 200 individuals with `mean_group_size` = 1:
-
-<!-- end list -->
+- Simulation of `N` = 200 individuals with `mean_group_size` = 1:
 
 ``` r
 ind <- simulate_ind(map_obj = map, 
@@ -120,9 +108,7 @@ ind <- simulate_ind(map_obj = map,
 
 <img src="man/figures/README-unnamed-chunk-12-1.png" width="100%" />
 
-  - Simulation of `N` = 100 groups of `mean_group_size` 5 individuals
-
-<!-- end list -->
+- Simulation of `N` = 100 groups of `mean_group_size` 5 individuals
 
 ``` r
 ind <- simulate_ind(map_obj = map, 
@@ -134,25 +120,23 @@ ind <- simulate_ind(map_obj = map,
 
 ### Sampling Design Emulator
 
------
+------------------------------------------------------------------------
 
 #### Simulate transects
 
 The function `simulate_transects` allows to simulate transects with
 different conditions:  
-\- different types of **survey design** such as parallel, zigzag,
-crossed zigzag or random transects  
-\- **total transect length** (approximately)  
-\- **angle** of the transects  
-\- **segmentation** of the transects - **segments** length
+- different types of **survey design** such as parallel, zigzag, crossed
+zigzag or random transects  
+- **total transect length** (approximately)  
+- **angle** of the transects  
+- **segmentation** of the transects - **segments** length
 (approximately)
 
 ##### Examples:
 
-  - **parallel** transects design with an approximate total line length
-    of **400km**:
-
-<!-- end list -->
+- **parallel** transects design with an approximate total line length of
+  **400km**:
 
 ``` r
 transects <- simulate_transects(shape_obj = shape_courseulles,
@@ -162,11 +146,9 @@ transects <- simulate_transects(shape_obj = shape_courseulles,
 
 <img src="man/figures/README-unnamed-chunk-16-1.png" width="100%" />
 
-  - **zigzag** transects design with an approximate total line length of
-    **600km** that are segmentized with a \`length of approximatively
-    **2000m** per segment.
-
-<!-- end list -->
+- **zigzag** transects design with an approximate total line length of
+  **600km** that are segmentized with a \`length of approximatively
+  **2000m** per segment.
 
 ``` r
 transects <- simulate_transects(shape_obj = shape_courseulles,
@@ -181,7 +163,7 @@ transects <- simulate_transects(shape_obj = shape_courseulles,
 
 ### Observation Data Emulator
 
------
+------------------------------------------------------------------------
 
 #### Simulate observations
 
@@ -193,18 +175,15 @@ according to:
 3.  A **detection probability**.
 
 To determine the detection probability, the user can choose:  
-\- The form of the detection function : **uniform** or **half-normal**  
-\- The maximum distance of observation (**truncation**)  
-\- The probability of observation at distance 0 (**g\_zero**)  
-\- The effective strip width (**esw**) for half-normal detection
-function
+- The form of the detection function : **uniform** or **half-normal**  
+- The maximum distance of observation (**truncation**)  
+- The probability of observation at distance 0 (**g_zero**)  
+- The effective strip width (**esw**) for half-normal detection function
 
 ##### Examples:
 
-  - **Half normal** detection probability equal to **1** at 0 distance
-    with a effective strip half width of **180m**.
-
-<!-- end list -->
+- **Half normal** detection probability equal to **1** at 0 distance
+  with a effective strip half width of **180m**.
 
 ``` r
 obs <- simulate_obs(ind_obj = ind,
@@ -214,9 +193,9 @@ obs <- simulate_obs(ind_obj = ind,
                     esw = 180)
 ```
 
-<img src="man/figures/README-unnamed-chunk-21-1.png" width="100%" /><img src="man/figures/README-unnamed-chunk-21-2.png" width="100%" />
-- **Uniform** detection probability equal to **1** below distance
-**200m** .
+<img src="man/figures/README-unnamed-chunk-21-1.png" width="100%" /><img src="man/figures/README-unnamed-chunk-21-2.png" width="100%" /> -
+**Uniform** detection probability equal to **1** below distance **200m**
+.
 
 ``` r
 obs <- simulate_obs(ind_obj = ind,
