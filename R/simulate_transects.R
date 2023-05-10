@@ -24,7 +24,7 @@
 #' @importFrom sf st_cast st_sf st_geometry st_multilinestring st_sfc st_coordinates st_set_geometry st_crs st_geometry_type st_segmentize st_length st_union st_intersection
 #' @importFrom dplyr select mutate
 #' @importFrom assertthat assert_that
-#' @importFrom units set_units
+#' @importFrom units set_units drop_units
 #'
 #' @return The simulated transects corresponding to the differents conditions in a sf dataframe. The dataframe contains four columns: `transect` number, `seg_ID` (a unique identifiant for each segments/transect), `effort` (length of each segment/transect) and `geometry`.
 #' @export
@@ -198,6 +198,8 @@ if(segmentize == TRUE){
   
   x <- x %>%
     st_intersection(shape_obj) %>%
+    drop_units() %>%
+    filter(effort != 0) %>%
     select(transect, seg_ID, effort, geometry)
   
   return(x)
