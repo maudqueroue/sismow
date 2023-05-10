@@ -18,7 +18,7 @@
 #' @importFrom glue glue
 #' @importFrom assertthat assert_that
 #' @importFrom stats rpois
-#' @importFrom dplyr mutate select filter
+#' @importFrom dplyr mutate select filter slice
 #' @importFrom sf st_centroid st_coordinates st_crs st_area
 #' @importFrom spatstat.random rpoispp
 #' @importFrom spatstat.geom as.im
@@ -68,6 +68,9 @@
 #'   
 simulate_ind <- function(map_obj, N, mean_group_size = 1, crs = 2154) {
   
+  
+  Nsim <- N + (0.5 * N)
+    
   # Function checks
   assert_that(inherits(map_obj, "sf"))
   if (!all(c("density") %in% names(map_obj))) {stop("map_obj must contain `density` column. Verify your column names.")}
@@ -82,7 +85,7 @@ simulate_ind <- function(map_obj, N, mean_group_size = 1, crs = 2154) {
   
   # Function 
   total_area <- sum(map_obj$area)
-  average_density <- N / total_area
+  average_density <- Nsim / total_area
   
   map_obj <- map_obj %>%
     mutate(density = average_density * density / mean(density, na.rm = TRUE))
@@ -99,6 +102,9 @@ simulate_ind <- function(map_obj, N, mean_group_size = 1, crs = 2154) {
   # Inhomogenous Poisson point process
   ppp <- rpoispp(lambda = grid, drop = TRUE)
   sim_ind <- data.frame(x = ppp$x, y = ppp$y)
+  
+  sim_ind <- sim_ind %>%
+    slice(1:N)
 
   # Possibility to add group size
   sim_ind <- sim_ind %>%
