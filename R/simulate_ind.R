@@ -20,9 +20,8 @@
 #' @importFrom stats rpois
 #' @importFrom dplyr mutate select filter
 #' @importFrom sf st_centroid st_coordinates st_crs st_area
-#' @importFrom sp coordinates<- proj4string<- gridded<- CRS
-#' @importFrom maptools as.im.SpatialGridDataFrame
 #' @importFrom spatstat.random rpoispp
+#' @importFrom spatstat.geom as.im
 #'
 #' @return The simulated individuals in a dataframe. The dataframe contains three columns, `x` longitude of the simulated individual, `y` latitude of the simulated individual and `size` the number of individuals simulated on the location (the possibility of simulate groupe will comming).  
 #' @export
@@ -94,19 +93,13 @@ simulate_ind <- function(map_obj, N, mean_group_size = 1, crs = 2154) {
     mutate(X = st_coordinates(.)[,1],
            Y = st_coordinates(.)[,2]) %>%
     as.data.frame() %>%
-    select("X","Y","density")
-  
-  
-  # Convert in grid class
-  coordinates(grid) <- ~ X + Y
-  proj4string(grid) <- CRS(st_crs(crs)$proj4string)
-  gridded(grid) <- TRUE
-  X_grid <- maptools::as.im.SpatialGridDataFrame(grid)
-  
+    select("X","Y","density") %>%
+    as.im()
+
   # Inhomogenous Poisson point process
-  ppp <- rpoispp(lambda = X_grid, drop = TRUE)
+  ppp <- rpoispp(lambda = grid, drop = TRUE)
   sim_ind <- data.frame(x = ppp$x, y = ppp$y)
-  
+
   # Possibility to add group size
   sim_ind <- sim_ind %>%
     mutate(size = rpois(nrow(sim_ind), lambda = (mean_group_size - 1)) + 1)

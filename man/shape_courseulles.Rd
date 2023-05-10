@@ -3,9 +3,9 @@
 \docType{data}
 \name{shape_courseulles}
 \alias{shape_courseulles}
-\title{This data contains the shape of the Courseulles study area}
+\title{This data contains the shape of the Courseulles study area (crs = 4326)}
 \description{
-This data contains the shape of the Courseulles study area
+This data contains the shape of the Courseulles study area (crs = 4326)
 }
 \author{
 Maud Queroue \email{maud.queroue@gmail.com}

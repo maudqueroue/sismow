@@ -1,0 +1,335 @@
+---
+title: "flat_minimal.Rmd empty"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r development, include=FALSE}
+library(testthat)
+```
+
+
+## Calculate DSM    
+
+```{r function-calculate_dsm}
+
+#' Simulate observation
+#'
+#' @description
+#' `simulate_obs` allows to simulate to simulate dataset of observations according to individuals simulated on the density map, a transect design a detection probability 
+#
+#' @details
+#' To calculate the detection probability, the function calculate first the distance between the individual/group and the nearest transect.
+#'
+#' @param obs_obj dataframe. Individuals simulated with their coordinates, and their probability to be observed with the simulated transects and detection probability.
+#' @param seg_obj sf dataframe. Segment data.
+#' @param map_obj sf dataframe. Map grid.
+#' @param truncation numeric. A single numeric value in m describing the longest distance at which an object may be observed. By default = NA.
+#' @param key character. Form of the detection function "hn" or "unif".
+#' 
+#' @importFrom dplyr mutate select rename filter
+#' @importFrom units drop_units
+#' @importFrom sf st_coordinates st_area st_centroid st_drop_geometry
+#' @importFrom dsm dummy_ddf dsm dsm_var_gam
+#' @importFrom Distance ds
+#' @importFrom stats predict
+#' @importFrom assertthat assert_that
+#'
+#' @return A list containning prediction of the densities on the map, the confidence interval of abundance predictions, coeffcient variation and standard error.
+#' @keywords internal
+#' @export
+
+
+calculate_dsm <- function(map_obj, obs_obj, seg_obj, key, covar = NA, formula, truncation = NA) {
+  
+  
+  
+  if(is.na(covar) == FALSE){
+    seg_covar <- map_dbl(.x = c(1:nrow(seg_obj)),
+                         ~ map_obj %>%
+                           st_intersection(seg_obj$geometry[.x]) %>%
+                           st_drop_geometry() %>%
+                           pull(covar) %>%
+                           mean(na.rm=TRUE)    
+    )
+    
+    segs_dsm <- seg_obj %>%
+      st_centroid() %>%
+      mutate(x = st_coordinates(.)[,1]) %>%
+      mutate(y = st_coordinates(.)[,2]) %>%
+      rename(Effort = effort) %>%
+      rename(Sample.Label = seg_ID) %>%
+      mutate({{covar}} := seg_covar) %>%
+      select(Sample.Label, Effort, x, y, covar) %>%
+      st_drop_geometry() %>%
+      drop_units()
+    
+    grid_dsm <- map_obj %>%
+      mutate(area = st_area(.)) %>%
+      st_centroid() %>%
+      mutate(x = st_coordinates(.)[,1],
+             y = st_coordinates(.)[,2]) %>%
+      drop_units() %>%
+      as.data.frame() %>%
+      select(x, y, area, covar)
+    
+  }
+  
+  # segments
+  segs_dsm <- seg_obj %>%
+    st_centroid() %>%
+    mutate(x = st_coordinates(.)[,1]) %>%
+    mutate(y = st_coordinates(.)[,2]) %>%
+    rename(Effort = effort) %>%
+    rename(Sample.Label = seg_ID) %>%
+    select(Sample.Label, Effort, x, y) %>%
+    st_drop_geometry() %>%
+    drop_units()
+  
+  grid_dsm <- map_obj %>%
+    mutate(area = st_area(.)) %>%
+    st_centroid() %>%
+    mutate(x = st_coordinates(.)[,1],
+           y = st_coordinates(.)[,2]) %>%
+    drop_units() %>%
+    as.data.frame() %>%
+    select(x, y, area)
+  
+  obs_dsm <-  obs %>%
+    filter(detected == 1) %>%
+    mutate(object = object_ID) %>%
+    mutate(Sample.Label = seg_ID)
+  
+  if(is.na(truncation) == TRUE) {
+    truncation <- max(obs_dsm$distance)
+  }
+  
+  dist_dsm <- obs_dsm %>%
+  select(object, distance) %>%
+  drop_units()
+
+  detect <- ds(data = dist_dsm,
+               truncation = truncation,
+               key = 'hn',
+               adjustment = NULL)
+  
+  AIC_ds <- detect$ddf$criterion
+  
+  
+  # dsm
+  dsm <- dsm(formula = formula,
+             ddf.obj = detect,
+             segment.data = segs_dsm,
+             observation.data = obs_dsm,
+             method="REML")
+  
+  # dsm prediction
+  dsm_pred <- predict(object = dsm,
+                      newdata = grid_dsm,
+                      off.set = grid_dsm$area)
+  
+  map_pred  <- map_obj %>%
+    mutate(density_pred = dsm_pred)
+  
+  # Variance
+  pred_dsm_var <- split(grid_dsm, 1:nrow(grid_dsm))
+  
+  dsm_var <- dsm_var_gam(dsm.obj = dsm, 
+                         pred.data = grid_dsm,
+                         off.set = grid_dsm$area)
+  
+  sum_data <- summary(dsm_var)
+  
+  unconditional.cv.square <- sum_data$cv^2
+  
+  asymp.ci.c.term <- exp(qnorm(1-sum_data$alpha/2) * sqrt(log(1+unconditional.cv.square)))
+  
+  asymp.tot <- c(sum_data$pred.est / asymp.ci.c.term,
+                 sum_data$pred.est,
+                 sum_data$pred.est * asymp.ci.c.term)
+  
+  out <- list(est_mean = sum_data$pred.est,
+              ci_2.5 = sum_data$pred.est / asymp.ci.c.term,
+              ci_97.5 = sum_data$pred.est * asymp.ci.c.term,
+              cv = sum_data$cv,
+              se = sum_data$se,
+              aic_ds = AIC_ds,
+              model = dsm,
+              map_pred = map_pred)
+  
+}
+```
+
+### Examples
+
+
+```{r examples-calculate_dsm, warning = FALSE, message = FALSE}
+
+# library(ggplot2)
+# data("shape_courseulles")
+# 
+# st_bbox(shape_courseulles)
+# # First, create a density map
+# map <- simulate_density(shape_obj = shape_courseulles,
+#                         density_type = "gradient",
+#                         gradient_direction = "N",
+#                         wavelength = 20000,
+#                         amplitude = 15)
+# 
+# # Then simulate the presence of individuals 
+# ind <- simulate_ind(map_obj = map, N = 400)
+# 
+# # Then create transects
+# segs <- simulate_transects(shape_obj = map,
+#                                 design = "systematic",
+#                                 line_length = 600000,
+#                                 design_angle = 2,
+#                                 segmentize = TRUE,
+#                                 seg_length = 2000)
+# 
+# 
+# obs <- simulate_obs(ind_obj = ind,
+#                     transect_obj = segs,
+#                     key = "unif",
+#                     g_zero = 1,
+#                     truncation = 200)
+# 
+# 
+# out_dsm <- calculate_dsm(obs_obj = obs,
+#                          seg_obj = segs,
+#                          map_obj = map,
+#                          truncation = 200)
+# 
+
+# # Plusieurs simulations
+# 
+# # on teste différentes longueur de transect 
+# 
+# length_transects <- seq(100000,1000000,100000)
+# out_global <- list()
+# k <- 1
+# 
+# for(i in 1:10) {
+#   
+#   # create transects
+#   segs <- simulate_transects(shape_obj = map,
+#                              design = "systematic",
+#                              line_length = length_transects[i],
+#                              design_angle = 2,
+#                              segmentize = TRUE,
+#                              seg_length = 2000)
+#   
+#   for(j in 1:5) {
+#     
+# 
+#     ind <- simulate_ind(map_obj = map, N = 400)
+#     
+#     obs <- simulate_obs(ind_obj = ind,
+#                         transect_obj = segs,
+#                         key = "unif",
+#                         g_zero = 1,
+#                         truncation = 200)
+#     
+#     out_global[[k]] <-  calculate_dsm(obs_obj = obs,
+#                                       seg_obj = segs,
+#                                       map_obj = map,
+#                                       truncation = 200)
+#     
+#     out_global[[k]]$length_transects <- length_transects[i]
+#     
+#     k <- k+1
+#     
+#   }
+#   
+# }
+# 
+# names <- map(seq(1,length(out_global),1), ~ glue("sim_{.x}"))
+# 
+# global_list <- out_global %>%
+#   set_names(names) %>%
+#   compact()
+# 
+# dt  <- data.frame(
+#   est_mean = map_dbl(global_list, "est_mean"),
+#   ci_2.5 = map_dbl(global_list, "ci_2.5"),
+#   ci_97.5 = map_dbl(global_list, "ci_97.5"),
+#   cv = map_dbl(global_list, "ci_97.5"),
+#   se = map_dbl(global_list, "se"),
+#   length_transects = map_dbl(global_list, "length_transects")) %>%
+#   group_by(length_transects) %>%
+#   summarize(mean_size = mean(est_mean, na.rm = TRUE),
+#             se = mean(se, na.rm = TRUE),
+#             cv = mean(cv, na.rm = TRUE))
+
+
+
+
+
+```
+
+```{r tests-calculate_dsm}
+# library(testthat)
+# library(dplyr)
+# 
+# 
+# test_that("calculate_dsm works", {
+#   expect_true(inherits(calculate_dsm, "function")) 
+# })
+# 
+# 
+# test_that("test conformite calculate_dsm", {
+#   
+#   
+#   test_1 <- simulate_obs(ind_obj = ind,
+#                       transect_obj = transects,
+#                       key = "hn",
+#                       g_zero = 1,
+#                       esw = 180) %>%
+#     slice(1:5)
+#   
+#   
+#   
+#   exp_1 <- structure(list(object_ID = 1:5, size = c(1, 1, 1, 1, 1), detected = c(0L, 
+# 0L, 1L, 0L, 0L), proba = c(5.57408603285241e-08, 4.66293367408908e-19, 
+# 0.602629418799049, 1.00932158605189e-82, 2.70796644221945e-38
+# ), distance = c(830.078156629012, 1319.57027537831, 144.543000948544, 
+# 2790.81895410615, 1889.03814715369), seg_ID = c("8-3", "5-10", 
+# "8-9", "4-8", "12-16"), x = c(442098.238355977, 420533.286240681, 
+# 443527.738948383, 411815.477216414, 470612.945042581), y = c(6926762.23628262, 
+# 6944532.6011364, 6939771.26691599, 6944138.62147687, 6945281.02163264
+# )), row.names = c(NA, -5L), class = "data.frame")
+#     
+# 
+#     
+# expect_equal(object = test_1,
+#              expected = exp_1)
+# 
+# 
+# 
+# expect_is(test_1, "data.frame")
+# 
+# 
+# })
+# 
+# test_that("test erreur calculate_dsm", {
+#   
+#   expect_error(object = simulate_obs(ind_obj = c(1,1,2),
+#                        transect_obj = transects,
+#                        key = "hn",
+#                        g_zero = 1,
+#                        esw = 180))
+#   
+# })
+```
+
+
+```{r development-inflate, eval=FALSE}
+# Run but keep eval=FALSE to avoid infinite loop
+# Execute in the console gradient_directionectly
+fusen::inflate(flat_file = "dev/flat_calculate_dsm.Rmd", 
+               vignette_name = "Density Surface Modelling",
+               open_vignette = FALSE,
+               check = FALSE,
+               overwrite = TRUE)
+```

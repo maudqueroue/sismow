@@ -16,6 +16,7 @@ knitr::opts_chunk$set(
 # Simulated Survey Of Megafauna At Offshore Windfarms :airplane::dolphin:
 
 <!-- badges: start -->
+
 <!-- badges: end -->
 
 <br/>
@@ -24,15 +25,15 @@ The package **sismow** was developed as part of the **OWFSOMM** project. The obj
 
 The goal of `sismow` is to simulate different **datasets of aerial monitoring**. To do this, `sismow` allows to simulate:
 
-1. density maps
-2. sampling transects
-3. observation probabilities
+1.  density maps
+2.  sampling transects
+3.  observation probabilities
 
 With the different functions of this package, it is possible to simulate digital and visual aerial monitoring for different conditions (more or less abundant species, more or less homogeneously distributed in space, more or less discreet...). This allows then to calculate abundances and distributions under different conditions and to calculate intercalibration parameters between the two methods.
 
 ### Installation
 
----
+------------------------------------------------------------------------
 
 You can install the development version of `sismow` from [GitHub](https://github.com/) with:
 
@@ -44,15 +45,15 @@ library(sismow)
 
 ### Population Abundance Emulator
 
----
+------------------------------------------------------------------------
 
 #### Simulate density
 
 First, the function `simulate_density` allows to create map with different spatial variation of density.
 
 ##### Examples :
-         
-- **homogeneous**: same density througout the studied area.  
+
+-   **homogeneous**: same density througout the studied area.
 
 ```{r, echo = FALSE, warning = FALSE, message = FALSE}
 set.seed(2022)
@@ -63,10 +64,12 @@ shape_courseulles <- shape_courseulles %>%
     sf::st_transform(crs = 2154)
   
 ```
+
 ```{r, echo = TRUE, warning = FALSE}
 map <- simulate_density(shape_obj = shape_courseulles,
                         density_type = "uniform")
 ```
+
 ```{r, echo = FALSE, warning = FALSE, fig.height = 3, fig.width= 7}
 # Plot
 ggplot() +
@@ -80,7 +83,7 @@ ggplot() +
   ggtitle("Homogeneous density")
 ```
 
-- **gradient** : density decreasing from a hotspot that could be placed on different directions (`gradient_direction` : Center, North, East...). The `amplitude` and `wavelength` of the hotspot created can be modulated by the user.
+-   **gradient** : density decreasing from a hotspot that could be placed on different directions (`gradient_direction` : Center, North, East...). The `amplitude` and `wavelength` of the hotspot created can be modulated by the user.
 
 ```{r, echo = TRUE, warning = FALSE}
 map <- simulate_density(shape_obj = shape_courseulles,
@@ -89,6 +92,7 @@ map <- simulate_density(shape_obj = shape_courseulles,
                         amplitude = 200,
                         wavelength = 40000)
 ```
+
 ```{r, echo = FALSE, warning = FALSE, fig.height = 3, fig.width= 7}
 # Plot
 ggplot() +
@@ -101,7 +105,8 @@ ggplot() +
   ggtitle("Gradient density")
 ```
 
-- **Random**: random density. Several hotspots `nb_hotspots` are randomly created with amplitude and wavelength randomly chosen. The maximum value of `amplitude` and `wavelength` can be modulated by the user.
+-   **Random**: random density. Several hotspots `nb_hotspots` are randomly created with amplitude and wavelength randomly chosen. The maximum value of `amplitude` and `wavelength` can be modulated by the user.
+
 ```{r, echo = TRUE, warning = FALSE}
 map <- simulate_density(shape_obj = shape_courseulles,
                         density_type = "random",
@@ -109,6 +114,7 @@ map <- simulate_density(shape_obj = shape_courseulles,
                         wavelength = 10000,
                         nb_hotspots = 15)
 ```
+
 ```{r, echo = FALSE, warning = FALSE, fig.height = 3, fig.width= 7}
 # Plot
 ggplot() +
@@ -122,10 +128,13 @@ ggplot() +
 ```
 
 #### Simulate individuals
+
 The `simulate_ind` function allows to simulate an approximate number of individuals/groups with an inhomogenous Poisson point process according to the densities provided in the `map` object.
 
-##### Examples :    
-- Simulation of `N` = 200 individuals with `mean_group_size` = 1:
+##### Examples :
+
+-   Simulation of `N` = 200 individuals with `mean_group_size` = 1:
+
 ```{r, echo = FALSE, warning = FALSE}
 map <- simulate_density(shape_obj = shape_courseulles,
                         density_type = "gradient",
@@ -133,11 +142,13 @@ map <- simulate_density(shape_obj = shape_courseulles,
                         amplitude = 200,
                         wavelength = 40000)
 ```
+
 ```{r, echo = TRUE, warning = FALSE, message = FALSE}
 ind <- simulate_ind(map_obj = map, 
                     mean_group_size = 1, 
                     N = 200)
 ```
+
 ```{r, echo = FALSE, warning = FALSE, fig.height = 3, fig.width= 7}
 ggplot() +
   geom_sf(data = map, aes(fill = density)) +
@@ -152,12 +163,14 @@ ggplot() +
   ggtitle("Simulated individuals")
 ```
 
-- Simulation of `N` = 100 groups of `mean_group_size` 5 individuals
+-   Simulation of `N` = 100 groups of `mean_group_size` 5 individuals
+
 ```{r, echo = TRUE, warning = FALSE}
 ind <- simulate_ind(map_obj = map, 
                     mean_group_size = 5, 
                     N = 100)
 ```
+
 ```{r, echo = FALSE, warning = FALSE, fig.height = 3, fig.width= 7}
 ggplot()+
   geom_sf(data = map, colour = "#EDEDE9") +
@@ -174,24 +187,26 @@ ggplot()+
 
 ### Sampling Design Emulator
 
----
+------------------------------------------------------------------------
 
 #### Simulate transects
-The function `simulate_transects` allows to simulate transects with different conditions:       
-- different types of **survey design** such as parallel, zigzag, crossed zigzag or random transects       
-- **total transect length** (approximately)   
-- **angle** of the transects      
-- **segmentation** of the transects
-- **segments** length (approximately)
+
+The function `simulate_transects` allows to simulate transects with different conditions:\
+- different types of **survey design** such as parallel, zigzag, crossed zigzag or random transects\
+- **total transect length** (approximately)\
+- **angle** of the transects\
+- **segmentation** of the transects - **segments** length (approximately)
 
 ##### Examples:
-- **parallel** transects design with an approximate total line length of **400km**:
+
+-   **parallel** transects design with an approximate total line length of **400km**:
 
 ```{r, warning = FALSE}
 transects <- simulate_transects(shape_obj = shape_courseulles,
                              design = "systematic",
                              line_length = 400000)
 ```
+
 ```{r, echo = FALSE, warning = FALSE, fig.height = 3, fig.width= 7}
 # Plot
 ggplot() +
@@ -205,7 +220,8 @@ ggplot() +
   ggtitle("Parallel design")
 ```
 
-- **zigzag** transects design with an approximate total line length of **600km** that are segmentized with a `length of approximatively **2000m** per segment. 
+-   **zigzag** transects design with an approximate total line length of **600km** that are segmentized with a \`length of approximatively **2000m** per segment.
+
 ```{r, warning = FALSE}
 transects <- simulate_transects(shape_obj = shape_courseulles,
                              design = "eszigzag",
@@ -214,6 +230,7 @@ transects <- simulate_transects(shape_obj = shape_courseulles,
                              segmentize = TRUE,
                              seg_length = 2000)
 ```
+
 ```{r, echo = FALSE, warning = FALSE, fig.height = 3, fig.width= 7}
 pal <- rep(c("#98C1D9","#EE6C4D","#293241"),nrow(transects)) 
 ggplot() +
@@ -231,23 +248,26 @@ ggplot() +
 
 ### Observation Data Emulator
 
----
+------------------------------------------------------------------------
 
-#### Simulate observations 
-The function `simulate_obs` allows to simulate datasets of observations according to:  
+#### Simulate observations
 
-1. The **individuals/groups** simulated on the **density** map.   
-2. The **transect design** simulated.   
-3. A **detection probability**.        
+The function `simulate_obs` allows to simulate datasets of observations according to:
 
-To determine the detection probability, the user can choose:   
-- The form of the detection function : **uniform** or **half-normal**   
-- The maximum distance of observation (**truncation**)   
-- The probability of observation at distance 0 (**g_zero**)   
-- The effective strip width (**esw**) for half-normal detection function   
+1.  The **individuals/groups** simulated on the **density** map.\
+2.  The **transect design** simulated.\
+3.  A **detection probability**.
+
+To determine the detection probability, the user can choose:\
+- The form of the detection function : **uniform** or **half-normal**\
+- The maximum distance of observation (**truncation**)\
+- The probability of observation at distance 0 (**g_zero**)\
+- The effective strip width (**esw**) for half-normal detection function
 
 ##### Examples:
-- **Half normal** detection probability equal to **1** at 0 distance with a effective strip half width of **180m**. 
+
+-   **Half normal** detection probability equal to **1** at 0 distance with a effective strip half width of **180m**.
+
 ```{r, echo = FALSE, warning = FALSE}
 # Then simulate the presence of individuals in the study area 
 ind <- simulate_ind(map_obj = map, N = 500)
@@ -260,6 +280,7 @@ transects <- simulate_transects(shape_obj = map,
                                 segmentize = TRUE,
                                 seg_length = 2000)
 ```
+
 ```{r, echo = TRUE, warning = FALSE}
 obs <- simulate_obs(ind_obj = ind,
                     transect_obj = transects,
@@ -267,6 +288,7 @@ obs <- simulate_obs(ind_obj = ind,
                     g_zero = 1,
                     esw = 180)
 ```
+
 ```{r, echo = FALSE, warning = FALSE, fig.height = 3, fig.width= 7}
 # Plot detection probability
 ggplot(obs, aes(x=distance, y=proba)) +
@@ -297,7 +319,9 @@ ggplot() +
   ggtitle("Half Normal Detection Probability")
 
 ```
-- **Uniform** detection probability equal to **1** below distance **200m** .  
+
+-   **Uniform** detection probability equal to **1** below distance **200m** .\
+
 ```{r, echo = TRUE, warning = FALSE}
 obs <- simulate_obs(ind_obj = ind,
                     transect_obj = transects,
@@ -305,6 +329,7 @@ obs <- simulate_obs(ind_obj = ind,
                     g_zero = 1,
                     truncation = 200)
 ```
+
 ```{r, echo = FALSE, warning = FALSE, fig.height = 3, fig.width= 7}
 # Plot detection probability
 ggplot(obs, aes(x=distance, y=proba)) +
@@ -337,4 +362,3 @@ ggplot() +
 
 
 ```
-

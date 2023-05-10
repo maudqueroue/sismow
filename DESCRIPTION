@@ -17,9 +17,8 @@ Imports:
     dssd,
     glue,
     magrittr,
-    maptools,
     sf,
-    sp,
+    spatstat.geom,
     spatstat.random,
     stats,
     units

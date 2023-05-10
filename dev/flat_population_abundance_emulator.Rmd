@@ -52,8 +52,7 @@ The output is a sf dataframe of the simulated density on the map. The dataframe 
 #' @param nb_hotspots numeric. Only for "random" `density_type`. Number of random hotspots to be created.
 #' @param crs numeric. Only for "random" `density_type`. Number of random hotspots to be created. By default: 2154.
 #'
-#' @importFrom sf st_area st_sfc st_contains as_Spatial st_point st_sf st_transform
-#' @importFrom sp bbox
+#' @importFrom sf st_area st_sfc st_contains as_Spatial st_point st_sf st_transform st_bbox
 #' @importFrom dssd make.region
 #' @importFrom dsims make.density add.hotspot
 #' @importFrom dplyr mutate filter select
@@ -77,8 +76,8 @@ simulate_density <- function(shape_obj, grid_size = 1000, density_type, gradient
   shape_obj <- shape_obj %>%
     st_transform(crs = crs)
   
-  xlim <- bbox(as_Spatial(shape_obj))[1, ]
-  ylim <- bbox(as_Spatial(shape_obj))[2, ]
+  xlim <- st_bbox(shape_obj)[c(1,3)]
+  ylim <- st_bbox(shape_obj)[c(2,4)]
   
   
   region_obj <- make.region(region.name = "Study site",
@@ -214,13 +213,22 @@ simulate_density <- function(shape_obj, grid_size = 1000, density_type, gradient
   # }
   
   
+  # map_obj <- density_obj@density.surface %>%
+  #   as.data.frame() %>%
+  #   st_sf(crs = crs) %>%
+  #   mutate(area = st_area(.)) %>%
+  #   mutate(area_grid = grid_size^2) %>%
+  #   drop_units() %>%
+  #   filter(area == area_grid) %>%
+  #   select(density, geometry)
+  
   map_obj <- density_obj@density.surface %>%
     as.data.frame() %>%
     st_sf(crs = crs) %>%
     mutate(area = st_area(.)) %>%
-    mutate(area_grid = grid_size^2) %>%
     drop_units() %>%
-    filter(area == area_grid) %>%
+    filter(area != 0) %>%
+    filter(area > (grid_size^2)*0.9999) %>%
     select(density, geometry)
   
   return(map_obj)
@@ -493,9 +501,8 @@ The output is the simulated individuals in a dataframe. The dataframe contains t
 #' @importFrom stats rpois
 #' @importFrom dplyr mutate select filter
 #' @importFrom sf st_centroid st_coordinates st_crs st_area
-#' @importFrom sp coordinates<- proj4string<- gridded<- CRS
-#' @importFrom maptools as.im.SpatialGridDataFrame
 #' @importFrom spatstat.random rpoispp
+#' @importFrom spatstat.geom as.im
 #'
 #' @return The simulated individuals in a dataframe. The dataframe contains three columns, `x` longitude of the simulated individual, `y` latitude of the simulated individual and `size` the number of individuals simulated on the location (the possibility of simulate groupe will comming).  
 #' @export
@@ -527,19 +534,13 @@ simulate_ind <- function(map_obj, N, mean_group_size = 1, crs = 2154) {
     mutate(X = st_coordinates(.)[,1],
            Y = st_coordinates(.)[,2]) %>%
     as.data.frame() %>%
-    select("X","Y","density")
-  
-  
-  # Convert in grid class
-  coordinates(grid) <- ~ X + Y
-  proj4string(grid) <- CRS(st_crs(crs)$proj4string)
-  gridded(grid) <- TRUE
-  X_grid <- maptools::as.im.SpatialGridDataFrame(grid)
-  
+    select("X","Y","density") %>%
+    as.im()
+
   # Inhomogenous Poisson point process
-  ppp <- rpoispp(lambda = X_grid, drop = TRUE)
+  ppp <- rpoispp(lambda = grid, drop = TRUE)
   sim_ind <- data.frame(x = ppp$x, y = ppp$y)
-  
+
   # Possibility to add group size
   sim_ind <- sim_ind %>%
     mutate(size = rpois(nrow(sim_ind), lambda = (mean_group_size - 1)) + 1)
@@ -626,17 +627,16 @@ test_that("test conformite simulate_ind", {
   test_2 <- simulate_ind(map_obj = map, N = 500, mean_group_size = 3) %>%
                  slice(1:5)
 
-exp_1 <- structure(list(x = c(442098.238355977, 420533.286240681, 443527.738948383, 
-411815.477216414, 470612.945042581), y = c(6926762.23628262, 
-6944532.6011364, 6939771.26691599, 6944138.62147687, 6945281.02163264
+exp_1 <- structure(list(x = c(420735.085058459, 442929.50649375, 411813.427786551, 
+473010.809885187, 429456.966987101), y = c(6944722.05314103, 
+6946677.08270922, 6943497.73469272, 6922335.09657975, 6946351.78889112
 ), size = c(1, 1, 1, 1, 1)), class = "data.frame", row.names = c(NA, 
 -5L))
 
-exp_2 <- structure(list(x = c(472685.185622455, 438778.109058536, 437555.810525346, 
-459633.647628858, 456106.671207615), y = c(6940978.15048733, 
-6932096.386525, 6941737.78689435, 6950947.10736784, 6928151.73028891
-), size = c(3, 5, 7, 3, 4)), class = "data.frame", row.names = c(NA, 
--5L))
+exp_2 <- structure(list(x = c(421397.803351678, 443154.634449643, 426811.285929322, 
+449480.53130473, 420502.151042837), y = c(6942516.3758206, 6931475.44524157, 
+6932685.00458406, 6947618.97039875, 6943523.65804838), size = c(3, 
+2, 2, 1, 2)), class = "data.frame", row.names = c(NA, -5L))
 
   expect_equal(object = test_1,
                expected = exp_1)

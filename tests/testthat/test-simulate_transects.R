@@ -62,19 +62,19 @@ seg_ID = NA_integer_, effort = NA_integer_), class = "factor", levels = c("const
 "1-2", "1-3", "1-4", "1-5"), effort = structure(c(1876.14289556029, 
 1876.14289556029, 1876.14289556029, 1876.14289556029, 1876.14289556122
 ), units = structure(list(numerator = "m", denominator = character(0)), class = "symbolic_units"), class = "units"), 
-    geometry = structure(list(structure(c(393461.469060267, 393526.945503064, 
+    geometry = structure(list(structure(c(393463.088191949, 393528.564634746, 
     6938158.74575047, 6940033.74575047), dim = c(2L, 2L), class = c("XY", 
-    "LINESTRING", "sfg")), structure(c(393526.945503064, 393592.421945861, 
+    "LINESTRING", "sfg")), structure(c(393528.564634746, 393594.041077543, 
     6940033.74575047, 6941908.74575047), dim = c(2L, 2L), class = c("XY", 
-    "LINESTRING", "sfg")), structure(c(393592.421945861, 393657.898388658, 
+    "LINESTRING", "sfg")), structure(c(393594.041077543, 393659.51752034, 
     6941908.74575047, 6943783.74575047), dim = c(2L, 2L), class = c("XY", 
-    "LINESTRING", "sfg")), structure(c(393657.898388658, 393723.374831455, 
+    "LINESTRING", "sfg")), structure(c(393659.51752034, 393724.993963137, 
     6943783.74575047, 6945658.74575047), dim = c(2L, 2L), class = c("XY", 
-    "LINESTRING", "sfg")), structure(c(393723.374831455, 393788.851274252, 
+    "LINESTRING", "sfg")), structure(c(393724.993963137, 393790.470405934, 
     6945658.74575047, 6947533.74575047), dim = c(2L, 2L), class = c("XY", 
     "LINESTRING", "sfg"))), class = c("sfc_LINESTRING", "sfc"
-    ), precision = 0, bbox = structure(c(xmin = 393461.469060267, 
-    ymin = 6938158.74575047, xmax = 393788.851274252, ymax = 6947533.74575047
+    ), precision = 0, bbox = structure(c(xmin = 393463.088191949, 
+    ymin = 6938158.74575047, xmax = 393790.470405934, ymax = 6947533.74575047
     ), class = "bbox"), crs = structure(list(input = "EPSG:2154", 
         wkt = "PROJCRS[\"RGF93 / Lambert-93\",\n    BASEGEOGCRS[\"RGF93\",\n        DATUM[\"Reseau Geodesique Francais 1993\",\n            ELLIPSOID[\"GRS 1980\",6378137,298.257222101,\n                LENGTHUNIT[\"metre\",1]]],\n        PRIMEM[\"Greenwich\",0,\n            ANGLEUNIT[\"degree\",0.0174532925199433]],\n        ID[\"EPSG\",4171]],\n    CONVERSION[\"Lambert-93\",\n        METHOD[\"Lambert Conic Conformal (2SP)\",\n            ID[\"EPSG\",9802]],\n        PARAMETER[\"Latitude of false origin\",46.5,\n            ANGLEUNIT[\"degree\",0.0174532925199433],\n            ID[\"EPSG\",8821]],\n        PARAMETER[\"Longitude of false origin\",3,\n            ANGLEUNIT[\"degree\",0.0174532925199433],\n            ID[\"EPSG\",8822]],\n        PARAMETER[\"Latitude of 1st standard parallel\",49,\n            ANGLEUNIT[\"degree\",0.0174532925199433],\n            ID[\"EPSG\",8823]],\n        PARAMETER[\"Latitude of 2nd standard parallel\",44,\n            ANGLEUNIT[\"degree\",0.0174532925199433],\n            ID[\"EPSG\",8824]],\n        PARAMETER[\"Easting at false origin\",700000,\n            LENGTHUNIT[\"metre\",1],\n            ID[\"EPSG\",8826]],\n        PARAMETER[\"Northing at false origin\",6600000,\n            LENGTHUNIT[\"metre\",1],\n            ID[\"EPSG\",8827]]],\n    CS[Cartesian,2],\n        AXIS[\"easting (X)\",east,\n            ORDER[1],\n            LENGTHUNIT[\"metre\",1]],\n        AXIS[\"northing (Y)\",north,\n            ORDER[2],\n            LENGTHUNIT[\"metre\",1]],\n    USAGE[\n        SCOPE[\"Engineering survey, topographic mapping.\"],\n        AREA[\"France - onshore and offshore, mainland and Corsica.\"],\n        BBOX[41.15,-9.86,51.56,10.38]],\n    ID[\"EPSG\",2154]]"), class = "crs"), n_empty = 0L)), row.names = c("1", 
 "1.1", "1.2", "1.3", "1.4"), class = c("sf", "data.frame"), sf_column = "geometry", agr = structure(c(transect = NA_integer_, 

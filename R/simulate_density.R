@@ -26,8 +26,7 @@
 #' @param nb_hotspots numeric. Only for "random" `density_type`. Number of random hotspots to be created.
 #' @param crs numeric. Only for "random" `density_type`. Number of random hotspots to be created. By default: 2154.
 #'
-#' @importFrom sf st_area st_sfc st_contains as_Spatial st_point st_sf st_transform
-#' @importFrom sp bbox
+#' @importFrom sf st_area st_sfc st_contains as_Spatial st_point st_sf st_transform st_bbox
 #' @importFrom dssd make.region
 #' @importFrom dsims make.density add.hotspot
 #' @importFrom dplyr mutate filter select
@@ -91,8 +90,8 @@ simulate_density <- function(shape_obj, grid_size = 1000, density_type, gradient
   shape_obj <- shape_obj %>%
     st_transform(crs = crs)
   
-  xlim <- bbox(as_Spatial(shape_obj))[1, ]
-  ylim <- bbox(as_Spatial(shape_obj))[2, ]
+  xlim <- st_bbox(shape_obj)[c(1,3)]
+  ylim <- st_bbox(shape_obj)[c(2,4)]
   
   
   region_obj <- make.region(region.name = "Study site",
@@ -228,13 +227,22 @@ simulate_density <- function(shape_obj, grid_size = 1000, density_type, gradient
   # }
   
   
+  # map_obj <- density_obj@density.surface %>%
+  #   as.data.frame() %>%
+  #   st_sf(crs = crs) %>%
+  #   mutate(area = st_area(.)) %>%
+  #   mutate(area_grid = grid_size^2) %>%
+  #   drop_units() %>%
+  #   filter(area == area_grid) %>%
+  #   select(density, geometry)
+  
   map_obj <- density_obj@density.surface %>%
     as.data.frame() %>%
     st_sf(crs = crs) %>%
     mutate(area = st_area(.)) %>%
-    mutate(area_grid = grid_size^2) %>%
     drop_units() %>%
-    filter(area == area_grid) %>%
+    filter(area != 0) %>%
+    filter(area > (grid_size^2)*0.9999) %>%
     select(density, geometry)
   
   return(map_obj)

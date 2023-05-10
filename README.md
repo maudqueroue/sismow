@@ -193,9 +193,10 @@ obs <- simulate_obs(ind_obj = ind,
                     esw = 180)
 ```
 
-<img src="man/figures/README-unnamed-chunk-21-1.png" width="100%" /><img src="man/figures/README-unnamed-chunk-21-2.png" width="100%" /> -
-**Uniform** detection probability equal to **1** below distance **200m**
-.
+<img src="man/figures/README-unnamed-chunk-21-1.png" width="100%" /><img src="man/figures/README-unnamed-chunk-21-2.png" width="100%" />
+
+- **Uniform** detection probability equal to **1** below distance
+  **200m** .  
 
 ``` r
 obs <- simulate_obs(ind_obj = ind,
