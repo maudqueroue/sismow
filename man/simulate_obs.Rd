@@ -10,7 +10,7 @@ simulate_obs(
   key,
   esw = NA,
   g_zero = 1,
-  truncation = NA,
+  truncation = +Inf,
   crs = 2154
 )
 }
@@ -37,85 +37,4 @@ dataframe. The dataframe contains all the individuals/groups of the map. The dat
 }
 \details{
 To calculate the detection probability, the function calculate first the distance between the individual/group and the nearest transect.
-}
-\examples{
-
-library(ggplot2)
-data("shape_courseulles")
-
-# First, create a density map
-map <- simulate_density(shape_obj = shape_courseulles,
-                        density_type = "gradient",
-                        gradient_direction = "N",
-                        wavelength = 20000,
-                        amplitude = 15)
-
-# Then simulate the presence of individuals 
-ind <- simulate_ind(map_obj = map, N = 400)
-
-# Then create transects
-transects <- simulate_transects(shape_obj = map,
-                                design = "systematic",
-                                line_length = 400000,
-                                design_angle = 2,
-                                segmentize = TRUE,
-                                seg_length = 2000)
-
-# Finally, detection of individuals is simulated according to 
-# simulated individuals and simulated transects:
-
-# ------------------------------
-# Example 1 : With half normal detection probability equal to 1 at 0 distance (g_zero)
-# with a effective strip half width of 180m.
-# ------------------------------
-
-obs <- simulate_obs(ind_obj = ind,
-                    transect_obj = transects,
-                    key = "hn",
-                    g_zero = 1,
-                    esw = 180)
-
-# Plot detection probability
-ggplot(obs, aes(x=distance, y=proba)) +
-  geom_point(color = "#EE6C4D") +
-  xlim(0,500) 
-
-# Plot on map
-ggplot() +
-  geom_sf(data = map, fill = "#CDDAFD", color = "#CDDAFD") +
-  geom_sf(data = transects, color = "black") +
-  geom_point(data=obs[obs$detected==0,], aes(x=x, y=y), shape=20, color="#051923") +
-  geom_point(data=obs[obs$detected==1,], aes(x=x, y=y), shape=21, fill="#EE6C4D") +
-  labs(caption = paste("Sightings = ", sum(obs$detected), sep = " ")) +
-  theme(legend.position = "none",
-        panel.background = element_rect(fill = "white"),
-        panel.grid.major = element_line(colour = "#EDEDE9"))
-
-
-# ------------------------------
-# Example 2 : With uniform detection probability equal to 1 below distance 200m.
-# ------------------------------
-
-obs <- simulate_obs(ind_obj = ind,
-                    transect_obj = transects,
-                    key = "unif",
-                    g_zero = 1,
-                    truncation = 200)
-
-# Plot detection probability
-ggplot(obs, aes(x=distance, y=proba)) +
-  geom_point(color = "#EE6C4D") +
-  xlim(0,500) 
-
-# Plot on map
-ggplot() +
-  geom_sf(data = map, fill = "#CDDAFD", color = "#CDDAFD") +
-  geom_sf(data = transects, color = "black") +
-  geom_point(data=obs[obs$detected==0,], aes(x=x, y=y), shape=20, color="#051923") +
-  geom_point(data=obs[obs$detected==1,], aes(x=x, y=y), shape=21, fill="#EE6C4D") +
-  labs(caption = paste("Sightings = ", sum(obs$detected), sep = " ")) +
-  theme(legend.position = "none",
-        panel.background = element_rect(fill = "white"),
-        panel.grid.major = element_line(colour = "#EDEDE9"))
-
 }

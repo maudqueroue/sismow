@@ -60,7 +60,7 @@ The output is a dataframe containing all the individuals/groups simulated in lin
 #' @export
 
 
-simulate_obs <- function(ind_obj, transect_obj, key, esw = NA, g_zero = 1, truncation = NA, crs = 2154) {
+simulate_obs <- function(ind_obj, transect_obj, key, esw = NA, g_zero = 1, truncation = +Inf, crs = 2154) {
   
   # Function checks
   
@@ -106,8 +106,9 @@ simulate_obs <- function(ind_obj, transect_obj, key, esw = NA, g_zero = 1, trunc
     if(is.numeric(esw)==FALSE) {stop("With 'hn' key, esw must have a numeric value")}
     
     esw_km <- esw / 1000
-    sigma <- scale_hn(esw = esw_km)
-    dist_obj <- dist_obj %>%
+      trunc_dis_km <- truncation / 1000
+    sigma <- scale_hn(esw = esw_km, w = trunc_dis_km)
+  dist_obj <- dist_obj %>%
       mutate(proba = exp(-(distance_km)^2 / (2 * sigma * sigma))*g_zero) %>%
       mutate(detected = rbinom(nrow(dist_obj), size = 1, prob = proba))
     
@@ -236,6 +237,7 @@ library(dplyr)
 test_that("simulate_obs works", {
   expect_true(inherits(simulate_obs, "function")) 
 })
+
 
 
 test_that("test conformite simulate_obs", {
@@ -385,6 +387,7 @@ test_that("test erreur simulate_obs", {
 #' esw_hn
 #'
 #' @param sigma numeric. Sigma of half normal function.
+#' @param w numeric. Truncation distance in km
 #'
 #' @importFrom stats pnorm dnorm
 #' @importFrom assertthat assert_that
@@ -393,14 +396,16 @@ test_that("test erreur simulate_obs", {
 #' @keywords internal
 #' @export
 
-esw_hn <- function(sigma){
-  
+esw_hn <- function(sigma,  w = +Inf){
+
   assert_that(is.numeric(sigma))
-  
-  esw <- (pnorm(+Inf, 0, sigma) - 0.5) / dnorm(0, 0, sigma)
+  assert_that(is.numeric(w))
+
+  esw <- (pnorm(w, 0, sigma) - 0.5)/dnorm(0, 0, sigma)
   return(esw)
-  
+
   }
+
 
 ```
 
@@ -435,6 +440,7 @@ test_that("test erreur scale_hn", {
 #' @param esw numeric. Effective strip width.
 #' @param lower numeric. Lower range of search.
 #' @param upper numeric. Upper range of search.
+#' @param w numeric. Truncation distance in km
 #'
 #' @importFrom stats uniroot
 #' @importFrom assertthat assert_that
@@ -444,10 +450,10 @@ test_that("test erreur scale_hn", {
 #' @export
 
 
-scale_hn <- function(esw, lower = 1e-3, upper = 5) {
+scale_hn <- function(esw, lower = 1e-3, upper = 5,  w = +Inf) {
   
   assert_that(is.numeric(esw))
-  res <- as.numeric(uniroot(function(x, ...) {esw_hn(sigma = x) - esw},
+  res <- as.numeric(uniroot(function(x, ...) {esw_hn(sigma = x,  w = w) - esw},
                             lower = lower,
                             upper = upper,
                             tol = 1e-8)[1])

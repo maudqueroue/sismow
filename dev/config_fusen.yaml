@@ -1,0 +1,51 @@
+flat_observation_data_emulator.Rmd:
+  path: dev/flat_observation_data_emulator.Rmd
+  state: active
+  R:
+  - R/esw_hn.R
+  - R/simulate_obs.R
+  tests: tests/testthat/test-esw_hn.R
+  vignettes: vignettes/observation-data-emulator.Rmd
+  inflate:
+    flat_file: dev/flat_observation_data_emulator.Rmd
+    vignette_name: Observation Data Emulator
+    open_vignette: false
+    check: false
+    document: true
+    overwrite: 'yes'
+    clean: ask
+    codecov: false
+flat_population_abundance_emulator.Rmd:
+  path: dev/flat_population_abundance_emulator.Rmd
+  state: active
+  R:
+  - R/simulate_density.R
+  - R/simulate_ind.R
+  tests:
+  - tests/testthat/test-simulate_density.R
+  - tests/testthat/test-simulate_ind.R
+  vignettes: vignettes/population-abundance-emulator.Rmd
+  inflate:
+    flat_file: dev/flat_population_abundance_emulator.Rmd
+    vignette_name: Population Abundance Emulator
+    open_vignette: false
+    check: false
+    document: true
+    overwrite: 'yes'
+    clean: ask
+    codecov: false
+flat_sampling_design_emulator.Rmd:
+  path: dev/flat_sampling_design_emulator.Rmd
+  state: active
+  R: R/simulate_transects.R
+  tests: tests/testthat/test-simulate_transects.R
+  vignettes: vignettes/sampling-design-emulator.Rmd
+  inflate:
+    flat_file: dev/flat_sampling_design_emulator.Rmd
+    vignette_name: Sampling Design Emulator
+    open_vignette: false
+    check: false
+    document: true
+    overwrite: 'yes'
+    clean: ask
+    codecov: false
